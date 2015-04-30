@@ -7,5 +7,9 @@ class User < ActiveRecord::Base
 
   has_many :posts
   has_many :user_groups
-  has_many :groups, :through => :user_groups
+  has_many :groups, through: :user_groups
+
+  def to_s
+    email
+  end
 end
