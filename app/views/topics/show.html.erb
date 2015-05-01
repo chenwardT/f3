@@ -1,24 +1,21 @@
 <div id="breadcrumb">
+  <a href="<%= categories_path %>">Forum</a>
+  >
   <a href="<%= category_path(@topic.forum.category) %>"><%= @topic.forum.category %></a>
   >
   <a href="<%= forum_path(@topic.forum) %>"><%= @topic.forum %></a>
+  >
+  <%= @topic.title %>
 </div>
 <br>
 <div>
   <table>
-    <thead><%= @topic.title %></thead>
+    <thead class="color1"><tr><th><%= @topic.title %></th></tr></thead>
     <tbody>
       <% @topic.posts.each do |post| %>
       <tr>
         <td>
-        <div>
-          <section>
-            <header><%= post.user %></header>
-            <article>
-              <section><%= post.body %></section>
-            </article>
-          </section>
-        </div>
+        <%= render 'posts/post', post: post %>
         </td>
       </tr>
       <% end %>

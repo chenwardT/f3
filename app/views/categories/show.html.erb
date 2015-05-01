@@ -1,12 +1,19 @@
+<div id="breadcrumb">
+  <a href="<%= categories_path %>">Forum</a>
+  >
+  <%= @category.title %>
+</div>
 <div>
-  <h2><%= @category.title %></h2>
+  <h3><%= @category.title %></h3>
   <p><%= @category.description %></p>
   <table class="table table-striped">
     <thead>
-      <td>Forums</td>
-      <td>Topics</td>
-      <td>Posts</td>
-      <td>Last Post</td>
+      <tr>
+        <th>Sub-Forums</th>
+        <th>Topics</th>
+        <th>Posts</th>
+        <th>Last Post</th>
+      </tr>
     </thead>
     <% @category.forums.each do |forum| %>
       <tr>

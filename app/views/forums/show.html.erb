@@ -1,6 +1,21 @@
-<table>
-  <thead><td>Topic</td><td>Topic Author</td></thead>
-  <% @forum.topics.each do |topic| %>
-    <%= render 'topics/topic', topic: topic %>
-  <% end %>
-</table>
+<div id="breadcrumb">
+  <a href="<%= categories_path %>">Forum</a>
+  >
+  <a href="<%= category_path(@forum.category) %>"><%= @forum.category %></a>
+  >
+  <%= @forum.title %>
+</div>
+<div>
+  <h3>Forum: <%= @forum.title %></h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Topic</th>
+        <th>Author</th>
+      </tr>
+    </thead>
+    <% @forum.topics.each do |topic| %>
+      <%= render 'topics/topic', topic: topic %>
+    <% end %>
+  </table>
+</div>
