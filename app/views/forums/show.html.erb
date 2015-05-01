@@ -1,0 +1,6 @@
+<table>
+  <thead><td>Topic</td><td>Topic Author</td></thead>
+  <% @forum.topics.each do |topic| %>
+    <%= render 'topics/topic', topic: topic %>
+  <% end %>
+</table>

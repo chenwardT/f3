@@ -1,0 +1,6 @@
+<div>
+  <h2><%= @category.title %></h2>
+  <% @category.forums.each do |forum| %>
+    <div><a href="<%= forum_path %>"><%= forum.title %></a></div>
+  <% end %>
+</div>

@@ -1,0 +1,14 @@
+<div>
+  <h2>Forums</h2>
+  <% @forums.each do |forum| %>
+    <h3><a href="<%= forum_path(forum) %>"><%= forum.title %></a></h3>
+    <table>
+      <% forum.topics.each do |topic| %>
+        <tr>
+          <td><a href="<%= topic_path(topic) %>"><%= topic.title %></a></td>
+          <td><%= topic.user %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>

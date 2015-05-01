@@ -2,7 +2,20 @@ Rails.application.routes.draw do
   devise_for :users
   get 'static_pages/index'
 
-  root 'static_pages#index'
+  resources :users
+
+  # TODO: Consider routing styles for content
+  #   /category-slug/forum-slug/topic-slug/
+  #   /topic-slug/
+  #   /topic-slug?page=page-num#post-num
+
+  resources :categories
+  resources :forums
+  resources :topics do
+    resources :posts
+  end
+
+  root 'categories#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

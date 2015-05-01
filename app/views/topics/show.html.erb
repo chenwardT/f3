@@ -1,0 +1,27 @@
+<div id="breadcrumb">
+  <a href="<%= category_path(@topic.forum.category) %>"><%= @topic.forum.category %></a>
+  >
+  <a href="<%= forum_path(@topic.forum) %>"><%= @topic.forum %></a>
+</div>
+<br>
+<div>
+  <table>
+    <thead><%= @topic.title %></thead>
+    <tbody>
+      <% @topic.posts.each do |post| %>
+      <tr>
+        <td>
+        <div>
+          <section>
+            <header><%= post.user %></header>
+            <article>
+              <section><%= post.body %></section>
+            </article>
+          </section>
+        </div>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

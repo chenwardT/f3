@@ -1,0 +1,17 @@
+<div>
+  <h2>Categories</h2>
+  <% @categories.each do |category| %>
+    <h3><a href="<%= category_path(category) %>"><%= category.title %></a></h3>
+    <span><%= category.description %></span>
+    <br>
+    <table>
+      <thead><td>Forum</td><td>Threads</td></thead>
+      <% category.forums.each do |forum| %>
+        <tr>
+          <td><a href="<%= forum_path(forum) %>"><%= forum.title %></a></td>
+          <td><%= forum.topics.count %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>
