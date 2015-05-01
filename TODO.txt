@@ -1,0 +1,4 @@
+TODO
+
+Consider naming conventions for Category/Forum models in userland.
+e.g. In other popular forum apps, Categories are called "Forums" with Forums being called "Sub-Forums".

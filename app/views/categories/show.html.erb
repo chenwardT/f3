@@ -1,6 +1,20 @@
 <div>
   <h2><%= @category.title %></h2>
-  <% @category.forums.each do |forum| %>
-    <div><a href="<%= forum_path %>"><%= forum.title %></a></div>
-  <% end %>
+  <p><%= @category.description %></p>
+  <table class="table table-striped">
+    <thead>
+      <td>Forums</td>
+      <td>Topics</td>
+      <td>Posts</td>
+      <td>Last Post</td>
+    </thead>
+    <% @category.forums.each do |forum| %>
+      <tr>
+        <td><a href="<%= forum_path(forum) %>"><%= forum.title %></a></td>
+        <td><%= forum.topic_count %></td>
+        <td><%= forum.post_count %></td>
+        <td><%= forum.last_post %></td>
+      </tr>
+    <% end %>
+  </table>
 </div>

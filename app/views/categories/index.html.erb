@@ -1,16 +1,19 @@
 <div>
-  <h2>Categories</h2>
+  <h2>Forums</h2>
   <% @categories.each do |category| %>
-    <h3><a href="<%= category_path(category) %>"><%= category.title %></a></h3>
-    <span><%= category.description %></span>
-    <br>
-    <table>
-      <thead><td>Forum</td><td>Threads</td></thead>
+    <a href="<%= category_path(category) %>"><%= category.title %></a> - <%= category.description %>
+    <table class="table table-striped">
+      <thead>
+        <td>Sub-Forums</td>
+        <td>Topics</td>
+        <td>Posts</td>
+      </thead>
       <% category.forums.each do |forum| %>
-        <tr>
-          <td><a href="<%= forum_path(forum) %>"><%= forum.title %></a></td>
-          <td><%= forum.topics.count %></td>
-        </tr>
+      <tr>
+        <td><a href="<%= forum_path(forum) %>"><%= forum.title %></a></td>
+        <td><%= forum.topics.count %></td>
+        <td><%= forum.post_count %></td>
+      </tr>
       <% end %>
     </table>
   <% end %>
