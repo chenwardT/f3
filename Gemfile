@@ -45,3 +45,6 @@ gem 'devise'
 
 # Use pg for the database
 gem 'pg'
+
+# Use faker for creating seed data
+gem 'faker',      group: :development
