@@ -18,12 +18,17 @@
   <% end %>
 </nav>
 
-<div>
-  <p class="notice"><%= notice %></p>
-  <p class="alert"><%= alert %></p>
-</div>
+<div class="container">
+  <!--<p class="notice"><%= notice %></p>-->
+  <!--<p class="alert"><%= alert %></p>-->
 
-<%= yield %>
+  <% flash.each do |name, msg| -%>
+    <%= content_tag :div, msg, class: "alert alert-#{name}" %>
+  <% end -%>
+
+  <%= yield %>
+
+</div>
 
 </body>
 </html>

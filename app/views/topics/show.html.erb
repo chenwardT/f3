@@ -20,4 +20,7 @@
       <% end %>
     </tbody>
   </table>
+  <% if current_user %>
+    <%= render 'posts/post_reply_form', topic: @topic %>
+  <% end %>
 </div>
