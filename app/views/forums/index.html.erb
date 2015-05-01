@@ -1,7 +1,7 @@
 <div>
   <h2>Forums</h2>
   <% @forums.each do |forum| %>
-    <h3><a href="<%= forum_path(forum) %>"><%= forum.title %></a></h3>
+    <h4><a href="<%= forum_path(forum) %>"><%= forum.title %></a></h4>
     <table>
       <% forum.topics.each do |topic| %>
         <tr>

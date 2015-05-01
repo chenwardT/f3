@@ -2,3 +2,6 @@ TODO
 
 Consider naming conventions for Category/Forum models in userland.
 e.g. In other popular forum apps, Categories are called "Forums" with Forums being called "Sub-Forums".
+
+Consider allowing forums to be nested inside one another to any degree, instead of having Categories
+at the top with at most 1 level deep Forum objects.

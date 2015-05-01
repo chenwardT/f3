@@ -2,13 +2,12 @@
   Forum
 </div>
 <div>
-  <h3>Forums</h3>
+  <h4>Forums</h4>
   <% @categories.each do |category| %>
-    <a href="<%= category_path(category) %>"><%= category.title %></a> - <%= category.description %>
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Sub-Forums</th>
+          <th><a href="<%= category_path(category) %>"><%= category.title %></a><p><small><%= category.description %></small></p></th>
           <th>Topics</th>
           <th>Posts</th>
         </tr>
