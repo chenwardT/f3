@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150430191646) do
+ActiveRecord::Schema.define(version: 20150501152554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(version: 20150430191646) do
     t.integer  "view_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "forums", force: :cascade do |t|
+    t.string   "title"
+    t.string   "slug"
+    t.integer  "view_count"
+    t.integer  "category_id"
+    t.boolean  "locked",      default: false, null: false
+    t.boolean  "hidden",      default: false, null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "groups", force: :cascade do |t|
@@ -39,15 +50,15 @@ ActiveRecord::Schema.define(version: 20150430191646) do
   end
 
   create_table "topics", force: :cascade do |t|
-    t.integer  "category_id"
+    t.integer  "forum_id"
     t.string   "title"
     t.string   "slug"
-    t.boolean  "locked",      default: false, null: false
-    t.boolean  "hidden",      default: false, null: false
-    t.boolean  "pinned",      default: false, null: false
+    t.boolean  "locked",     default: false, null: false
+    t.boolean  "hidden",     default: false, null: false
+    t.boolean  "pinned",     default: false, null: false
     t.integer  "view_count"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "user_groups", force: :cascade do |t|
