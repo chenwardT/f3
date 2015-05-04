@@ -1,6 +1,6 @@
 <div id="new_topic">
   <h4>Post New Topic</h4>
-  <small>Forum: <%= @topic.forum %></small>
+  <small>Forum: <%= link_to @topic.forum, forum_path(@topic.forum) %></small>
 
   <div id="new_topic_form">
     <%= form_for @topic, url: topics_path(@topic), method: :post do |f| %>
