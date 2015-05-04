@@ -28,9 +28,14 @@
   <% end %>
 
   <%= yield %>
-
-  <%= debug(params) if Rails.env.development? %>
 </div>
 
+<div class="container">
+  <h5>Forum Statistics</h5>
+  <p>Topics: <%= Topic.all.count %> Posts: <%= Post.all.count %> Members: <%= User.all.count %></p>
+  <p>Newest member: <%= User.newest %></p>
+</div>
+
+<%= debug(params) if Rails.env.development? %>
 </body>
 </html>
