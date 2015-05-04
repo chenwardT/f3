@@ -17,7 +17,10 @@
     </thead>
     <% @category.forums.each do |forum| %>
       <tr>
-        <td><a href="<%= forum_path(forum) %>"><%= forum.title %></a></td>
+        <td>
+          <a href="<%= forum_path(forum) %>"><%= forum.title %></a><br>
+          <small><%= forum.description %></small>
+        </td>
         <td><%= forum.topic_count %></td>
         <td><%= forum.post_count %></td>
         <td><%= forum.last_post %></td>
