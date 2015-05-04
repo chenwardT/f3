@@ -6,11 +6,17 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-user = User.new
-user.email = 'chenward.t@gmail.com'
-user.password = 'test1234'
-user.password_confirmation = 'test1234'
+user = User.new(email: 'chenward.t@gmail.com', username: 'chenwardT', password: 'test1234',
+                password_confirmation: 'test1234')
 user.save!
+
+# TODO: Ensure this doesn't duplicate acct info when we set unique constraints.
+20.times do
+  name = Faker::Name.name
+  user = User.new(email: Faker::Internet.email(name), username: name, password: 'test1234',
+                  password_confirmation: 'test1234')
+  user.save!
+end
 
 3.times do
   Category.create!(title: Faker::Commerce.department, description: Faker::Lorem.sentence)
@@ -18,13 +24,12 @@ end
 
 Category.all.each do |category|
   4.times do
-    forum = category.forums.create!(title: Faker::Commerce.product_name)
-
+    forum = category.forums.create!(title: Faker::Commerce.product_name,
+                                    description: Faker::Lorem.sentence)
     5.times do
-      topic = forum.topics.create!(title: Faker::Lorem.sentence, user: user)
-
+      topic = forum.topics.create!( user: User.all.sample, title: Faker::Lorem.sentence)
       5.times do
-        topic.posts.create!(user: user, body: Faker::Lorem.paragraph)
+        topic.posts.create!(user: User.all.sample, body: Faker::Lorem.paragraph)
       end
     end
   end
