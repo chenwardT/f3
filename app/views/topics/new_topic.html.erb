@@ -1,3 +1,12 @@
+<div id="breadcrumb">
+  <a href="<%= categories_path %>">Forum</a>
+  >
+  <a href="<%= category_path(@topic.forum.category) %>"><%= @topic.forum.category %></a>
+  >
+  <a href="<%= forum_path(@topic.forum) %>"><%= @topic.forum.title %></a>
+  >
+  Post New Topic
+</div>
 <div id="new_topic">
   <h4>Post New Topic</h4>
   <small>Forum: <%= link_to @topic.forum, forum_path(@topic.forum) %></small>
