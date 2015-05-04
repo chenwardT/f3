@@ -48,3 +48,6 @@ gem 'pg'
 
 # Use faker for creating seed data
 gem 'faker',      group: :development
+
+# Use kaminari for pagination
+gem 'kaminari'
