@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
 
+  has_many :topics
   has_many :posts
   has_many :user_groups
   has_many :groups, through: :user_groups

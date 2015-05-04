@@ -6,6 +6,9 @@
   <%= @forum.title %>
 </div>
 <div>
+  <%= link_to "Post New Topic", new_topic_path(forum: @forum.id), method: :get, class: 'btn btn-primary' %>
+</div>
+<div>
   <h4>Forum: <%= @forum.title %></h4>
   <table>
     <thead>

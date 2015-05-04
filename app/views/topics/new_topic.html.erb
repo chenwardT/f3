@@ -1,0 +1,17 @@
+<div id="new_topic">
+  <h4>Post New Topic</h4>
+  <small>Forum: <%= @topic.forum %></small>
+
+  <div id="new_topic_form">
+    <%= form_for @topic, url: topics_path(@topic), method: :post do |f| %>
+      <%= f.hidden_field :forum_id, value: @topic.forum_id %>
+      <%= f.label "Title:" %><br>
+      <%= f.text_field :title %><br><br>
+      <%= fields_for :post do |post| %>
+
+        <%= post.text_area :body, size: "60x6" %><br>
+      <% end %>
+      <%= f.submit "Submit New Topic" %>
+    <% end %>
+  </div>
+</div>
