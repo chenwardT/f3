@@ -46,8 +46,16 @@ gem 'devise'
 # Use pg for the database
 gem 'pg'
 
-# Use faker for creating seed data
-gem 'faker',      group: :development
-
 # Use kaminari for pagination
 gem 'kaminari'
+
+group :development do
+  # Use faker for creating seed data
+  gem 'faker'
+  # Required for rails_panel
+  gem 'meta_request'
+
+  gem 'better_errors'
+  # Required for some features of better_errors
+  gem 'binding_of_caller'
+end
