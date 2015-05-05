@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150504212906) do
+ActiveRecord::Schema.define(version: 20150505054323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,13 +55,14 @@ ActiveRecord::Schema.define(version: 20150504212906) do
     t.integer  "forum_id"
     t.string   "title"
     t.string   "slug"
-    t.boolean  "locked",     default: false, null: false
-    t.boolean  "hidden",     default: false, null: false
-    t.boolean  "pinned",     default: false, null: false
+    t.boolean  "locked",       default: false, null: false
+    t.boolean  "hidden",       default: false, null: false
+    t.boolean  "pinned",       default: false, null: false
     t.integer  "view_count"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.integer  "user_id"
+    t.datetime "last_post_at"
   end
 
   create_table "user_groups", force: :cascade do |t|
