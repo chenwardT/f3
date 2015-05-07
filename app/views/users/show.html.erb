@@ -1,5 +1,8 @@
 <div id="user-profile">
-  <p>Username: <%= @user.username %></p>
-  <p>Join Date: <%= @user.created_at %></p>
-  <p>Last Seen: <%= @user.last_sign_in_at %></p>
+  <h4><%= @user.username %></h4>
+  <ul>
+    <% @user.attributes.each do |name, val| %>
+      <li><%= name.humanize %>: <%= val %></li>
+    <% end %>
+  </ul>
 </div>
