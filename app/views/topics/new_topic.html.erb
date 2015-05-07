@@ -1,12 +1,4 @@
-<div id="breadcrumb">
-  <a href="<%= categories_path %>">Forum</a>
-  >
-  <a href="<%= category_path(@topic.forum.category) %>"><%= @topic.forum.category %></a>
-  >
-  <a href="<%= forum_path(@topic.forum) %>"><%= @topic.forum.title %></a>
-  >
-  Post New Topic
-</div>
+<%= render 'partials/breadcrumb', obj: @topic %>
 <div id="new-topic">
   <h4>Post New Topic</h4>
   <small>Forum: <%= link_to @topic.forum, forum_path(@topic.forum) %></small>
@@ -15,9 +7,8 @@
     <%= form_for @topic, url: topics_path(@topic), method: :post do |f| %>
       <%= f.hidden_field :forum_id, value: @topic.forum_id %>
       <%= f.label "Title:" %><br>
-      <%= f.text_field :title %><br><br>
+      <%= f.text_field :title, value: '' %><br><br>
       <%= fields_for :post do |post| %>
-
         <%= post.text_area :body, size: "60x6" %><br>
       <% end %>
       <%= f.submit "Submit New Topic" %>

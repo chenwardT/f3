@@ -1,10 +1,4 @@
-<div id="breadcrumb">
-  <a href="<%= categories_path %>">Forum</a>
-  >
-  <a href="<%= category_path(@forum.category) %>"><%= @forum.category %></a>
-  >
-  <%= @forum.title %>
-</div>
+<%= render 'partials/breadcrumb', obj: @forum %>
 <% if current_user %>
   <div>
     <%= link_to "Post New Topic", new_topic_path(forum: @forum.id), method: :get, class: 'btn btn-primary' %>
@@ -13,16 +7,59 @@
 <div>
   <h4>Forum: <%= @forum.title %></h4>
   <p><%= @forum.description %></p>
-  <table>
+
+  <% if @forum.forums.any? %>
+  <table class="table">
+
     <thead>
-      <tr>
-        <th>Topic / Author</th>
-        <th>Replies</th>
-        <th>Last Post</th>
-      </tr>
+    <tr>
+      <th>Sub-Forums</th>
+      <th>Topics / Posts</th>
+      <th>Last Post</th>
+    </tr>
     </thead>
+
+    <% @forum.forums.each do |subforum| %>
+      <tr>
+        <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
+          <small><%= subforum.description %></small>
+          <% if subforum.forums.any? %>
+            <br><small>Sub-Forums:
+          <% subforum.forums.each do |subsubforum| %>
+            <a href="<%= forum_path(subsubforum) %>"><%= subsubforum.title %></a>
+          <% end %>
+        </small>
+          <% end %>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    <% end %>
+
+  </table>
+  <% end %>
+
+  <% if @forum.topics.any? %>
+  <table class="table">
+
+    <thead>
+    <tr>
+      <th>Title / Topic Starter</th>
+      <th>Replies</th>
+      <th>Last Post By</th>
+    </tr>
+    </thead>
+
     <% @forum.topics.each do |topic| %>
-      <%= render 'topics/topic', topic: topic %>
+    <tr>
+      <td><a href="<%= topic_path(topic) %>"><%= topic %></a><br>
+      <small>Started by <a href="<%= user_path(topic.user) %>"><%= topic.user %></a>,
+      <%= topic.created_at %></small></td>
+      <td><%= topic.reply_count %></td>
+      <td><a href="<%= user_path(topic.last_post.user) %>"><%= topic.last_post.user %></a><br>
+      <small><%= topic.last_post.created_at %></small></td>
+    </tr>
     <% end %>
   </table>
+  <% end %>
 </div>

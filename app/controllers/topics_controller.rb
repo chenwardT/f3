@@ -9,7 +9,7 @@ class TopicsController < ApplicationController
   end
 
   def new
-    @topic = current_user.topics.build(forum_id: params[:forum])
+    @topic = current_user.topics.build(forum_id: params[:forum], title: 'Post New Topic')
 
     render 'topics/new_topic'
   end

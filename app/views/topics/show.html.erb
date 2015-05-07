@@ -1,12 +1,4 @@
-<div id="breadcrumb">
-  <a href="<%= categories_path %>">Forum</a>
-  >
-  <a href="<%= category_path(@topic.forum.category) %>"><%= @topic.forum.category %></a>
-  >
-  <a href="<%= forum_path(@topic.forum) %>"><%= @topic.forum %></a>
-  >
-  <%= @topic.title %>
-</div>
+<%= render 'partials/breadcrumb', obj: @topic %>
 <br>
 <div>
   <table>

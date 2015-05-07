@@ -1,14 +1,36 @@
 <div>
-  <h4>Forums</h4>
-  <% @forums.each do |forum| %>
-    <h4><a href="<%= forum_path(forum) %>"><%= forum.title %></a></h4>
-    <table>
-      <% forum.topics.each do |topic| %>
+  <h4>Forum</h4>
+  <% @top_level_forums.each do |forum| %>
+    <table class="table">
+
+      <thead>
         <tr>
-          <td><a href="<%= topic_path(topic) %>"><%= topic.title %></a></td>
-          <td><%= topic.user %></td>
+          <th><a href="<%= forum_path(forum) %>"><%= forum.title %></a><br>
+          <small><%= forum.description %></small></th>
+          <th>Topics / Posts</th>
+          <th>Last Post</th>
         </tr>
+      </thead>
+
+      <tbody>
+      <% forum.forums.each do |subforum| %>
+      <tr>
+        <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
+        <small><%= subforum.description %></small>
+        <% if subforum.forums.any? %>
+            <br><small>Sub-Forums:
+            <% subforum.forums.each do |subsubforum| %>
+              <a href="<%= forum_path(subsubforum) %>"><%= subsubforum.title %></a>
+            <% end %>
+            </small>
+          <% end %>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
       <% end %>
+      </tbody>
+
     </table>
   <% end %>
 </div>

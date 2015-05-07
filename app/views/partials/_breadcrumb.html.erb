@@ -1,0 +1,11 @@
+<div id="breadcrumb">
+  <a href="<%= forums_path %>">Forum</a>
+  <% breadcrumbs(obj).each_with_index do |bc, idx| %>
+    >
+    <% if idx == breadcrumbs(obj).size - 1 %>
+      <%= bc %>
+    <% else %>
+      <a href="<%= forum_path(bc) %>"><%= bc %></a>
+    <% end %>
+  <% end %>
+</div>
