@@ -2,28 +2,28 @@
   <div class="btn-group">
     <!-- TODO: These probably shouldn't be classed as "btn-group", but they keep things inline -->
     <div class="btn-group">
-        <a href="<%= forums_path %>" class="btn btn-default" role="button">Forum Home</a>
+        <a href="<%= forums_path %>" class="btn btn-default btn-xs" role="button">Forum Home</a>
     </div>
 
     <div class="btn-group">
       <div class="btn-group">
-        <a href="#" class="btn btn-default" role="button">Private Messages</a>
+        <a href="#" class="btn btn-default btn-xs" role="button">Private Messages</a>
       </div>
     </div>
 
     <div class="dropdown btn-group">
-      <button class="btn btn-default dropdown-toggle" type="button" id="community-menu" data-toggle="dropdown" aria-expanded="true">
+      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="community-menu" data-toggle="dropdown" aria-expanded="true">
         Community
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="community-menu">
         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Friends & Contacts</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Member List</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= users_path %>">Member List</a></li>
       </ul>
     </div>
 
     <div class="dropdown btn-group">
-      <button class="btn btn-default dropdown-toggle" type="button" id="forum-actions" data-toggle="dropdown" aria-expanded="true">
+      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="forum-actions" data-toggle="dropdown" aria-expanded="true">
         Forum Actions
         <span class="caret"></span>
       </button>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="dropdown btn-group">
-      <button class="btn btn-default dropdown-toggle" type="button" id="quick-links" data-toggle="dropdown" aria-expanded="true">
+      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="quick-links" data-toggle="dropdown" aria-expanded="true">
         Quick Links
         <span class="caret"></span>
       </button>
@@ -49,7 +49,7 @@
     </div>
 
     <div class="dropdown btn-group">
-      <button class="btn btn-default dropdown-toggle" type="button" id="faqs" data-toggle="dropdown" aria-expanded="true">
+      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="faqs" data-toggle="dropdown" aria-expanded="true">
         FAQs
         <span class="caret"></span>
       </button>
