@@ -1,4 +1,11 @@
 <div>
-  <span><%= post.user %></span>
-  <p><%= post.body %></p>
+  <div class="post-header">
+    <a id="<%= post.id %>" name="<%= idx %>"></a>
+    <span><a href="<%= user_path(post.user) %>"><%= post.user %></a> <small><%= post.user.country %> <%= post.user.posts.count %> Posts</small></span>
+    <span><small><%= time_ago_in_words(post.created_at) %> ago</small></span>
+    <span><small><a href="<%= topic_path(post.topic) %>#<%= post.id %>">#<%= idx %></a></small></span>
+  </div>
+  <div class="post-body">
+    <p><%= post.body %></p>
+  </div>
 </div>
