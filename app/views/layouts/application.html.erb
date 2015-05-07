@@ -17,11 +17,9 @@
     <%= link_to "Register", new_user_registration_path %>
   <% end %>
 </nav>
-
+<hr>
 <div class="container">
-  <!--<p class="notice"><%= notice %></p>-->
-  <!--<p class="alert"><%= alert %></p>-->
-
+  <%= render 'partials/navbar' %>
   <!-- TODO: devise log-in/-out flashes not being styled. -->
   <% flash.each do |key, value| %>
     <div class="alert alert-<%= key %>"><%= value %></div>
@@ -29,7 +27,7 @@
 
   <%= yield %>
 </div>
-
+<hr>
 <div class="container">
   <h5>Forum Statistics</h5>
   <p>Topics: <%= Topic.all.count %> Posts: <%= Post.all.count %> Members: <%= User.all.count %></p>
