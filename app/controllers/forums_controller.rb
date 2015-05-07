@@ -1,6 +1,6 @@
 class ForumsController < ApplicationController
   def index
-    @forums = Forum.all
+    @top_level_forums = Forum.where(forum_id: nil)
   end
 
   def show

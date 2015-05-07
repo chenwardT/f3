@@ -1,6 +1,7 @@
 class Forum < ActiveRecord::Base
-  belongs_to :category
+  belongs_to :forum
 
+  has_many :forums
   has_many :topics
 
   def to_s

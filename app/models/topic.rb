@@ -4,6 +4,9 @@ class Topic < ActiveRecord::Base
 
   has_many :posts
 
+  def to_s
+    title
+  end
   def reply_count
     posts.count - 1
   end

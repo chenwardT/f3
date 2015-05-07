@@ -11,25 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150505054323) do
+ActiveRecord::Schema.define(version: 20150506064026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "categories", force: :cascade do |t|
-    t.string   "title"
-    t.string   "slug"
-    t.integer  "view_count"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.string   "description"
-  end
 
   create_table "forums", force: :cascade do |t|
     t.string   "title"
     t.string   "slug"
     t.integer  "view_count"
-    t.integer  "category_id"
+    t.integer  "forum_id"
     t.boolean  "locked",      default: false, null: false
     t.boolean  "hidden",      default: false, null: false
     t.datetime "created_at",                  null: false
@@ -86,6 +77,13 @@ ActiveRecord::Schema.define(version: 20150505054323) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "username"
+    t.date     "birthday"
+    t.string   "time_zone"
+    t.string   "country"
+    t.string   "quote"
+    t.string   "website"
+    t.text     "bio"
+    t.text     "signature"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -5,17 +5,22 @@ Rails.application.routes.draw do
   resources :users
 
   # TODO: Consider routing styles for content
-  #   /category-slug/forum-slug/topic-slug/
+  #   with slugs...
+  #   show a-hot-topic, posted in some-forum:
+  #   /some-forum-slug/a-hot-topic-slug/
   #   /topic-slug/
   #   /topic-slug?page=page-num#post-num
+  #
+  #   without slugs...
+  #   show forum ID = 12, with no indication of nesting:
+  #   /forum/12
 
-  resources :categories
   resources :forums
   resources :topics do
     resources :posts
   end
 
-  root 'categories#index'
+  root 'forums#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
