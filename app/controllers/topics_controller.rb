@@ -5,6 +5,7 @@ class TopicsController < ApplicationController
 
   def show
     @topic = Topic.find(params[:id])
+    @ordered_posts = @topic.ordered_posts.page params[:page]
     @post = Post.new
   end
 

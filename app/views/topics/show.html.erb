@@ -1,12 +1,13 @@
 <%= render 'partials/breadcrumb', obj: @topic %>
 <br>
+<%= paginate @ordered_posts %>
 <div>
   <table>
     <tbody>
-      <% @topic.ordered_posts.each_with_index do |post, idx| %>
+      <% @ordered_posts.each_with_index do |post, idx| %>
       <tr>
         <td>
-        <%= render 'posts/post', post: post, idx: idx + 1 %>
+        <%= render 'posts/post', post: post, idx: idx %>
         </td>
       </tr>
       <% end %>
