@@ -3,7 +3,7 @@
 <div>
   <table>
     <tbody>
-      <% @topic.posts.each_with_index do |post, idx| %>
+      <% @topic.ordered_posts.each_with_index do |post, idx| %>
       <tr>
         <td>
         <%= render 'posts/post', post: post, idx: idx + 1 %>
