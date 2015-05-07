@@ -8,7 +8,10 @@ class PostsController < ApplicationController
 
     if @post.save
       flash[:success] = "Post successfully created"
-      redirect_to topic_path(params[:topic_id])
+
+      # TODO: Clean up
+      dummy_pager = @post.topic.posts.all.page(1).per(Post.default_per_page)
+      redirect_to topic_path(params[:topic_id], page: dummy_pager.total_pages)
     else
       flash[:danger] = "Error posting reply"
       render topic_path(params[:topic_id])
