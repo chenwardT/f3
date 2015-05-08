@@ -11,22 +11,20 @@
           <th>Last Post</th>
         </tr>
       </thead>
-
       <tbody>
-      <% forum.forums.each do |subforum| %>
-      <tr>
-        <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
-        <small><%= subforum.description %></small><br>
-        <% if subforum.forums.any? %>
-          <small>Sub-Forums: <%= subforum_links(subforum) %></small>
+        <% forum.forums.each do |subforum| %>
+        <tr>
+          <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
+          <small><%= subforum.description %></small><br>
+          <% if subforum.forums.any? %>
+            <small>Sub-Forums: <%= subforum_links(subforum) %></small>
+          <% end %>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
         <% end %>
-        </td>
-        <td></td>
-        <td></td>
-      </tr>
-      <% end %>
       </tbody>
-
     </table>
   <% end %>
 </div>

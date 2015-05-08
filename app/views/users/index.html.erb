@@ -9,13 +9,15 @@
         <th>Join Date</th>
       </tr>
     </thead>
-    <% @users.each do |user| %>
-      <tr>
-        <td><a href="<%= user_path(user) %>"><%= user.username %></a></td>
-        <td><a href="#"><%= user.posts.count %></a></td>
-        <td><%= user.created_at %></td>
-      </tr>
-    <% end %>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><a href="<%= user_path(user) %>"><%= user.username %></a></td>
+          <td><a href="#"><%= user.posts.count %></a></td>
+          <td><%= user.created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 </div>
 

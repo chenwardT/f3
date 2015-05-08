@@ -15,16 +15,18 @@
         <th>Last Post</th>
       </tr>
     </thead>
-    <% @category.forums.each do |forum| %>
-      <tr>
-        <td>
-          <a href="<%= forum_path(forum) %>"><%= forum.title %></a><br>
-          <small><%= forum.description %></small>
-        </td>
-        <td><%= forum.topic_count %></td>
-        <td><%= forum.post_count %></td>
-        <td><%= forum.last_post %></td>
-      </tr>
-    <% end %>
+    <tbody>
+      <% @category.forums.each do |forum| %>
+        <tr>
+          <td>
+            <a href="<%= forum_path(forum) %>"><%= forum.title %></a><br>
+            <small><%= forum.description %></small>
+          </td>
+          <td><%= forum.topic_count %></td>
+          <td><%= forum.post_count %></td>
+          <td><%= forum.last_post %></td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 </div>
