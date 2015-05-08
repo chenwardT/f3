@@ -13,7 +13,7 @@
       <% end %>
     </tbody>
   </table>
-  <% if current_user %>
+  <% if user_signed_in? %>
     <%= render 'posts/post_reply_form', topic: @topic %>
   <% end %>
 </div>

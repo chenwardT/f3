@@ -9,7 +9,7 @@
 <body>
 
 <nav>
-  <% if current_user %>
+  <% if user_signed_in? %>
     Signed in as <%= current_user %>
     <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>
   <% else %>

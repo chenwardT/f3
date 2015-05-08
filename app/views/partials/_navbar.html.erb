@@ -30,7 +30,9 @@
       <ul class="dropdown-menu" role="menu" aria-labelledby="forum-actions">
         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Mark Forums Read</a></li>
         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">General Settings</a></li>
-        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit Profile</a></li>
+        <% if user_signed_in? %>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= edit_user_registration_path %>">Edit Profile</a></li>
+        <% end %>
       </ul>
     </div>
 
