@@ -16,14 +16,10 @@
       <% forum.forums.each do |subforum| %>
       <tr>
         <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
-        <small><%= subforum.description %></small>
+        <small><%= subforum.description %></small><br>
         <% if subforum.forums.any? %>
-            <br><small>Sub-Forums:
-            <% subforum.forums.each do |subsubforum| %>
-              <a href="<%= forum_path(subsubforum) %>"><%= subsubforum.title %></a>
-            <% end %>
-            </small>
-          <% end %>
+          <small>Sub-Forums: <%= subforum_links(subforum) %></small>
+        <% end %>
         </td>
         <td></td>
         <td></td>
