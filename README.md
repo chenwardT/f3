@@ -13,6 +13,8 @@ Design
 Data Models
 -----------
 
+[Rails Model Relationship Diagram](http://i.imgur.com/dZT4LEL.png)
+
 * User
     - has many Posts
     - belongs to many Groups
