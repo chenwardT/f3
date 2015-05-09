@@ -7,6 +7,19 @@ Developed with:
 * Rails 4.2.1
 * PostgreSQL 9.3
 
+Screenshots
+===========
+
+[Forum Index](http://i.imgur.com/5SNXbEg.png)
+
+[Individual Forum](http://i.imgur.com/CUBIoKL.png)
+
+[Individual Topic](http://i.imgur.com/LHEAK7L.png)
+
+[Post New Topic](http://i.imgur.com/Ghdk0P9.png)
+
+[Member List](http://i.imgur.com/wKgiaAF.png)
+
 Design
 ======
 
