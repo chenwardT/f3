@@ -26,7 +26,7 @@ Design
 Data Models
 -----------
 
-[Rails Model Relationship Diagram](http://i.imgur.com/dZT4LEL.png)
+[Rails Model Relationship Diagram](http://i.imgur.com/psisxZL.png)
 
 * User
     - has many Posts
