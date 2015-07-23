@@ -1,4 +1,5 @@
 <div id="post-reply-form">
+  <a id="reply"></a>
   <%= form_for @post, url: topic_posts_path(topic, @post), method: :post  do |f| %>
     <%= f.text_area :body, size: '60x6' %><br>
     <%= f.submit "Post Reply" %>
