@@ -16,12 +16,16 @@ class Forum < ActiveRecord::Base
     topics.count
   end
 
-  def full_topic_count
-
+  def self_and_desc_topic_count
+    self.self_and_descendents.map{|f| f.topic_count}.reduce(:+)
   end
 
   def post_count
-    topics.map{|topic| topic.posts.count}.reduce(:+)
+    topics.map{|topic| topic.posts.count}.reduce(:+) || 0
+  end
+
+  def self_and_desc_post_count
+    self.self_and_descendents.map{|f| f.post_count}.reduce(:+)
   end
 
   def last_post
