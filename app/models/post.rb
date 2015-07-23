@@ -4,7 +4,7 @@ class Post < ActiveRecord::Base
 
   after_create :update_topic_last_post_at
 
-  paginates_per 15
+  paginates_per POSTS_PER_PAGE
 
   protected
 
