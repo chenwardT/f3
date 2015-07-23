@@ -19,4 +19,8 @@ class Topic < ActiveRecord::Base
   def ordered_posts
     posts.order(created_at: :asc)
   end
+
+  def num_pages
+    (posts.count / POSTS_PER_PAGE.to_f).ceil.to_i
+  end
 end

@@ -28,8 +28,14 @@ class Forum < ActiveRecord::Base
     self.self_and_descendents.map{|f| f.post_count}.reduce(:+)
   end
 
-  def last_post
+  def last_topic
+    Topic.where(forum_id: self.self_and_descendents)
+        .order(last_post_at: :desc)
+        .first
+  end
 
+  def last_post
+    last_topic.posts.order(created_at: :desc).first
   end
 
   def self_and_descendents
