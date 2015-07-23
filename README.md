@@ -1,5 +1,7 @@
-README
+F3
 ======
+
+A Full Featured Forum created with Ruby on Rails, backed by Postgres.
 
 Developed with:
 
@@ -92,7 +94,7 @@ Data Models
     - belongs to a User
     - belongs to a Topic
     - what happens when deleted? options:
-        - author + body is blanked out/replaced with ìdeletedî text
+        - author + body is blanked out/replaced with ‚Äúdeleted‚Äù text
     - attributes
         - body
         - slug?
@@ -169,15 +171,15 @@ Going with an adjacency list for forum hierarchy
 * pgsql supports WITH RECURSIVE for efficient querying
 
 Each Forum belongs to at most 1 Forum (forum_id).
-If forum_id does not exist, then it is a ìtop-level forumî.
-If forum_id does exist, then it is a ìsub-forumî that falls under the Forum with forum_id.
+If forum_id does not exist, then it is a ‚Äútop-level forum‚Äù.
+If forum_id does exist, then it is a ‚Äúsub-forum‚Äù that falls under the Forum with forum_id.
 
 The Forum#index (the root forum view) presents all top-level forums and their immediate sub-forums in a table, with 1 section per top-level forum and a row per immediate sub-forum.
-Sub-forums that are 3-deep (i.e. distance of 2 from top-level) are listed as text within their parent forumís description (same row in the table, but perhaps on a 2nd line).
+Sub-forums that are 3-deep (i.e. distance of 2 from top-level) are listed as text within their parent forum‚Äôs description (same row in the table, but perhaps on a 2nd line).
 Forums that are 4-deep or greater not listed -- subject to change! Good forum design dictates an upper limit on depth (3-deep?).
 
-A Forum#show displays the forum in questionís subforums as a table, if any exist.
-The "subsubforums" are then listed on a single line within each subforumís row.
+A Forum#show displays the forum in question‚Äôs subforums as a table, if any exist.
+The "subsubforums" are then listed on a single line within each subforum‚Äôs row.
 
 
 Tests
