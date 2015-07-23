@@ -38,9 +38,7 @@
   </table>
   <% end %>
 
-  <% if @forum.topics.any? %>
   <table class="table">
-
     <thead>
     <tr>
       <th>Title / Topic Starter</th>
@@ -49,17 +47,20 @@
     </tr>
     </thead>
     <tbody>
-      <% @forum.topics.each do |topic| %>
-      <tr>
-        <td><a href="<%= topic_path(topic) %>"><%= topic %></a><br>
-        <small>Started by <a href="<%= user_path(topic.user) %>"><%= topic.user %></a>,
-        <%= topic.created_at %></small></td>
-        <td><%= topic.reply_count %></td>
-        <td><a href="<%= user_path(topic.last_post.user) %>"><%= topic.last_post.user %></a><br>
-        <small><%= topic.last_post.created_at %></small></td>
-      </tr>
+      <% if @forum.topics.any? %>
+        <% @forum.topics.each do |topic| %>
+        <tr>
+          <td><a href="<%= topic_path(topic) %>"><%= topic %></a><br>
+          <small>Started by <a href="<%= user_path(topic.user) %>"><%= topic.user %></a>,
+          <%= topic.created_at %></small></td>
+          <td><%= topic.reply_count %></td>
+          <td><a href="<%= user_path(topic.last_post.user) %>"><%= topic.last_post.user %></a><br>
+          <small><%= topic.last_post.created_at %></small></td>
+        </tr>
+        <% end %>
+      <% else %>
+        <tr><td>There are no posts in this forum.</td></tr>
       <% end %>
     </tbody>
   </table>
-  <% end %>
 </div>
