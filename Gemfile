@@ -58,4 +58,7 @@ group :development do
   gem 'better_errors'
   # Required for some features of better_errors
   gem 'binding_of_caller'
+
+  gem 'pry-rails'
+  gem 'pry-doc'
 end
