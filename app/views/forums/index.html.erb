@@ -21,10 +21,12 @@
           <% end %>
           </td>
           <td>
-            <%= forum.self_and_desc_topic_count %> Topics<br>
-            <%= forum.self_and_desc_post_count %> Posts
+            <%= subforum.self_and_desc_topic_count %> Topics<br>
+            <%= subforum.self_and_desc_post_count %> Posts
           </td>
-          <td></td>
+          <td>
+            <%= display_last_post_with_topic(subforum.last_topic, subforum.last_post) %>
+          </td>
         </tr>
         <% end %>
       </tbody>
