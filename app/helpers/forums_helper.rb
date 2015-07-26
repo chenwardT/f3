@@ -3,7 +3,8 @@ module ForumsHelper
     links = []
 
     forum.forums.each do |subforum|
-      links.push('<a href="' + forum_path(subforum) + '">' + subforum.title + '</a>')
+      link_html = content_tag(:a, subforum.title, href: forum_path(subforum))
+      links.push(link_html)
     end
 
     links.join(separator).html_safe
