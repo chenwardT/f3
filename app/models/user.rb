@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  scope :newest, -> { order(created_at: :asc).last }
+  scope :newest, -> { order(created_at: :asc).pluck(:username).last }
 
   has_many :topics
   has_many :posts
