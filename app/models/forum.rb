@@ -17,15 +17,15 @@ class Forum < ActiveRecord::Base
   end
 
   def self_and_desc_topic_count
-    self.self_and_descendents.map{|f| f.topic_count}.reduce(:+)
+    Topic.where(forum: self.self_and_descendents).count
   end
 
   def post_count
-    topics.map{|topic| topic.posts.count}.reduce(:+) || 0
+    Post.where(topic: topics).count
   end
 
   def self_and_desc_post_count
-    self.self_and_descendents.map{|f| f.post_count}.reduce(:+)
+    Post.joins(topic: :forum).where('forums.id' => self.self_and_descendents).count
   end
 
   def last_topic

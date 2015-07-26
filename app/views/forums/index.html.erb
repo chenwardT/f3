@@ -20,7 +20,10 @@
             <small>Sub-Forums: <%= subforum_links(subforum) %></small>
           <% end %>
           </td>
-          <td></td>
+          <td>
+            <%= forum.self_and_desc_topic_count %> Topics<br>
+            <%= forum.self_and_desc_post_count %> Posts
+          </td>
           <td></td>
         </tr>
         <% end %>
