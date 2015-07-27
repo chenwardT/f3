@@ -3,8 +3,10 @@ class TopicsController < ApplicationController
     @topics = Topic.all
   end
 
+  # TODO: Handle missing topics (e.g. following link to deleted topic)
   def show
     @topic = Topic.find(params[:id])
+    register_view(@topic, current_user)
     @ordered_posts = @topic.ordered_posts.page params[:page]
     @post = Post.new
   end
@@ -37,5 +39,9 @@ class TopicsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:body)
+  end
+
+  def register_view(topic, user)
+    topic.register_view_by(user)
   end
 end

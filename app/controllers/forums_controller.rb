@@ -5,5 +5,11 @@ class ForumsController < ApplicationController
 
   def show
     @forum = Forum.find(params[:id])
+    register_view
+  end
+
+  private
+  def register_view
+    @forum.register_view_by(current_user)
   end
 end

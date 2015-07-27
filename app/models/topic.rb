@@ -1,4 +1,6 @@
 class Topic < ActiveRecord::Base
+  include Viewable
+
   belongs_to :forum
   belongs_to :user
 

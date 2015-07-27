@@ -1,4 +1,6 @@
 class Forum < ActiveRecord::Base
+  include Viewable
+
   belongs_to :forum
 
   has_many :forums
