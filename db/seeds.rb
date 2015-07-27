@@ -33,8 +33,13 @@ Forum.all.each do |forum|
   4.times do
     subforum = forum.forums.create!(title: Faker::Commerce.department,
                                     description: Faker::Company.catch_phrase)
+    # Topics
     5.times do
-      topic = subforum.topics.create!(user: User.all.sample, title: Faker::Lorem.sentence)
+      author = User.all.sample
+      topic = subforum.topics.create!(user: author, title: Faker::Lorem.sentence)
+      topic.posts.create!(user: author, body: Faker::Lorem.paragraph)
+
+      # Replies
       5.times do
         topic.posts.create!(user: User.all.sample, body: Faker::Lorem.paragraph)
       end
@@ -43,8 +48,13 @@ Forum.all.each do |forum|
     2.times do
       innermost_forum = subforum.forums.create!(title: Faker::Commerce.product_name,
                                                 description: Faker::Lorem.sentence)
+      # Topics
       4.times do
-        topic = innermost_forum.topics.create!(user: User.all.sample, title: Faker::Lorem.sentence)
+        author = User.all.sample
+        topic = innermost_forum.topics.create!(user: author, title: Faker::Lorem.sentence)
+        topic.posts.create!(user: author, body: Faker::Lorem.paragraph)
+        
+        # Replies
         3.times do
           topic.posts.create!(user: User.all.sample, body: Faker::Lorem.paragraph)
         end
