@@ -1,6 +1,6 @@
 class ForumsController < ApplicationController
   def index
-    @top_level_forums = Forum.where(forum_id: nil)
+    @top_level_forums = Forum.where(forum_id: nil).order(created_at: :asc)
   end
 
   def show
