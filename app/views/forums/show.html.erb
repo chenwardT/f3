@@ -50,9 +50,10 @@
     </thead>
     <tbody>
       <% if @forum.topics.any? %>
-        <% @forum.topics.each do |topic| %>
+        <% @forum.topics.order(created_at: :desc).each do |topic| %>
         <tr>
           <td>
+            <%= new_since_last_view_text(topic) %>
             <%= display_topic(topic) %>
           </td>
           <td>
