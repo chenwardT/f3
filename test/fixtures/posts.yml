@@ -4,8 +4,24 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+<% post_count = 0 %>
+
+# Topic starters
+<% Topic.all.each do |t| %>
+<%= "post_#{post_count}:" %>
+  user: tom
+  topic_id: <%= t.id %>
+  body: initial post in topic
+  created_at: <%= Time.now %>
+  <% post_count += 1 %>
+<% end %>
+
+# Replies in topics
+<% Topic.all.each do |t| %>
+<%= "post_#{post_count}:" %>
+  user: alice
+  topic_id: <%= t.id %>
+  body: reply post
+  created_at: <%= Time.now %>
+  <% post_count += 1 %>
+<% end %>

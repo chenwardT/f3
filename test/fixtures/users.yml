@@ -4,8 +4,21 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+
+tom:
+  email: tom@example.com
+  username: tom
+  encrypted_password: <%= Devise.bcrypt(User, 'test1234') %>
+  time_zone: America/New York
+  website: tom.com
+  bio: Hi I'm Tom.
+  signature: tom wuz here~
+
+alice:
+  email: alice@wonderland.net
+  username: alice
+  encrypted_password: <%= Devise.bcrypt(User, 'test1234') %>
+  time_zone: America/Los Angeles
+  website: alice.net
+  bio: Greetings from Wonderland.
+  signature: How curious!

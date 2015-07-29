@@ -1,13 +1,42 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
-  slug: MyString
-  view_count: 1
-  category_id: 1
+# 0 deep
+cars:
+  title: Cars
+  description: Everything automobiles
 
-two:
-  title: MyString
-  slug: MyString
-  view_count: 1
-  category_id: 1
+# 1 deep
+na:
+  title: Naturally Aspirated
+  description: No turbos here!
+  forum: cars
+
+hybrids:
+  title: Hybrids
+  description: Hybrid car discussion
+  forum: cars
+
+electric:
+  title: Electric Vehicles
+  description: EVs only
+  forum: cars
+
+# 2 deep
+prius:
+  title: Honda Prius
+  description: We really do care
+  forum: hybrids
+
+model_s:
+  title: Tesla Model S
+  description: Plug in baby
+  forum: electric
+
+# 3 deep
+model_s_2014:
+  title: Model S 2014
+  forum: model_s
+
+model_s_2015:
+  title: Model S 2015
+  forum: model_s
