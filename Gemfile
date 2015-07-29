@@ -49,6 +49,9 @@ gem 'pg'
 # Use kaminari for pagination
 gem 'kaminari'
 
+gem 'pry-rails'
+gem 'pry-doc'
+
 group :development do
   # Use faker for creating seed data
   gem 'faker'
@@ -58,7 +61,4 @@ group :development do
   gem 'better_errors'
   # Required for some features of better_errors
   gem 'binding_of_caller'
-
-  gem 'pry-rails'
-  gem 'pry-doc'
 end
