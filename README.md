@@ -1,5 +1,5 @@
 F3
-======
+===
 
 A Full Featured Forum created with Ruby on Rails, backed by Postgres.
 
@@ -185,4 +185,7 @@ The "subsubforums" are then listed on a single line within each subforum’s row
 Tests
 =====
 
-TODO after solid groundwork is laid.
+Ensure database user that interacts with the test database has superuser priveleges, as these
+are required to (temporarily) disable referential integrity during the creation of fixtures.
+
+`bundle exec rake test`
