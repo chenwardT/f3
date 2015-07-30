@@ -7,7 +7,7 @@ cars:
 
 # 1 deep
 na:
-  title: Naturally Aspirated
+  title: Naturally aspirated
   description: No turbos here!
   forum: cars
 
@@ -17,7 +17,7 @@ hybrids:
   forum: cars
 
 electric:
-  title: Electric Vehicles
+  title: Electric vehicles
   description: EVs only
   forum: cars
 

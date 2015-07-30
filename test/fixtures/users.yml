@@ -9,16 +9,22 @@ tom:
   email: tom@example.com
   username: tom
   encrypted_password: <%= Devise.bcrypt(User, 'test1234') %>
-  time_zone: America/New York
+  time_zone: America/New_York
   website: tom.com
   bio: Hi I'm Tom.
   signature: tom wuz here~
+  birthday: <%= "Thu, 30 Jul 2015".to_date %>
+  country: French Guiana
+  quote: Ce la vie
 
 alice:
   email: alice@wonderland.net
   username: alice
   encrypted_password: <%= Devise.bcrypt(User, 'test1234') %>
-  time_zone: America/Los Angeles
+  time_zone: Asia/Tokyo
   website: alice.net
   bio: Greetings from Wonderland.
   signature: How curious!
+  birthday: <%= "Sat, 25 Jul 2015".to_date %>
+  country: Japan
+  quote: BANZAI!

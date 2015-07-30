@@ -5,9 +5,10 @@
 # below each fixture, per the syntax in the comments below
 #
 
-<% 10.times do |n| %>
-<%= "car_topic_#{n}:" %>
-  title: <%= "title #{n}" %>
+# Create a topic in each forum, authored by tom
+<% Forum.all.each do |f| %>
+<%= "topic_A_in_#{f.id}:" %>
   user: tom
+  title: topic line A
+  forum_id: <%= f.id %>
 <% end %>
-

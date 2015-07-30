@@ -6,7 +6,7 @@
 #
 <% post_count = 0 %>
 
-# Topic starters
+# First post in each topic is by tom
 <% Topic.all.each do |t| %>
 <%= "post_#{post_count}:" %>
   user: tom
@@ -16,7 +16,7 @@
   <% post_count += 1 %>
 <% end %>
 
-# Replies in topics
+# Second post in each topic is by alice
 <% Topic.all.each do |t| %>
 <%= "post_#{post_count}:" %>
   user: alice
