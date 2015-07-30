@@ -36,7 +36,7 @@ class Forum < ActiveRecord::Base
         .first
   end
 
-  def last_post
+  def last_post_in_last_topic
     last_topic.posts.order(created_at: :desc).first
   end
 
