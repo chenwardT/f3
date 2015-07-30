@@ -15,7 +15,7 @@ module Viewable
     return unless user
     view = views.find_or_create_by(user_id: user.id)
     view.increment!('count')  # user-specific views
-    increment!(:views_count)  # global views
+    increment!(:view_count)  # global views
 
     if view.current_viewed_at.nil?
       view.past_viewed_at = view.current_viewed_at = Time.now
