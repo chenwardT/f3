@@ -22,6 +22,14 @@ Screenshots
 
 [Member List](http://i.imgur.com/wKgiaAF.png)
 
+Tests
+=====
+
+Ensure database user that interacts with the test database has superuser priveleges, as these
+are required to (temporarily) disable referential integrity during the creation of fixtures.
+
+`bundle exec rake test`
+
 Design
 ======
 
@@ -180,12 +188,3 @@ Forums that are 4-deep or greater not listed -- subject to change! Good forum de
 
 A Forum#show displays the forum in question’s subforums as a table, if any exist.
 The "subsubforums" are then listed on a single line within each subforum’s row.
-
-
-Tests
-=====
-
-Ensure database user that interacts with the test database has superuser priveleges, as these
-are required to (temporarily) disable referential integrity during the creation of fixtures.
-
-`bundle exec rake test`
