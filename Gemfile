@@ -49,6 +49,9 @@ gem 'pg'
 # Use kaminari for pagination
 gem 'kaminari'
 
+# Use pundit for authorization
+gem 'pundit'
+
 gem 'pry-rails'
 gem 'pry-doc'
 
