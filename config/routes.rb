@@ -16,9 +16,19 @@ Rails.application.routes.draw do
   #   /forum/12
 
   resources :forums
+
+  # TODO: No need for nesting here?
   resources :topics do
     resources :posts
   end
+
+  resources :posts do
+    member do
+      post 'soft_delete'
+    end
+  end
+
+  resources :groups
 
   root 'forums#index'
 
