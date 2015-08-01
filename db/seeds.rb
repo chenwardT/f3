@@ -6,9 +6,16 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+admin = Group.create(name: 'admin')
+mod = Group.create(name: 'moderator')
+
 user = User.new(email: 'chenward.t@gmail.com', username: 'chenwardT', password: 'test1234',
                 password_confirmation: 'test1234')
+
 user.save!
+
+admin.users << user
+# mod.users << user
 
 # TODO: Ensure this doesn't duplicate acct info when we set unique constraints.
 40.times do
