@@ -1,0 +1,20 @@
+<h4>Groups</h4>
+
+<div>
+<% @groups.each do |group| %>
+<table class="table">
+  <thead>
+    <tr>
+      <td><%= group.name.capitalize %></td>
+    </tr>
+  </thead>
+  <tbody>
+  <% group.users.each do |user| %>
+    <tr>
+      <td><%= user.username %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<% end %>
+</div>
