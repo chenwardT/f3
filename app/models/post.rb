@@ -1,6 +1,7 @@
 class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :topic
+  belongs_to :moderator, class_name: 'User'
 
   after_create :update_topic_last_post_at
 
