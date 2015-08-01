@@ -1,0 +1,4 @@
+<%= form_for post, method: 'post', url: {controller: 'posts', action: 'soft_delete', id: post.id} do |f| %>
+  <%= f.text_field :reason, :value => 'no reason at all!' %>
+  <%= f.submit "Soft Delete" %>
+<% end %>

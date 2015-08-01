@@ -18,6 +18,16 @@ class PostsController < ApplicationController
     end
   end
 
+  def soft_delete
+    @post = Post.find(params[:id])
+    authorize @post
+    # TODO: Cleanup
+    reason = params.include?(:post) ? params[:post][:reason] : nil
+    @post.soft_delete(current_user, reason)
+
+    redirect_to @post.topic
+  end
+
   private
 
   # TODO: Is this OK?

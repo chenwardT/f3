@@ -7,6 +7,18 @@ class Post < ActiveRecord::Base
 
   paginates_per POSTS_PER_PAGE
 
+  def soft_delete(user, reason)
+    if reason
+      update_attributes(moderator: user, state: 'soft_delete', mod_reason: reason)
+    else
+      update_attributes(moderator: user, state: 'soft_delete')
+    end
+  end
+
+  def deleted?
+    state == 'soft_delete'
+  end
+
   protected
 
   def update_topic_last_post_at

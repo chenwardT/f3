@@ -1,11 +1,20 @@
 <div>
   <div class="post-header">
     <a id="<%= post.id %>" name="<%= post_num(idx) %>"></a>
+    <% if user_signed_in? %>
+      <% if policy(post).soft_delete? %>
+        <%= render 'posts/soft_delete', post: post %>
+      <% end %>
+    <% end %>
     <span><a href="<%= user_path(post.user) %>"><%= post.user %></a> <small><%= post.user.country %> <%= post.user.posts.count %> Posts</small></span>
     <span><small><%= time_ago_in_words(post.created_at) %> ago</small></span>
     <span><small><a href="<%= topic_path(post.topic, page: params[:page]) %>#<%= post.id %>">#<%= post_num(idx) %></a></small></span>
   </div>
   <div class="post-body">
-    <p><%= post.body %></p>
+    <% if !post.deleted? %>
+      <p><%= post.body %></p>
+    <% else %>
+      <p><%= display_post_delete_text(post) %></p>
+    <% end %>
   </div>
 </div>
