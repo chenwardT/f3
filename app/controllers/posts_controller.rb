@@ -19,13 +19,30 @@ class PostsController < ApplicationController
   end
 
   def soft_delete
-    @post = Post.find(params[:id])
-    authorize @post
-    # TODO: Cleanup
-    reason = params.include?(:post) ? params[:post][:reason] : nil
-    @post.soft_delete(current_user, reason)
+    if request.xhr?
+      posts = Post.where(id: params[:ids])
+      reason = params.key? :reason ? params[:reason] : nil
+      authorize posts, :moderate?
 
-    redirect_to @post.topic
+      Post.soft_delete(params[:ids], current_user, reason)
+
+      render nothing: true
+    else
+      redirect_to forums_path
+    end
+  end
+
+  def undelete
+    if request.xhr?
+      posts = Post.where(id: params[:ids]).where(state: 'soft_delete')
+      authorize posts, :moderate?
+
+      Post.undelete(params[:ids], current_user)
+
+      render nothing: true
+    else
+      redirect_to forums_path
+    end
   end
 
   private

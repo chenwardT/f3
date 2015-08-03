@@ -1,13 +1,16 @@
 <%= render 'partials/breadcrumb', obj: @topic %>
 <br>
+<% if user_signed_in? && policy(@topic).moderate? %>
+  <%= render 'topics/moderate', topic: @topic %>
+<% end %>
 <%= paginate @ordered_posts %>
-<div>
+<div id="posts">
   <table>
     <tbody>
       <% @ordered_posts.each_with_index do |post, idx| %>
       <tr>
         <td>
-        <%= render 'posts/post', post: post, idx: idx %>
+        <%= render 'posts/post', topic: @topic, post: post, idx: idx %>
         </td>
       </tr>
       <% end %>

@@ -22,11 +22,8 @@ Rails.application.routes.draw do
     resources :posts
   end
 
-  resources :posts do
-    member do
-      post 'soft_delete'
-    end
-  end
+  post 'soft_delete_post' => 'posts#soft_delete'
+  post 'undelete_post' => 'posts#undelete'
 
   resources :groups
 

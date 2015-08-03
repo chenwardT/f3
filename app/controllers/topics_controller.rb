@@ -41,6 +41,7 @@ class TopicsController < ApplicationController
     params.require(:post).permit(:body)
   end
 
+  # TODO: Can this just act on @topic?
   def register_view(topic, user)
     topic.register_view_by(user)
   end

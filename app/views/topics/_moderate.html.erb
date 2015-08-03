@@ -1,0 +1,58 @@
+<div id="mod-topic-<%=topic.id%>">
+  <%= button_tag "Soft Delete Posts", id: "delete-selected-posts" %>
+  <%= button_tag "Undelete Posts", id: "undelete-selected-posts" %>
+  <%= label_tag "Select All Posts" %> <%= check_box_tag "select-all-posts" %>
+<script>
+  <!-- TODO: Move this -->
+  $(document).ready(function(){
+    $("#select-all-posts").click(function(){
+      if (this.checked) {
+        $("#posts").find(":checkbox").each(function(){
+          this.checked = true;
+        });
+      }else{
+        $("#posts").find(":checkbox").each(function(){
+          this.checked = false;
+        });
+      }
+    });
+
+    $("#delete-selected-posts").click(function(){
+      var selected = GetSelectedPosts();
+
+      $.ajax({
+        type: "POST",
+        url: "<%= soft_delete_post_path %>",
+        data: {"ids": selected},
+        success: function(){
+          location.reload();
+        }
+      });
+    });
+
+    $("#undelete-selected-posts").click(function(){
+      var selected = GetSelectedPosts();
+
+      $.ajax({
+        type: "POST",
+        url: "<%= undelete_post_path %>",
+        data: {"ids": selected},
+        success: function(){
+          location.reload();
+        }
+      });
+    });
+  });
+
+  function GetSelectedPosts(){
+    var selected = [];
+
+    $("#posts").find("input:checked").each(function(){
+      selected.push($(this).attr("name"));
+    });
+
+    return selected;
+  }
+</script>
+</div>
+<br>
