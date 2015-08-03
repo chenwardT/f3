@@ -10,9 +10,9 @@ class Post < ActiveRecord::Base
   # Note: update_all does not trigger callbacks/validations.
   def self.soft_delete(ids, user, reason)
     if reason
-      self.where(id: ids).update_all(state: 'soft_delete', moderator_id: user, mod_reason: reason)
+      self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
     else
-      self.where(id: ids).update_all(state: 'soft_delete', moderator_id: user, mod_reason: nil)
+      self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: nil)
     end
   end
 
@@ -21,7 +21,7 @@ class Post < ActiveRecord::Base
   end
 
   def deleted?
-    state == 'soft_delete'
+    state == 'deleted'
   end
 
   protected

@@ -34,7 +34,7 @@ class PostsController < ApplicationController
 
   def undelete
     if request.xhr?
-      posts = Post.where(id: params[:ids]).where(state: 'soft_delete')
+      posts = Post.where(id: params[:ids]).where(state: 'deleted')
       authorize posts, :moderate?
 
       Post.undelete(params[:ids], current_user)
