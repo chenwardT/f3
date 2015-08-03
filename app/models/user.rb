@@ -14,4 +14,8 @@ class User < ActiveRecord::Base
   def to_s
     username
   end
+
+  def admin?
+    groups.include?(Group.find_by(name: 'admin'))
+  end
 end
