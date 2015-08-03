@@ -37,7 +37,7 @@ class PostsController < ApplicationController
       posts = Post.where(id: params[:ids]).where(state: 'deleted')
       authorize posts, :moderate?
 
-      Post.undelete(params[:ids], current_user)
+      Post.undelete(posts.pluck(:id), current_user)
 
       render nothing: true
     else
