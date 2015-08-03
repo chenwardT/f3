@@ -20,6 +20,8 @@ class PostsController < ApplicationController
 
   def soft_delete
     if request.xhr?
+      # Note: We don't filter on state here, since unapproved posts should also be deleted
+      # and, if then undeleted, should be considered "approved" and thus visible.
       posts = Post.where(id: params[:ids])
       reason = params.key? :reason ? params[:reason] : nil
       authorize posts, :moderate?
@@ -38,6 +40,32 @@ class PostsController < ApplicationController
       authorize posts, :moderate?
 
       Post.undelete(posts.pluck(:id), current_user)
+
+      render nothing: true
+    else
+      redirect_to forums_path
+    end
+  end
+
+  def approve
+    if request.xhr?
+      posts = Post.where(id: params[:ids]).where(state: 'unapproved')
+      authorize posts, :moderate?
+
+      Post.approve(posts.pluck(:id), current_user)
+
+      render nothing: true
+    else
+      redirect_to forums_path
+    end
+  end
+
+  def unapprove
+    if request.xhr?
+      posts = Post.where(id: params[:ids]).where(state: 'visible')
+      authorize posts, :moderate?
+
+      Post.unapprove(posts.pluck(:id), current_user)
 
       render nothing: true
     else

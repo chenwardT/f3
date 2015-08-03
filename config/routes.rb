@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
   post 'soft_delete_post' => 'posts#soft_delete'
   post 'undelete_post' => 'posts#undelete'
+  post 'approve_post' => 'posts#approve'
+  post 'unapprove_post' => 'posts#unapprove'
 
   resources :groups
 

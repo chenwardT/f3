@@ -7,7 +7,14 @@ class TopicsController < ApplicationController
   def show
     @topic = Topic.find(params[:id])
     register_view(@topic, current_user)
-    @posts = @topic.visible_posts.page(params[:page])
+
+    begin
+      authorize @topic, :moderate?
+      @posts = @topic.ordered_posts.page(params[:page])
+    rescue Pundit::NotAuthorizedError
+      @posts = @topic.visible_posts.page(params[:page])
+    end
+
     @post = Post.new
   end
 
