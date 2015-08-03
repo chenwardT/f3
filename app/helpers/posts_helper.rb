@@ -14,4 +14,17 @@ module PostsHelper
 
     "#{deleted}#{br}#{reason}".html_safe
   end
+
+  def display_post_as_unapproved(post)
+    unapproved = content_tag(:sup, "This post has not yet been approved.")
+    br = tag(:br)
+
+    "#{unapproved}#{br}".html_safe + post.body
+  end
+
+  def display_body_with_state(post)
+    return display_post_delete_text(post) if post.deleted?
+    return display_post_as_unapproved(post) if post.unapproved?
+    post.body
+  end
 end

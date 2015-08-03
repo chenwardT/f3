@@ -9,10 +9,6 @@
     <% end %>
   </div>
   <div class="post-body">
-    <% if !post.deleted? %>
-      <p><%= post.body %></p>
-    <% else %>
-      <p><%= display_post_delete_text(post) %></p>
-    <% end %>
+    <p><%= display_body_with_state(post) %></p>
   </div>
 </div>

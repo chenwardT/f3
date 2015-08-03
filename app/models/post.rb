@@ -20,8 +20,20 @@ class Post < ActiveRecord::Base
     self.where(id: ids).update_all(state: 'visible', moderator_id: user, mod_reason: nil)
   end
 
+  def self.approve(ids, user)
+    self.where(id: ids).update_all(state: 'visible', moderator_id: user)
+  end
+
+  def self.unapprove(ids, user)
+    self.where(id: ids).update_all(state: 'unapproved', moderator_id: user)
+  end
+
   def deleted?
     state == 'deleted'
+  end
+
+  def unapproved?
+    state == 'unapproved'
   end
 
   protected
