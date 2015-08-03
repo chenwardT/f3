@@ -22,6 +22,10 @@ class Topic < ActiveRecord::Base
     posts.order(created_at: :asc)
   end
 
+  def visible_posts
+    ordered_posts.where(state: ['visible', 'deleted'])
+  end
+
   def num_pages
     (posts.count / POSTS_PER_PAGE.to_f).ceil.to_i
   end

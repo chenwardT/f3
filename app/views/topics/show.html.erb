@@ -3,11 +3,11 @@
 <% if user_signed_in? && policy(@topic).moderate? %>
   <%= render 'topics/moderate', topic: @topic %>
 <% end %>
-<%= paginate @ordered_posts %>
+<%= paginate @posts %>
 <div id="posts">
   <table>
     <tbody>
-      <% @ordered_posts.each_with_index do |post, idx| %>
+      <% @posts.each_with_index do |post, idx| %>
       <tr>
         <td>
         <%= render 'posts/post', topic: @topic, post: post, idx: idx %>
@@ -20,4 +20,4 @@
     <%= render 'posts/post_reply_form', topic: @topic %>
   <% end %>
 </div>
-<%= paginate @ordered_posts %>
+<%= paginate @posts %>

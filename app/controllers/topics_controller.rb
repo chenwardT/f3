@@ -7,7 +7,7 @@ class TopicsController < ApplicationController
   def show
     @topic = Topic.find(params[:id])
     register_view(@topic, current_user)
-    @ordered_posts = @topic.ordered_posts.page params[:page]
+    @posts = @topic.visible_posts.page(params[:page])
     @post = Post.new
   end
 
