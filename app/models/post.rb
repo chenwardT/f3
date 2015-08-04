@@ -8,12 +8,8 @@ class Post < ActiveRecord::Base
   paginates_per POSTS_PER_PAGE
 
   # Note: update_all does not trigger callbacks/validations.
-  def self.soft_delete(ids, user, reason)
-    if reason
-      self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
-    else
-      self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: nil)
-    end
+  def self.soft_delete(ids, user, reason=nil)
+    self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
   end
 
   def self.undelete(ids, user)
