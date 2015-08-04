@@ -6,4 +6,4 @@ addons:
   postgresql: "9.3"
 
 before_script:
-  - psql -c -s -w 'createuser -d chen'
+  - cp config/database.yml.travis config/database.yml
