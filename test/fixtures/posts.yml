@@ -4,24 +4,109 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-<% post_count = 0 %>
 
-# First post in each topic is by tom
-<% Topic.all.each do |t| %>
-<%= "post_#{post_count}:" %>
+# 2 posts per topic; first post by tom, followed by a reply from alice
+
+# Cars
+post_cars1:
   user: tom
-  topic_id: <%= t.id %>
-  body: initial post in topic
+  topic: topic_cars_a
+  body: post X1
   created_at: <%= Time.now %>
-  <% post_count += 1 %>
-<% end %>
 
-# Second post in each topic is by alice
-<% Topic.all.each do |t| %>
-<%= "post_#{post_count}:" %>
+post_cars2:
   user: alice
-  topic_id: <%= t.id %>
-  body: reply post
+  topic: topic_cars_a
+  body: post X2
   created_at: <%= Time.now %>
-  <% post_count += 1 %>
-<% end %>
+
+# NA
+post_na1:
+  user: tom
+  topic: topic_na_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_na2:
+  user: alice
+  topic: topic_na_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# Hybrids
+post_hybrids1:
+  user: tom
+  topic: topic_hybrids_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_hybrids2:
+  user: alice
+  topic: topic_hybrids_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# EVs
+post_evs1:
+  user: tom
+  topic: topic_evs_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_evs2:
+  user: alice
+  topic: topic_evs_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# Honda Prius
+post_honda_prius1:
+  user: tom
+  topic: topic_honda_prius_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_honda_prius2:
+  user: alice
+  topic: topic_honda_prius_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# Tesla Model S
+post_tesla_model_s1:
+  user: tom
+  topic: topic_tesla_model_s_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_tesla_model_s2:
+  user: alice
+  topic: topic_tesla_model_s_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# Model S 2014
+post_model_s_20141:
+  user: tom
+  topic: topic_model_s_2014_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_model_s_20142:
+  user: alice
+  topic: topic_model_s_2014_a
+  body: post X2
+  created_at: <%= Time.now %>
+
+# Model S 2015
+post_model_s_20151:
+  user: tom
+  topic: topic_model_s_2015_a
+  body: post X1
+  created_at: <%= Time.now %>
+
+post_model_s_20152:
+  user: alice
+  topic: topic_model_s_2015_a
+  body: post X2
+  created_at: <%= Time.now %>

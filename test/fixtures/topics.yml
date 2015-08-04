@@ -7,7 +7,7 @@
 
 # Create a topic in each forum, authored by tom
 <% Forum.all.each do |f| %>
-<%= "topic_A_in_#{f.id}:" %>
+<%= "topic_#{f.title.downcase.tr(' ', '_') + '_a'}:" %>
   user: tom
   title: topic line A
   forum_id: <%= f.id %>
