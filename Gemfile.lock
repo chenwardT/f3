@@ -204,6 +204,7 @@ DEPENDENCIES
   pry-rails
   pundit
   rails (~> 4.2.1)
+  rake
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   spring

@@ -65,3 +65,8 @@ group :development do
   # Required for some features of better_errors
   gem 'binding_of_caller'
 end
+
+group :test do
+  # Required for Travis CI tests
+  gem 'rake'
+end
