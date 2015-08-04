@@ -12,7 +12,7 @@ module PostsHelper
     reason = "Reason: #{post.mod_reason}"
     br = tag(:br)
 
-    "#{deleted}#{br}#{reason}".html_safe
+    content_tag(:sup, "#{deleted}#{br}#{reason}".html_safe).html_safe
   end
 
   def display_post_as_unapproved(post)
