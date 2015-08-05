@@ -1,4 +1,4 @@
-F3
+F3 [![Build Status](https://travis-ci.org/chenwardT/f3.svg?branch=master)](https://travis-ci.org/chenwardT/f3)
 ===
 
 A Full Featured Forum created with Ruby on Rails, backed by Postgres.
