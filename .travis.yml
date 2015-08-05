@@ -8,7 +8,4 @@ addons:
 before_script:
   - cp config/database.yml.travis config/database.yml
   - cp config/secrets.yml.travis config/secrets.yml
-  - bundle exec rake db:drop RAILS_ENV=test
-  - bundle exec rake db:create RAILS_ENV=test
-  - bundle exec rake db:migrate RAILS_ENV=test
-  - bundle exec rake db:fixtures:load FIXTURES=users,forums,topics,posts RAILS_ENV=test
+  
