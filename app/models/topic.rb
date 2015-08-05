@@ -6,6 +6,8 @@ class Topic < ActiveRecord::Base
 
   has_many :posts
 
+  validates :user, presence: true
+
   def to_s
     title
   end
