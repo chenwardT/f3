@@ -9,6 +9,8 @@ Developed with:
 * Rails 4.2.1
 * PostgreSQL 9.3
 
+F3 is under active development; details contained in the following sections are likely to change.
+
 Screenshots
 ===========
 
