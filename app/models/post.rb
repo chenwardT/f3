@@ -24,6 +24,16 @@ class Post < ActiveRecord::Base
     self.where(id: ids).update_all(state: 'unapproved', moderator_id: user)
   end
 
+  def self.merge(ids, destination, author, body, user, reason=nil)
+    source_posts = Post.where(id: ids).where.not(id: destination)
+    merge_into = Post.find(destination)
+
+    ActiveRecord::Base.transaction do
+      merge_into.update_attributes(body: body, user: author, moderator: user, mod_reason: reason)
+      source_posts.delete_all
+    end
+  end
+
   def deleted?
     state == 'deleted'
   end

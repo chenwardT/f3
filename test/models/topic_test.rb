@@ -1,36 +1,55 @@
 require 'test_helper'
 
 class TopicTest < ActiveSupport::TestCase
+  def setup
+    @user = FactoryGirl.create(:user)
+
+    @top = FactoryGirl.create(:forum)
+    @top_topic = FactoryGirl.create(:topic, forum: @top, user: @user)
+    FactoryGirl.create(:post, topic: @top_topic, user: @user)
+    FactoryGirl.create(:post, topic: @top_topic, user: @user)
+
+    @depth1 = FactoryGirl.create(:forum, forum: @top)
+    @d1_topic = FactoryGirl.create(:topic, forum: @depth1, user: @user)
+    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
+    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
+
+    @depth2a = FactoryGirl.create(:forum, forum: @depth1)
+    @d2a_topic = FactoryGirl.create(:topic, forum: @depth2a, user: @user)
+    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
+    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
+
+    @depth2b = FactoryGirl.create(:forum, forum: @depth1)
+    @d2b_topic = FactoryGirl.create(:topic, forum: @depth2b, user: @user)
+    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
+    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
+  end
+
   test 'to_s returns title' do
-    assert_equal Topic.first.title, Topic.first.to_s
+    assert_equal @top_topic.title, @top_topic.to_s
   end
 
   test 'reply_count returns number of replies in topic' do
-    assert_equal Topic.first.posts.count - 1, Topic.first.reply_count
+    assert_equal @top_topic.posts.count - 1, @top_topic.reply_count
   end
 
   test 'last_post returns last post created in topic' do
-    topic = Topic.first
-    assert_equal Post.where(topic: topic).order(created_at: :desc).first, topic.last_post
+    assert_equal Post.where(topic: @top_topic).order(created_at: :desc).first, @top_topic.last_post
   end
 
-  test 'ordered_posts returns posts in ascending order by creation time' do
-    topic = Topic.first
-    topic.posts.create!(user: users(:alice), body: 'body')
-    sleep(1)
-    topic.posts.create!(user: users(:alice), body: 'body')
-    assert topic.ordered_posts.first.created_at < topic.ordered_posts.last.created_at
+  test 'ordered_posts returns posts in chronological order by creation time' do
+    sleep(0.1)
+    FactoryGirl.create(:post, user: @user, topic: @top_topic)
+    assert @top_topic.ordered_posts.first.created_at < @top_topic.ordered_posts.last.created_at
   end
 
   test 'num_pages returns the number of pages for a given post' do
-    topic = Topic.first
-    assert_equal 1, topic.num_pages
+    assert_equal 1, @top_topic.num_pages
 
-    15.times do
-      topic.posts.create!(user: users(:alice), body: 'body')
+    assert_difference('@top_topic.reload.num_pages', 1) do
+      POSTS_PER_PAGE.times do
+        FactoryGirl.create(:post, user: @user, topic: @top_topic)
+      end
     end
-
-    topic.reload
-    assert_equal 2, topic.num_pages
   end
 end
