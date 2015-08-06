@@ -70,7 +70,7 @@ group :test do
   # Required for Travis CI tests
   gem 'rake'
 
+  gem 'minitest-rails'
   gem 'minitest-reporters'
-
   gem 'factory_girl_rails'
 end
