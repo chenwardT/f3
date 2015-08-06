@@ -8,7 +8,7 @@ FactoryGirl.define do
     username "tom"
     email
     password "test1234"
-    encrypted_password { Devise::Encryptor.digest(User, 'test1234') }
+    password_confirmation "test1234"
     time_zone "America/New_York"
     website "tom.com"
     bio "Hi I'm a user"
