@@ -10,9 +10,6 @@ class CreateViewsAndAddViewsCountCols < ActiveRecord::Migration
       t.datetime 'past_viewed_at'
     end
 
-    add_column :forums, :views_count, :integer, default: 0
-    add_column :topics, :views_count, :integer, default: 0
-
     add_foreign_key :views, :users
   end
 end

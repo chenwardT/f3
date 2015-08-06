@@ -24,7 +24,7 @@ class ViewableTest < ActiveSupport::TestCase
     @top_topic.register_view_by(@user)
 
     # Global view count increment
-    assert_difference('@top_topic.view_count', 1) do
+    assert_difference('@top_topic.views_count', 1) do
       @top_topic.register_view_by(@user)
     end
 
@@ -45,6 +45,6 @@ class ViewableTest < ActiveSupport::TestCase
       @top_topic.register_view_by(nil)
     end
 
-    assert_nil @top_topic.view_count
+    assert_nil @top_topic.views_count
   end
 end

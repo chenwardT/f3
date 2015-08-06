@@ -3,7 +3,7 @@ class CreateForums < ActiveRecord::Migration
     create_table :forums do |t|
       t.string :title
       t.string :slug
-      t.integer :view_count
+      t.integer :views_count, default: 0
       t.integer :category_id
       t.boolean :locked, null: false, default: false
       t.boolean :hidden, null: false, default: false

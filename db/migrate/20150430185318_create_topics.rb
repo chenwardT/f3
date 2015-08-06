@@ -7,7 +7,7 @@ class CreateTopics < ActiveRecord::Migration
       t.boolean :locked, null: false, default: false
       t.boolean :hidden, null: false, default: false
       t.boolean :pinned, null: false, default: false
-      t.integer :view_count
+      t.integer :views_count
 
       t.timestamps null: false
     end

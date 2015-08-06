@@ -19,14 +19,13 @@ ActiveRecord::Schema.define(version: 20150731213039) do
   create_table "forums", force: :cascade do |t|
     t.string   "title"
     t.string   "slug"
-    t.integer  "view_count"
+    t.integer  "views_count", default: 0
     t.integer  "forum_id"
     t.boolean  "locked",      default: false, null: false
     t.boolean  "hidden",      default: false, null: false
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.string   "description"
-    t.integer  "views_count", default: 0
   end
 
   create_table "groups", force: :cascade do |t|
@@ -53,12 +52,11 @@ ActiveRecord::Schema.define(version: 20150731213039) do
     t.boolean  "locked",       default: false, null: false
     t.boolean  "hidden",       default: false, null: false
     t.boolean  "pinned",       default: false, null: false
-    t.integer  "view_count"
+    t.integer  "views_count"
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.integer  "user_id"
     t.datetime "last_post_at"
-    t.integer  "views_count",  default: 0
   end
 
   create_table "user_groups", force: :cascade do |t|
