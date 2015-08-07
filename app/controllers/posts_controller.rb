@@ -1,17 +1,20 @@
 class PostsController < ApplicationController
+  before_filter :get_topic
+
   def show
     @post = Post.find(params[:id])
   end
 
   def create
-    @post = current_user.posts.build(post_params)
+    @post = @topic.posts.build(post_params)
+    @post.user = current_user
 
     if @post.save
       flash[:success] = "Post successfully created"
 
       # TODO: Clean up
       dummy_pager = @post.topic.posts.all.page(1).per(Post.default_per_page)
-      redirect_to topic_path(params[:topic_id], page: dummy_pager.total_pages)
+      redirect_to @topic, page: dummy_pager.total_pages
     else
       flash[:danger] = "Error posting reply"
       render topic_path(params[:topic_id])
@@ -84,6 +87,10 @@ class PostsController < ApplicationController
   #  "commit"=>"Post"}
 
   def post_params
-    params.require(:post).permit(:body).merge({topic_id: params.require(:topic_id)})
+    params.require(:post).permit(:body)
+  end
+
+  def get_topic
+    @topic = Topic.find(params[:post][:topic_id])
   end
 end
