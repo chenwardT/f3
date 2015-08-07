@@ -33,21 +33,21 @@ FactoryGirl.define do
   end
 
   factory :topic do
-    forum nil
-    user nil
+    forum { |f| f.association(:forum) }
+    user { |u| u.association(:user) }
     title { generate(:topic_title) }
   end
 
   factory :post do
-    topic nil
-    user nil
+    topic { |t| t.association(:topic) }
+    user { |u| u.association(:user) }
     body "quality poast"
   end
 
   factory :view do
     viewable nil
     viewable_type nil
-    user nil
+    user { |u| u.association(:user) }
     count 0
   end
 end
