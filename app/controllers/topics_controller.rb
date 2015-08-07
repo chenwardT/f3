@@ -15,7 +15,7 @@ class TopicsController < ApplicationController
       @posts = @topic.visible_posts.page(params[:page])
     end
 
-    @post = Post.new
+    @post = @topic.posts.build
   end
 
   def new
