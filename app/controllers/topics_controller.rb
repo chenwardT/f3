@@ -5,8 +5,13 @@ class TopicsController < ApplicationController
 
   # TODO: Handle missing topics (e.g. following link to deleted topic)
   def show
-    @topic = Topic.find(params[:id])
-    register_view(@topic, current_user)
+    begin
+      @topic = Topic.find(params[:id])
+      register_view(@topic, current_user)
+    rescue ActiveRecord::RecordNotFound
+      flash[:danger] = 'Topic not found.'
+      return redirect_to root_path
+    end
 
     begin
       authorize @topic, :moderate?
