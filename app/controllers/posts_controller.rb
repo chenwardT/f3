@@ -11,13 +11,10 @@ class PostsController < ApplicationController
 
     if @post.save
       flash[:success] = "Post successfully created"
-
-      # TODO: Clean up
-      dummy_pager = @post.topic.posts.all.page(1).per(Post.default_per_page)
-      redirect_to @topic, page: dummy_pager.total_pages
+      redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
     else
       flash[:danger] = "Error posting reply"
-      render topic_path(params[:topic_id])
+      render topic_path(@topic, page: last_page_of_topic)
     end
   end
 
@@ -87,10 +84,15 @@ class PostsController < ApplicationController
   #  "commit"=>"Post"}
 
   def post_params
-    params.require(:post).permit(:body)
+    params.require(:post).permit(:body, :topic_id)
   end
 
   def get_topic
     @topic = Topic.find(params[:post][:topic_id])
+  end
+
+  def last_page_of_topic
+    dummy_pager = @topic.posts.all.page(1).per(Post.default_per_page)
+    dummy_pager.total_pages
   end
 end
