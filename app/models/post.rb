@@ -3,6 +3,12 @@ class Post < ActiveRecord::Base
   belongs_to :topic
   belongs_to :moderator, class_name: 'User'
 
+  # TODO: Consider removing this requirement for user deletion use cases
+  validates :user_id, presence: true
+  validates :topic_id, presence: true
+  # TODO: Set via site config directive
+  validates :body, length: { minimum: 10 }
+
   after_create :update_topic_last_post_at
 
   paginates_per POSTS_PER_PAGE
