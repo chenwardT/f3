@@ -1,21 +1,23 @@
 class PostsController < ApplicationController
   before_filter :get_topic, except: [:soft_delete, :undelete, :approve, :unapprove]
 
+  # Unused; posts are linked via topic#show + page param + post ID anchor
   def show
     @post = Post.find(params[:id])
   end
 
+  # TODO: Handle missing user, topic (id)
   def create
     @post = @topic.posts.build(post_params)
     @post.user = current_user
 
     if @post.save
       flash[:success] = "Post successfully created"
-      redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
     else
       flash[:danger] = "Error posting reply"
-      render topic_path(@topic, page: last_page_of_topic)
     end
+
+    redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
   end
 
   def soft_delete
