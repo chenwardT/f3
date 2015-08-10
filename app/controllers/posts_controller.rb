@@ -25,12 +25,21 @@ class PostsController < ApplicationController
       # Note: We don't filter on state here, since unapproved posts should also be deleted
       # and, if then undeleted, should be considered "approved" and thus visible.
       posts = Post.where(id: params[:ids])
-      reason = params.key? :reason ? params[:reason] : nil
-      authorize posts, :moderate?
 
-      Post.soft_delete(params[:ids], current_user, reason)
+      if params.key? :reason
+        reason = params[:reason]
+      else
+        reason = nil
+      end
 
-      render nothing: true
+      begin
+        authorize posts, :moderate?
+        Post.soft_delete(params[:ids], current_user, reason)
+        render nothing: true
+      rescue Pundit::NotAuthorizedError
+        flash[:danger] = 'You are not authorized to do that'
+        redirect_to forums_path
+      end
     else
       redirect_to forums_path
     end
@@ -39,11 +48,15 @@ class PostsController < ApplicationController
   def undelete
     if request.xhr?
       posts = Post.where(id: params[:ids]).where(state: 'deleted')
-      authorize posts, :moderate?
 
-      Post.undelete(posts.pluck(:id), current_user)
-
-      render nothing: true
+      begin
+        authorize posts, :moderate?
+        Post.undelete(posts.pluck(:id), current_user)
+        render nothing: true
+      rescue Pundit::NotAuthorizedError
+        flash[:danger] = 'You are not authorized to do that'
+        redirect_to forums_path
+      end
     else
       redirect_to forums_path
     end
