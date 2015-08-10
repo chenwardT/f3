@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_filter :get_topic
+  before_filter :get_topic, except: [:soft_delete, :undelete, :approve, :unapprove]
 
   def show
     @post = Post.find(params[:id])
