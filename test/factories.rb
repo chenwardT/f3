@@ -50,4 +50,8 @@ FactoryGirl.define do
     user { |u| u.association(:user) }
     count 0
   end
+
+  factory :group do
+    name nil
+  end
 end
