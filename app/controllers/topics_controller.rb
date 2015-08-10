@@ -9,7 +9,7 @@ class TopicsController < ApplicationController
       @topic = Topic.find(params[:id])
       register_view(@topic, current_user)
     rescue ActiveRecord::RecordNotFound
-      flash[:danger] = 'Topic not found.'
+      flash[:danger] = 'Topic not found'
       return redirect_to root_path
     end
 
