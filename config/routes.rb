@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :topics
   resources :posts
 
+  post 'hard_delete_post' => 'posts#hard_delete'
   post 'soft_delete_post' => 'posts#soft_delete'
   post 'undelete_post' => 'posts#undelete'
   post 'approve_post' => 'posts#approve'

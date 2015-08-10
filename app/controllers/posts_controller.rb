@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_filter :get_topic, except: [:soft_delete, :undelete, :approve, :unapprove]
+  before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve, :unapprove]
 
   # Unused; posts are linked via topic#show + page param + post ID anchor
   def show
@@ -14,7 +14,9 @@ class PostsController < ApplicationController
     if @post.save
       flash[:success] = "Post successfully created"
     else
-      flash[:danger] = "Error posting reply"
+      error_msg = "Error posting reply: "
+      @post.errors.full_messages.each { |msg| error_msg += msg }
+      flash[:danger] = error_msg
     end
 
     redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
@@ -85,6 +87,21 @@ class PostsController < ApplicationController
       render nothing: true
     else
       redirect_to forums_path
+    end
+  end
+
+  def hard_delete
+    if request.xhr?
+      posts = Post.where(id: params[:ids])
+
+      begin
+        authorize posts, :moderate?
+        posts.delete_all
+        render nothing: true  # TODO: Can we just return?
+      rescue Pundit::NotAuthorizedError
+        flash[:danger] = 'You are not authorized to do that'
+        redirect_to forums_path
+      end
     end
   end
 

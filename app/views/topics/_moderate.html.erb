@@ -1,5 +1,6 @@
 <div id="mod-topic-<%=topic.id%>">
-  <%= button_tag "Soft Delete Posts", id: "delete-selected-posts" %>
+  <%= button_tag "Hard Delete Posts", id: "hard-delete-selected-posts" %>
+  <%= button_tag "Soft Delete Posts", id: "soft-delete-selected-posts" %>
   <%= button_tag "Undelete Posts", id: "undelete-selected-posts" %>
   <%= button_tag "Approve Posts", id: "approve-selected-posts" %>
   <%= button_tag "Unapprove Posts", id: "unapprove-selected-posts" %>
@@ -19,7 +20,20 @@
       }
     });
 
-    $("#delete-selected-posts").click(function(){
+    $("#hard-delete-selected-posts").click(function(){
+      var selected = GetSelectedPosts();
+
+      $.ajax({
+        type: "POST",
+        url: "<%= hard_delete_post_path %>",
+        data: {"ids": selected},
+        success: function(){
+          location.reload();
+        }
+      });
+    });
+
+    $("#soft-delete-selected-posts").click(function(){
       var selected = GetSelectedPosts();
 
       $.ajax({
