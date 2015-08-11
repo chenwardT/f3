@@ -30,12 +30,18 @@ class Post < ActiveRecord::Base
     self.where(id: ids).update_all(state: 'unapproved', moderator_id: user)
   end
 
-  def self.merge(ids, destination, author, body, user, reason=nil)
-    source_posts = Post.where(id: ids).where.not(id: destination)
+  # Merges the bodies of 2 or more posts given by +sources+ into a single post, specified by
+  # +destination+. This deletes all +sources+ posts except +destination+. The body of the
+  # destination will be set to +body+ and the owner will be set to +author+. The user who
+  # performed the merge is specified by +user+. An optional +reason+ may be passed to explain
+  # the merge.
+  def self.merge(sources, destination, author, body, user, reason=nil)
+    source_posts = Post.where(id: sources).where.not(id: destination)
     merge_into = Post.find(destination)
+    author_user = User.find(author)
 
     ActiveRecord::Base.transaction do
-      merge_into.update_attributes(body: body, user: author, moderator: user, mod_reason: reason)
+      merge_into.update_attributes(body: body, user: author_user, moderator: user, mod_reason: reason)
       source_posts.delete_all
     end
   end
