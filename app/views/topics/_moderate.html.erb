@@ -4,9 +4,37 @@
   <%= button_tag "Undelete Posts", id: "undelete-selected-posts" %>
   <%= button_tag "Approve Posts", id: "approve-selected-posts" %>
   <%= button_tag "Unapprove Posts", id: "unapprove-selected-posts" %>
+  <%= button_tag "Merge Posts", id: "merge-selected-posts", data: { toggle: "modal",
+                              target: "#mergeModal" } %>
   <%= label_tag "Select All Posts" %> <%= check_box_tag "select-all-posts" %>
+
+  <div class="modal fade" id="mergeModal" tabindex="-1" role="dialog" aria-labelledby="mergeModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="mergeModalLabel">Merge Posts</h4>
+        </div>
+        <div id="merge-body" class="modal-body">
+          <b>Merging <span id="merge-count">X</span> post(s).</b>
+          <p>You must have the required permissions for this action in all forums from which
+            you have selected topics or posts.</p>
+          <form>
+            <p><label>Destination:</label><select id="merge-destination"></select></p>
+            <p><label>User Name:</label><select id="merge-author"></select></p>
+            <p><textarea id="merge-post-body" rows="5" cols="60"></textarea></p>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="submit-merge" class="btn btn-default">Merge Posts</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script>
-  <!-- TODO: Move this -->
+//   TODO: Move this and cleanup
   $(document).ready(function(){
     $("#select-all-posts").click(function(){
       if (this.checked) {
@@ -86,6 +114,32 @@
     });
   });
 
+  $("#submit-merge").click(function(){
+    var mergeDestination = $("#merge-destination").find(":selected").val();
+    var mergeAuthor = $("#merge-author").find(":selected").val();
+    var mergePostBody = $("#merge-post-body").val();
+    var selected = GetSelectedPosts();
+
+    $.ajax({
+      type: "POST",
+      url: "<%= merge_post_path %>",
+      data: {"sources": selected, "destination": mergeDestination, "author": mergeAuthor,
+             "body": mergePostBody},
+      success: function(){
+        location.reload();
+      }
+    });
+  });
+
+  // Populate the merge dialog box.
+  $("#merge-selected-posts").click(function(){
+    var selected = GetSelectedPosts();
+
+    CreateMergeIntoList(selected);
+
+    $("#merge-post-body").val(ConcatPostBodies(selected));
+  });
+
   function GetSelectedPosts(){
     var selected = [];
 
@@ -94,6 +148,37 @@
     });
 
     return selected;
+  }
+
+  function CreateMergeIntoList(ids){
+    $("#merge-destination").empty();
+    $("#merge-author").empty();
+    var mergeAuthorOpts = [];
+
+    $("#merge-count").text(ids.length);
+
+    for (id in ids){
+      $post = $("#post-" + ids[id]);
+      destinationText = "(" + ids[id] + ") by " + $post.find(".author").text();
+      $("#merge-destination").append('<option value="' + ids[id] + '">' + destinationText + '</option>');
+      mergeAuthorOpts.push('<option value="' + $post.find(".author-id").text() + '">' + $post.find(".author").text() + '</option')
+    }
+
+    for (x in $.unique(mergeAuthorOpts)){
+      $("#merge-author").append($.unique(mergeAuthorOpts)[x]);
+    }
+  }
+
+  // Generate a default merged body for the selected posts.
+  // TODO: Preserve newlines when storing in DB. Store as HTML?
+  function ConcatPostBodies(ids){
+    var bodies = "";
+
+    for (id in ids){
+      bodies += ($("#post-" + ids[id]).find(".post-body").text().trim() + "\n");
+    }
+
+    return bodies;
   }
 </script>
 </div>
