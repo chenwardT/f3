@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   post 'undelete_post' => 'posts#undelete'
   post 'approve_post' => 'posts#approve'
   post 'unapprove_post' => 'posts#unapprove'
+  post 'merge_post' => 'posts#merge'
 
   resources :groups
 
