@@ -37,9 +37,9 @@ describe "PostsController" do
       must_redirect_to "/topics/#{topic.id}?page=0"
     end
 
-    it "notifies user of post creation failure via flash when invalid" do
+    it "notifies user of reason for post creation failure via flash when too short" do
       post :create, post: bad_post_params
-      flash[:danger].must_equal 'Error posting reply'
+      flash[:danger].must_equal 'Error posting reply: Body is too short (minimum is 10 characters)'
     end
   end
 
