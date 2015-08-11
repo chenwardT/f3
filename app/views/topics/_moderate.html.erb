@@ -20,8 +20,8 @@
           <p>You must have the required permissions for this action in all forums from which
             you have selected topics or posts.</p>
           <form>
-            <p><label>Destination:</label><select id="merge-destination"></select></p>
-            <p><label>User Name:</label><select id="merge-author"></select></p>
+            <p><label for="merge-destination">Destination:</label><select id="merge-destination"></select></p>
+            <p><label for="merge-author">User Name:</label><select id="merge-author"></select></p>
             <p><textarea id="merge-post-body" rows="5" cols="60"></textarea></p>
           </form>
         </div>
@@ -35,6 +35,7 @@
 
 <script>
 //   TODO: Move this and cleanup
+  "use strict";
   $(document).ready(function(){
     $("#select-all-posts").click(function(){
       if (this.checked) {
@@ -157,14 +158,14 @@
 
     $("#merge-count").text(ids.length);
 
-    for (id in ids){
-      $post = $("#post-" + ids[id]);
-      destinationText = "(" + ids[id] + ") by " + $post.find(".author").text();
+    for (var id in ids){
+      var $post = $("#post-" + ids[id]);
+      var destinationText = "(" + ids[id] + ") by " + $post.find(".author").text();
       $("#merge-destination").append('<option value="' + ids[id] + '">' + destinationText + '</option>');
       mergeAuthorOpts.push('<option value="' + $post.find(".author-id").text() + '">' + $post.find(".author").text() + '</option')
     }
 
-    for (x in $.unique(mergeAuthorOpts)){
+    for (var x in $.unique(mergeAuthorOpts)){
       $("#merge-author").append($.unique(mergeAuthorOpts)[x]);
     }
   }
@@ -174,7 +175,7 @@
   function ConcatPostBodies(ids){
     var bodies = "";
 
-    for (id in ids){
+    for (var id in ids){
       bodies += ($("#post-" + ids[id]).find(".post-body").text().trim() + "\n");
     }
 
