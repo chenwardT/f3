@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
-  before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve, :unapprove]
+  before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
+                                     :unapprove, :merge]
 
   # Unused; posts are linked via topic#show + page param + post ID anchor
   def show
@@ -102,6 +103,25 @@ class PostsController < ApplicationController
         flash[:danger] = 'You are not authorized to do that'
         redirect_to forums_path
       end
+    else
+      redirect_to forums_path
+    end
+  end
+
+  def merge
+    if request.xhr?
+      posts = Post.where(id: params[:sources])
+
+      begin
+        authorize posts, :moderate?
+        Post.merge(params[:sources], params[:destination], params[:author], params[:body], current_user)
+        render nothing: true
+      rescue Pundit::NotAuthorizedError
+        flash[:danger] = 'You are not authorized to do that'
+        redirect_to forums_path
+      end
+    else
+      redirect_to forums_path
     end
   end
 
