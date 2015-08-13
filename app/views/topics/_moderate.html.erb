@@ -1,13 +1,26 @@
 <div id="mod-topic-<%=topic.id%>">
-  <%= button_tag "Hard Delete Posts", id: "hard-delete-selected-posts" %>
-  <%= button_tag "Soft Delete Posts", id: "soft-delete-selected-posts" %>
-  <%= button_tag "Undelete Posts", id: "undelete-selected-posts" %>
-  <%= button_tag "Approve Posts", id: "approve-selected-posts" %>
-  <%= button_tag "Unapprove Posts", id: "unapprove-selected-posts" %>
-  <%= button_tag "Merge Posts", id: "merge-selected-posts", data: { toggle: "modal",
-                              target: "#mergeModal" } %>
-  <%= label_tag "Select All Posts" %> <%= check_box_tag "select-all-posts" %>
-
+  <div id="post-moderation" class="btn-group">
+    <div class="dropdown btn-group">
+      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="post-moderation-menu" data-toggle="dropdown">
+        Moderate Post(s)
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a id="move-selected-posts" tabindex="-1" href="#"><small>Move Posts</small></a></li>
+        <li><a id="merge-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#mergeModal"><small>Merge Posts</small></a></li>
+        <li><a id="copy-selected-posts" tabindex="-1" href="#"><small>Copy Posts</small></a></li>
+        <li><a id="hard-delete-selected-posts" tabindex="-1" href="#"><small>Hard Delete Posts</small></a></li>
+        <li><a id="soft-delete-selected-posts" tabindex="-1" href="#"><small>Soft Delete Posts</small></a></li>
+        <li><a id="undelete-selected-posts" tabindex="-1" href="#"><small>Undelete Posts</small></a></li>
+        <li><a id="approve-selected-posts" tabindex="-1" href="#"><small>Approve Posts</small></a></li>
+        <li><a id="unapprove-selected-posts" tabindex="-1" href="#"><small>Unapprove Posts</small></a></li>
+        <li><a id="select-all-posts" tabindex="-1" href="#"><small>Select All</small></a></li>
+        <li><a id="select-none-posts" tabindex="-1" href="#"><small>Select None</small></a></li>
+        <li><a id="invert-selection-posts" tabindex="-1" href="#"><small>Invert Selection</small></a></li>
+        <li><a id="select-unapproved-posts" tabindex="-1" href="#"><small>Select Unapproved Posts</small></a></li>
+        <li><a id="select-deleted-posts" tabindex="-1" href="#"><small>Select Deleted Posts</small></a></li>
+      </ul>
+    </div>
   <div class="modal fade" id="mergeModal" tabindex="-1" role="dialog" aria-labelledby="mergeModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -38,15 +51,15 @@
   "use strict";
   $(document).ready(function(){
     $("#select-all-posts").click(function(){
-      if (this.checked) {
-        $("#posts").find(":checkbox").each(function(){
-          this.checked = true;
-        });
-      }else{
-        $("#posts").find(":checkbox").each(function(){
-          this.checked = false;
-        });
-      }
+      $("#posts").find(":checkbox").each(function(){
+        this.checked = true;
+      });
+    });
+
+    $("#select-none-posts").click(function(){
+      $("#posts").find(":checkbox").each(function(){
+        this.checked = false;
+      });
     });
 
     $("#hard-delete-selected-posts").click(function(){
@@ -137,7 +150,6 @@
     var selected = GetSelectedPosts();
 
     CreateMergeIntoList(selected);
-
     $("#merge-post-body").val(ConcatPostBodies(selected));
   });
 
