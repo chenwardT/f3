@@ -21,6 +21,7 @@ class TopicsController < ApplicationController
     end
 
     @post = @topic.posts.build
+    @forum_list = generate_forum_hierarchy
   end
 
   def new
@@ -56,5 +57,15 @@ class TopicsController < ApplicationController
   # TODO: Can this just act on @topic?
   def register_view(topic, user)
     topic.register_view_by(user)
+  end
+
+  def generate_forum_hierarchy
+    options = []
+
+    Forum.all.each do |f|
+      options << [f.id, f.breadcrumb]
+    end
+
+    options.sort.to_json
   end
 end
