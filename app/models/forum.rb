@@ -13,6 +13,19 @@ class Forum < ActiveRecord::Base
     title
   end
 
+  def breadcrumb
+    trail = [self.title]
+
+    parent = self.forum
+
+    until parent.nil?
+      trail << parent.title
+      parent = parent.forum
+    end
+
+    trail.reverse.join(" > ")
+  end
+
   # TODO: Rename
   def topic_count
     topics.count
