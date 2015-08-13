@@ -1,3 +1,5 @@
+require 'uri'
+
 class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :topic
@@ -45,6 +47,57 @@ class Post < ActiveRecord::Base
       source_posts.delete_all
     end
   end
+
+  # Move the posts specified by +post_ids+ to a new or existing topic.
+  #
+  # If +create_topic+ is true, a new topic is created in the forum given by +destination_forum_id+
+  # with a title given by +new_topic_title+.
+  # Otherwise a path to an existing topic, given by +url+, is used to copy the posts into.
+  def self.move(create_topic, destination_forum_id=nil, new_topic_title=nil, url=nil, post_ids)
+    if create_topic
+      forum = Forum.find(destination_forum_id)
+
+      ActiveRecord::Base.transaction do
+        new_topic = forum.topics.create(user: current_user, title: new_topic_title)
+        Post.where(id: post_ids).update_all(topic_id: new_topic.id)
+      end
+    else
+      # TODO: Get path from +url+ that can be fed to recognize_path.
+      # Below does not work when port is present.
+      # url = 'http://' + url unless url.match(/^http:\/\//)
+      # path = url.split(URI.parse(url).host).last
+      # reverse_lookup = Rails.application.routes.recognize_path(path)
+    end
+  end
+
+  # Copy the posts specified by +post_ids+ to a new or existing topic.
+  #
+  # If +create_topic+ is true, a new topic is created in the forum given by +destination_forum_id+
+  # with a title given by +new_topic_title+.
+  # Otherwise a path to an existing topic, given by +url+, is used to copy the posts into.
+  def self.copy(create_topic, destination_forum_id=nil, new_topic_title=nil, url=nil, post_ids, user)
+    if create_topic
+      forum = Forum.find(destination_forum_id)
+
+      ActiveRecord::Base.transaction do
+        new_topic = forum.topics.create(user: user, title: new_topic_title)
+        posts = Post.where(id: post_ids)
+
+        posts.each do |post|
+          post_copy = post.dup
+          post_copy.topic = new_topic
+          post_copy.save
+        end
+      end
+    else
+      # TODO: Get path from +url+ that can be fed to recognize_path.
+      # Below does not work when port is present.
+      # url = 'http://' + url unless url.match(/^http:\/\//)
+      # path = url.split(URI.parse(url).host).last
+      # reverse_lookup = Rails.application.routes.recognize_path(path)
+    end
+  end
+
 
   def deleted?
     state == 'deleted'

@@ -1,7 +1,9 @@
 class PostsController < ApplicationController
   before_filter :redirect_unless_xhr, except: [:show, :create]
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
-                                     :unapprove, :merge]
+                                     :unapprove, :merge, :move, :copy]
+
+  # TODO: Factor out authorization logic
 
   # Unused; posts are linked via topic#show + page param + post ID anchor
   def show
@@ -95,6 +97,33 @@ class PostsController < ApplicationController
     begin
       authorize posts, :moderate?
       Post.merge(params[:sources], params[:destination], params[:author], params[:body], current_user)
+      render nothing: true
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
+      redirect_to forums_path
+    end
+  end
+
+  def move
+    posts = Post.where(id: params[:sources])
+
+    begin
+      authorize posts, :moderate?
+      # Post.move
+      render nothing: true
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
+      redirect_to forums_path
+    end
+  end
+
+  def copy
+    posts = Post.where(id: params[:sources])
+
+    begin
+      authorize posts, :moderate?
+      Post.copy(params[:create_topic], params[:destination_forum_id], params[:new_topic_title],
+                params[:url], params[:post_ids], current_user)
       render nothing: true
     rescue Pundit::NotAuthorizedError
       flash[:danger] = 'You are not authorized to do that'

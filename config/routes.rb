@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   post 'approve_post' => 'posts#approve'
   post 'unapprove_post' => 'posts#unapprove'
   post 'merge_post' => 'posts#merge'
+  post 'move_post' => 'posts#move'
+  post 'copy_post' => 'posts#copy'
 
   resources :groups
 
