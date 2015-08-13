@@ -1,5 +1,6 @@
 <div id="mod-topic-<%=topic.id%>">
   <div id="post-moderation" class="btn-group">
+
     <div class="dropdown btn-group">
       <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="post-moderation-menu" data-toggle="dropdown">
         Moderate Post(s)
@@ -8,7 +9,7 @@
       <ul class="dropdown-menu" role="menu">
         <li><a id="move-selected-posts" tabindex="-1" href="#"><small>Move Posts</small></a></li>
         <li><a id="merge-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#mergeModal"><small>Merge Posts</small></a></li>
-        <li><a id="copy-selected-posts" tabindex="-1" href="#"><small>Copy Posts</small></a></li>
+        <li><a id="copy-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#copyModal"><small>Copy Posts</small></a></li>
         <li><a id="hard-delete-selected-posts" tabindex="-1" href="#"><small>Hard Delete Posts</small></a></li>
         <li><a id="soft-delete-selected-posts" tabindex="-1" href="#"><small>Soft Delete Posts</small></a></li>
         <li><a id="undelete-selected-posts" tabindex="-1" href="#"><small>Undelete Posts</small></a></li>
@@ -21,30 +22,63 @@
         <li><a id="select-deleted-posts" tabindex="-1" href="#"><small>Select Deleted Posts</small></a></li>
       </ul>
     </div>
-  <div class="modal fade" id="mergeModal" tabindex="-1" role="dialog" aria-labelledby="mergeModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="mergeModalLabel">Merge Posts</h4>
-        </div>
-        <div id="merge-body" class="modal-body">
-          <b>Merging <span id="merge-count">X</span> post(s).</b>
-          <p>You must have the required permissions for this action in all forums from which
-            you have selected topics or posts.</p>
-          <form>
-            <p><label for="merge-destination">Destination:</label><select id="merge-destination"></select></p>
-            <p><label for="merge-author">User Name:</label><select id="merge-author"></select></p>
-            <p><textarea id="merge-post-body" rows="5" cols="60"></textarea></p>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" id="submit-merge" class="btn btn-default">Merge Posts</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+    <div class="modal fade" id="mergeModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title" id="mergeModalLabel">Merge Posts</h4>
+          </div>
+          <div id="merge-body" class="modal-body">
+            <b>Merging <span id="merge-count">X</span> post(s)</b>
+            <p>You must have the required permissions for this action in all forums from which
+              you have selected topics or posts.</p>
+            <form>
+              <p><label for="merge-destination">Destination:</label><select id="merge-destination"></select></p>
+              <p><label for="merge-author">User Name:</label><select id="merge-author"></select></p>
+              <p><textarea id="merge-post-body" rows="5" cols="60"></textarea></p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="submit-merge" class="btn btn-default">Merge Posts</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="modal fade" id="copyModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title" id="copyModalLabel">Copy Posts</h4>
+          </div>
+          <div id="copy-body" class="modal-body">
+            <b>Copying <span id="copy-count">X</span> post(s)</b>
+            <p>You must have the required permissions for this action in all forums from which
+              you have selected topics or posts.</p>
+            <form>
+              <p><input type="radio" id="copy-create-topic"><label for="copy-create-topic">Copy Posts to New Topic</label></p>
+              <p><label for="copy-destination-forum">Destination Forum: </label><select id="copy-destination-forum"></select></p>
+              <p><label for="copy-topic-title">Title: </label><input type="text" id="copy-topic-title"></p>
+              <br>
+              <p><input type="radio" id="copy-existing-topic"><label for="copy-existing-topic">Copy Posts to Existing Topic</label></p>
+              <p><label for="copy-topic-url">URL of Topic to be Merged: </label><input type="text" id="copy-topic-url"></p>
+              <p>Copied posts will be inserted in chronological positions in the topic.</p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="submit-copy" class="btn btn-default">Copy Posts</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- post-moderation -->
+</div> <!-- mod-topic -->
 
 <script>
 //   TODO: Move this and cleanup
@@ -145,6 +179,29 @@
     });
   });
 
+$("#submit-copy").click(function(){
+  var selected = GetSelectedPosts();
+  var createNewTopic = $("#copy-create-topic").prop("checked");
+  if(createNewTopic) {
+    var copyDestination = $("#copy-destination-forum").find(":selected").val();
+    var newTopicTitle = $("#copy-topic-title").val();
+
+    $.ajax({
+      type: "POST",
+      url: "<%= copy_post_path %>",
+      data: { "create_topic": createNewTopic, "destination_forum_id": copyDestination,
+              "new_topic_title": newTopicTitle, "url": undefined, "post_ids": selected },
+      success: function(){
+        location.reload();
+      }
+    });
+  }
+  // TODO: Copy to existing topic, given by URL
+//  else{
+//
+//  }
+});
+
   // Populate the merge dialog box.
   $("#merge-selected-posts").click(function(){
     var selected = GetSelectedPosts();
@@ -152,6 +209,23 @@
     CreateMergeIntoList(selected);
     $("#merge-post-body").val(ConcatPostBodies(selected));
   });
+
+  // Populate the copy dialog box.
+  $("#copy-selected-posts").click(function(){
+    $("#copy-count").text(GetSelectedPosts().length);
+    $("#copy-destination-forum").append(CreateForumOptions());
+  });
+
+  function CreateForumOptions(){
+    var forums = <%= raw(@forum_list) %>;
+    var options = "";
+
+    for (var i = 0; i < forums.length; i++){
+      options += '<option value="' + forums[i][0] + '">' + forums[i][1] + '</option>';
+    }
+
+    return options;
+  }
 
   function GetSelectedPosts(){
     var selected = [];
@@ -194,5 +268,4 @@
     return bodies;
   }
 </script>
-</div>
 <br>
