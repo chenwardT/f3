@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_filter :redirect_unless_xhr, except: [:show, :create]
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
                                      :unapprove, :merge]
 
@@ -24,103 +25,79 @@ class PostsController < ApplicationController
   end
 
   def soft_delete
-    if request.xhr?
-      # Note: We don't filter on state here, since unapproved posts should also be deleted
-      # and, if then undeleted, should be considered "approved" and thus visible.
-      posts = Post.where(id: params[:ids])
+    # Note: We don't filter on state here, since unapproved posts should also be deleted
+    # and, if then undeleted, should be considered "approved" and thus visible.
+    posts = Post.where(id: params[:ids])
 
-      if params.key? :reason
-        reason = params[:reason]
-      else
-        reason = nil
-      end
-
-      begin
-        authorize posts, :moderate?
-        Post.soft_delete(params[:ids], current_user, reason)
-        render nothing: true
-      rescue Pundit::NotAuthorizedError
-        flash[:danger] = 'You are not authorized to do that'
-        redirect_to forums_path
-      end
+    if params.key? :reason
+      reason = params[:reason]
     else
+      reason = nil
+    end
+
+    begin
+      authorize posts, :moderate?
+      Post.soft_delete(params[:ids], current_user, reason)
+      render nothing: true
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
       redirect_to forums_path
     end
   end
 
   def undelete
-    if request.xhr?
-      posts = Post.where(id: params[:ids]).where(state: 'deleted')
+    posts = Post.where(id: params[:ids]).where(state: 'deleted')
 
-      begin
-        authorize posts, :moderate?
-        Post.undelete(posts.pluck(:id), current_user)
-        render nothing: true
-      rescue Pundit::NotAuthorizedError
-        flash[:danger] = 'You are not authorized to do that'
-        redirect_to forums_path
-      end
-    else
+    begin
+      authorize posts, :moderate?
+      Post.undelete(posts.pluck(:id), current_user)
+      render nothing: true
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
       redirect_to forums_path
     end
   end
 
   def approve
-    if request.xhr?
-      posts = Post.where(id: params[:ids]).where(state: 'unapproved')
-      authorize posts, :moderate?
+    posts = Post.where(id: params[:ids]).where(state: 'unapproved')
+    authorize posts, :moderate?
 
-      Post.approve(posts.pluck(:id), current_user)
+    Post.approve(posts.pluck(:id), current_user)
 
-      render nothing: true
-    else
-      redirect_to forums_path
-    end
+    render nothing: true
   end
 
   def unapprove
-    if request.xhr?
-      posts = Post.where(id: params[:ids]).where(state: 'visible')
-      authorize posts, :moderate?
+    posts = Post.where(id: params[:ids]).where(state: 'visible')
+    authorize posts, :moderate?
 
-      Post.unapprove(posts.pluck(:id), current_user)
+    Post.unapprove(posts.pluck(:id), current_user)
 
-      render nothing: true
-    else
-      redirect_to forums_path
-    end
+    render nothing: true
   end
 
   def hard_delete
-    if request.xhr?
-      posts = Post.where(id: params[:ids])
+    posts = Post.where(id: params[:ids])
 
-      begin
-        authorize posts, :moderate?
-        posts.delete_all
-        render nothing: true  # TODO: Can we just return?
-      rescue Pundit::NotAuthorizedError
-        flash[:danger] = 'You are not authorized to do that'
-        redirect_to forums_path
-      end
-    else
+    begin
+      authorize posts, :moderate?
+      posts.delete_all
+      render nothing: true  # TODO: Can we just return?
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
       redirect_to forums_path
     end
   end
 
   def merge
-    if request.xhr?
-      posts = Post.where(id: params[:sources])
+    posts = Post.where(id: params[:sources])
 
-      begin
-        authorize posts, :moderate?
-        Post.merge(params[:sources], params[:destination], params[:author], params[:body], current_user)
-        render nothing: true
-      rescue Pundit::NotAuthorizedError
-        flash[:danger] = 'You are not authorized to do that'
-        redirect_to forums_path
-      end
-    else
+    begin
+      authorize posts, :moderate?
+      Post.merge(params[:sources], params[:destination], params[:author], params[:body], current_user)
+      render nothing: true
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
       redirect_to forums_path
     end
   end
@@ -146,5 +123,9 @@ class PostsController < ApplicationController
   def last_page_of_topic
     dummy_pager = @topic.posts.all.page(1).per(Post.default_per_page)
     dummy_pager.total_pages
+  end
+
+  def redirect_unless_xhr
+    redirect_to forums_path unless request.xhr?
   end
 end
