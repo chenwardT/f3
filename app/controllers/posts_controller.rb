@@ -99,7 +99,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # TODO: Check for < 2 posts selected
   def merge
     posts = Post.where(id: params[:sources])
 
