@@ -4,6 +4,7 @@ class PostsController < ApplicationController
                                      :unapprove, :merge, :move, :copy]
 
   # TODO: Factor out authorization logic
+  # TODO: Re-raise all Pundit Auth exceptions?
 
   # Unused; posts are linked via topic#show + page param + post ID anchor
   def show
@@ -40,10 +41,9 @@ class PostsController < ApplicationController
     begin
       authorize posts, :moderate?
       Post.soft_delete(params[:ids], current_user, reason)
-      render nothing: true
+      reload_and_notify "#{posts.count} post(s) soft deleted"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
@@ -52,30 +52,38 @@ class PostsController < ApplicationController
 
     begin
       authorize posts, :moderate?
+      count = posts.count
       Post.undelete(posts.pluck(:id), current_user)
-      render nothing: true
+      reload_and_notify "#{count} post(s) undeleted"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
   def approve
     posts = Post.where(id: params[:ids]).where(state: 'unapproved')
-    authorize posts, :moderate?
 
-    Post.approve(posts.pluck(:id), current_user)
-
-    render nothing: true
+    begin
+      authorize posts, :moderate?
+      count = posts.count
+      Post.approve(posts.pluck(:id), current_user)
+      reload_and_notify "#{count} post(s) approved"
+    rescue Pundit::NotAuthorizedError
+      reload_and_warn
+    end
   end
 
   def unapprove
     posts = Post.where(id: params[:ids]).where(state: 'visible')
-    authorize posts, :moderate?
 
-    Post.unapprove(posts.pluck(:id), current_user)
-
-    render nothing: true
+    begin
+      authorize posts, :moderate?
+      count = posts.count
+      Post.unapprove(posts.pluck(:id), current_user)
+      reload_and_notify "#{count} post(s) unapproved"
+    rescue Pundit::NotAuthorizedError
+      reload_and_warn
+    end
   end
 
   def hard_delete
@@ -83,63 +91,65 @@ class PostsController < ApplicationController
 
     begin
       authorize posts, :moderate?
+      count = posts.count
       posts.delete_all
-      render nothing: true  # TODO: Can we just return?
+      reload_and_notify "#{count} post(s) hard deleted"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
+  # TODO: Check for < 2 posts selected
   def merge
     posts = Post.where(id: params[:sources])
 
     begin
       authorize posts, :moderate?
+      count = posts.count
+
+      if count < 2
+        flash[:warning] = "You must select 2 or more posts to merge"
+        reload_location and return
+      end
+
       Post.merge(params[:sources], params[:destination], params[:author], params[:body], current_user)
-      render nothing: true
+      reload_and_notify "#{count} post(s) merged"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
+  # TODO: Redirect or link to destination topic
   def move
-    posts = Post.where(id: params[:sources])
+    posts = Post.where(id: params[:post_ids])
 
     begin
       authorize posts, :moderate?
-      # Post.move
-      render nothing: true
+      create_topic_parsed = params[:create_topic] == 'true' ? true : false
+      Post.move(create_topic_parsed, current_user, params[:post_ids], params[:destination_forum_id],
+                params[:new_topic_title], params[:url])
+      reload_and_notify "#{posts.count} post(s) moved"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
+  # TODO: Redirect or link to destination topic
   def copy
-    posts = Post.where(id: params[:sources])
+    posts = Post.where(id: params[:post_ids])
 
     begin
       authorize posts, :moderate?
-      Post.copy(params[:create_topic], params[:destination_forum_id], params[:new_topic_title],
-                params[:url], params[:post_ids], current_user)
-      render nothing: true
+      create_topic_parsed = params[:create_topic] == 'true' ? true : false
+      Post.copy(create_topic_parsed, current_user, params[:post_ids], params[:destination_forum_id],
+                params[:new_topic_title], params[:url])
+      reload_and_notify "#{posts.count} post(s) copied"
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = 'You are not authorized to do that'
-      redirect_to forums_path
+      reload_and_warn
     end
   end
 
   private
-
-  # TODO: Is this OK?
-  # ex. incoming parameters:
-  # {"utf8"=>"✓",
-  #  "authenticity_token"=>"OMkmu7fy9+uHIVSPqKIEJA8AXO9ZaghkvwneHXBg1UcAIjnJo8LTIWLQ4s0pSJZpVy2RKhiE9A/3bUnhuuuY2Q==",
-  #  "topic_id"=>"5",
-  #  "post"=>{"body"=>"asdasdas"},
-  #  "commit"=>"Post"}
 
   def post_params
     params.require(:post).permit(:body, :topic_id)
