@@ -7,7 +7,7 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a id="move-selected-posts" tabindex="-1" href="#"><small>Move Posts</small></a></li>
+        <li><a id="move-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#moveModal"><small>Move Posts</small></a></li>
         <li><a id="merge-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#mergeModal"><small>Merge Posts</small></a></li>
         <li><a id="copy-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#copyModal"><small>Copy Posts</small></a></li>
         <li><a id="hard-delete-selected-posts" tabindex="-1" href="#"><small>Hard Delete Posts</small></a></li>
@@ -42,6 +42,35 @@
           </div>
           <div class="modal-footer">
             <button type="button" id="submit-merge" class="btn btn-default">Merge Posts</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="moveModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title" id="moveModalLabel">Move Posts</h4>
+          </div>
+          <div id="move-body" class="modal-body">
+            <b>Moving <span id="move-count">X</span> post(s)</b>
+            <p>You must have the required permissions for this action in all forums from which
+              you have selected topics or posts.</p>
+            <form>
+              <p><input type="radio" id="move-create-topic"><label for="move-create-topic">Move Posts to New Topic</label></p>
+              <p><label for="move-destination-forum">Destination Forum: </label><select id="move-destination-forum"></select></p>
+              <p><label for="move-topic-title">Title: </label><input type="text" id="move-topic-title"></p>
+              <br>
+              <p><input type="radio" id="move-existing-topic"><label for="move-existing-topic">Move Posts to Existing Topic</label></p>
+              <p><label for="move-topic-url">URL of Topic to be Merged: </label><input type="text" id="move-topic-url"></p>
+              <p>Copied posts will be inserted in chronological positions in the topic.</p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="submit-move" class="btn btn-default">Move Posts</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
@@ -96,16 +125,31 @@
       });
     });
 
+    $("#invert-selection-posts").click(function(){
+      $("#posts").find(":checkbox").each(function(){
+        this.checked = !this.checked;
+      });
+    });
+
+    $("#select-unapproved-posts").click(function(){
+      $(".post-unapproved").find(":checkbox").each(function(){
+        this.checked = true;
+      });
+    });
+
+    $("#select-deleted-posts").click(function(){
+      $(".post-deleted").find(":checkbox").each(function(){
+        this.checked = true;
+      });
+    });
+
     $("#hard-delete-selected-posts").click(function(){
       var selected = GetSelectedPosts();
 
       $.ajax({
         type: "POST",
         url: "<%= hard_delete_post_path %>",
-        data: {"ids": selected},
-        success: function(){
-          location.reload();
-        }
+        data: {"ids": selected}
       });
     });
 
@@ -115,10 +159,7 @@
       $.ajax({
         type: "POST",
         url: "<%= soft_delete_post_path %>",
-        data: {"ids": selected},
-        success: function(){
-          location.reload();
-        }
+        data: {"ids": selected}
       });
     });
 
@@ -128,10 +169,7 @@
       $.ajax({
         type: "POST",
         url: "<%= undelete_post_path %>",
-        data: {"ids": selected},
-        success: function(){
-          location.reload();
-        }
+        data: {"ids": selected}
       });
     });
   });
@@ -142,10 +180,7 @@
     $.ajax({
       type: "POST",
       url: "<%= approve_post_path %>",
-      data: {"ids": selected},
-      success: function(){
-        location.reload();
-      }
+      data: {"ids": selected}
     });
   });
 
@@ -155,10 +190,7 @@
     $.ajax({
       type: "POST",
       url: "<%= unapprove_post_path %>",
-      data: {"ids": selected},
-      success: function(){
-        location.reload();
-      }
+      data: {"ids": selected}
     });
   });
 
@@ -179,28 +211,68 @@
     });
   });
 
-$("#submit-copy").click(function(){
-  var selected = GetSelectedPosts();
-  var createNewTopic = $("#copy-create-topic").prop("checked");
-  if(createNewTopic) {
-    var copyDestination = $("#copy-destination-forum").find(":selected").val();
-    var newTopicTitle = $("#copy-topic-title").val();
+  $("#submit-move").click(function(){
+    var selected = GetSelectedPosts();
+    var createNewTopic = $("#move-create-topic").prop("checked");
+  
+    if(createNewTopic){
+      var moveDestination = $("#move-destination-forum").find(":selected").val();
+      var newTopicTitle = $("#move-topic-title").val();
+  
+      $.ajax({
+        type: "POST",
+        url: "<%= move_post_path %>",
+        data: {
+          "create_topic": createNewTopic, "destination_forum_id": moveDestination,
+          "new_topic_title": newTopicTitle, "url": undefined, "post_ids": selected
+        },
+        success: {
 
-    $.ajax({
-      type: "POST",
-      url: "<%= copy_post_path %>",
-      data: { "create_topic": createNewTopic, "destination_forum_id": copyDestination,
-              "new_topic_title": newTopicTitle, "url": undefined, "post_ids": selected },
-      success: function(){
-        location.reload();
-      }
-    });
-  }
-  // TODO: Copy to existing topic, given by URL
-//  else{
-//
-//  }
-});
+        }
+      });
+    }else{
+      var url = $("#move-topic-url").val();
+  
+      $.ajax({
+        type: "POST",
+        url: "<%= move_post_path %>",
+        data: {
+          "create_topic": createNewTopic, "destination_forum_id": undefined,
+          "new_topic_title": undefined, "url": url, "post_ids": selected
+        }
+      });
+    }
+  });
+
+  $("#submit-copy").click(function(){
+    var selected = GetSelectedPosts();
+    var createNewTopic = $("#copy-create-topic").prop("checked");
+  
+    if(createNewTopic){
+      var copyDestination = $("#copy-destination-forum").find(":selected").val();
+      var newTopicTitle = $("#copy-topic-title").val();
+  
+      $.ajax({
+        type: "POST",
+        url: "<%= copy_post_path %>",
+        data: {
+          "create_topic": createNewTopic, "destination_forum_id": copyDestination,
+          "new_topic_title": newTopicTitle, "url": undefined, "post_ids": selected
+        }
+      });
+    }else{
+      var url = $("#copy-topic-url").val();
+  
+      $.ajax({
+        type: "POST",
+        url: "<%= copy_post_path %>",
+        data: {
+          "create_topic": createNewTopic, "destination_forum_id": undefined,
+          "new_topic_title": undefined, "url": url, "post_ids": selected
+        }
+      });
+    }
+  });
 
   // Populate the merge dialog box.
   $("#merge-selected-posts").click(function(){
@@ -208,6 +280,12 @@ $("#submit-copy").click(function(){
 
     CreateMergeIntoList(selected);
     $("#merge-post-body").val(ConcatPostBodies(selected));
+  });
+
+  // Populate the move dialog box.
+  $("#move-selected-posts").click(function(){
+    $("#move-count").text(GetSelectedPosts().length);
+    $("#move-destination-forum").append(CreateForumOptions());
   });
 
   // Populate the copy dialog box.
@@ -259,7 +337,7 @@ $("#submit-copy").click(function(){
   // Generate a default merged body for the selected posts.
   // TODO: Preserve newlines when storing in DB. Store as HTML?
   function ConcatPostBodies(ids){
-    var bodies = "";
+    var bodies;
 
     for (var id in ids){
       bodies += ($("#post-" + ids[id]).find(".post-body").text().trim() + "\n");
