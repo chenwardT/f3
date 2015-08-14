@@ -1,8 +1,9 @@
 <div id="post-<%= post.id %>" class="post-<%= post.state %>">
   <div class="post-header">
     <a id="<%= post.id %>" name="<%= post_num(idx) %>"></a>
-    <span><span hidden class="author-id"><%= post.user.id %></span><span class="author"><%= username_as_link(post.user) %></span> <small><%= post.user.country %> <%= post.user.posts.count %> Posts</small></span>
-    <span><small><%= time_ago_in_words(post.created_at) %> ago</small></span>
+    <span><span hidden class="author-id"><%= post.user.id %></span><span class="author"><%= username_as_link(post.user) %></span> <small><%= post.user.country %>
+    | <%= post.user.posts.count %> Posts</small></span>
+    | <span><small><%= time_ago_in_words(post.created_at) %> ago</small></span>
     <span><small><a href="<%= topic_path(post.topic, page: params[:page]) %>#<%= post.id %>">#<%= post_num(idx) %></a></small></span>
     <% if user_signed_in? && policy(topic).moderate? %>
       <span class="select-post"><input type="checkbox" name="<%= post.id %>"></span>
