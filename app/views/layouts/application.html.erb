@@ -20,8 +20,9 @@
 <hr>
 <div class="container">
   <%= render 'partials/navbar' %>
-  <!-- TODO: devise log-in/-out flashes not being styled. -->
+  <!-- TODO: devise log-in/-out flashes being classed as 'notice' (no style) -->
   <% flash.each do |key, value| %>
+    <% key = 'info' if key == 'notice' %> <!-- FIXME -->
     <div class="alert alert-<%= key %>"><%= value %></div>
   <% end %>
 
