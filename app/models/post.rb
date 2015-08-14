@@ -1,5 +1,6 @@
 require 'uri'
 
+# TODO: Set default post state via site config (currently using migration)
 class Post < ActiveRecord::Base
   belongs_to :user
   belongs_to :topic
@@ -51,53 +52,86 @@ class Post < ActiveRecord::Base
   # Move the posts specified by +post_ids+ to a new or existing topic.
   #
   # If +create_topic+ is true, a new topic is created in the forum given by +destination_forum_id+
-  # with a title given by +new_topic_title+.
-  # Otherwise a path to an existing topic, given by +url+, is used to copy the posts into.
-  def self.move(create_topic, destination_forum_id=nil, new_topic_title=nil, url=nil, post_ids)
+  # with a title given by +new_topic_title+ and owner of +new_topic_author+.
+  # Otherwise a path to an existing topic, given by +dest_topic_url+, is used to copy the posts into.
+  #
+  # Returns the destination topic.
+  def self.move(create_topic, new_topic_author, post_ids, destination_forum_id=nil,
+      new_topic_title=nil, dest_topic_url=nil)
+    source_posts = Post.where(id: post_ids)
+    source_topics = source_posts.map{|p| p.topic}.uniq
+
     if create_topic
       forum = Forum.find(destination_forum_id)
-
+      new_topic = nil
       ActiveRecord::Base.transaction do
-        new_topic = forum.topics.create(user: current_user, title: new_topic_title)
+        new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
         Post.where(id: post_ids).update_all(topic_id: new_topic.id)
+        source_topics.each {|t| t.delete if t.posts.count == 0}
       end
     else
-      # TODO: Get path from +url+ that can be fed to recognize_path.
-      # Below does not work when port is present.
-      # url = 'http://' + url unless url.match(/^http:\/\//)
-      # path = url.split(URI.parse(url).host).last
-      # reverse_lookup = Rails.application.routes.recognize_path(path)
+      dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
+      path = URI.parse(dest_topic_url).path
+      reverse_lookup = Rails.application.routes.recognize_path(path)
+
+      if reverse_lookup[:controller] == 'topics'
+        destination_topic = nil
+        ActiveRecord::Base.transaction do
+          destination_topic = Topic.find(reverse_lookup[:id])
+          Post.where(id: post_ids).update_all(topic_id: destination_topic.id)
+          source_topics.each {|t| t.delete if t.posts.count == 0}
+        end
+      end
     end
+
+    new_topic || destination_topic
   end
 
   # Copy the posts specified by +post_ids+ to a new or existing topic.
   #
   # If +create_topic+ is true, a new topic is created in the forum given by +destination_forum_id+
-  # with a title given by +new_topic_title+.
-  # Otherwise a path to an existing topic, given by +url+, is used to copy the posts into.
-  def self.copy(create_topic, destination_forum_id=nil, new_topic_title=nil, url=nil, post_ids, user)
+  # with a title given by +new_topic_title+ and owner of +new_topic_author+.
+  # Otherwise a path to an existing topic, given by +dest_topic_url+, is used to copy the posts into.
+  #
+  # Returns the destination topic.
+  def self.copy(create_topic, new_topic_author, post_ids, destination_forum_id=nil,
+      new_topic_title=nil, dest_topic_url=nil)
     if create_topic
       forum = Forum.find(destination_forum_id)
+      new_topic = nil
 
       ActiveRecord::Base.transaction do
-        new_topic = forum.topics.create(user: user, title: new_topic_title)
+        new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
         posts = Post.where(id: post_ids)
 
         posts.each do |post|
           post_copy = post.dup
-          post_copy.topic = new_topic
-          post_copy.save
+          post_copy.update_attributes(topic: new_topic, created_at: post.created_at,
+                                      updated_at: post.updated_at)
         end
       end
     else
-      # TODO: Get path from +url+ that can be fed to recognize_path.
-      # Below does not work when port is present.
-      # url = 'http://' + url unless url.match(/^http:\/\//)
-      # path = url.split(URI.parse(url).host).last
-      # reverse_lookup = Rails.application.routes.recognize_path(path)
-    end
-  end
+      dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
+      path = URI.parse(dest_topic_url).path
+      reverse_lookup = Rails.application.routes.recognize_path(path)
+      destination_topic = nil
 
+      if reverse_lookup[:controller] == 'topics'
+        ActiveRecord::Base.transaction do
+          destination_topic = Topic.find(reverse_lookup[:id])
+          posts = Post.where(id: post_ids)
+
+          posts.each do |post|
+            post_copy = post.dup
+            post_copy.update_attributes(topic: destination_topic, created_at: post.created_at,
+                                        updated_at: post.updated_at)
+          end
+        end
+      end
+    end
+
+    new_topic || destination_topic
+  end
 
   def deleted?
     state == 'deleted'
