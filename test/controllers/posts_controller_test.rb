@@ -81,7 +81,8 @@ describe "PostsController" do
       it "redirects to forum index and displays error in flash" do
         xhr :post, :soft_delete, ids: [post1.id, post2.id]
 
-        must_redirect_to forums_path
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
         flash[:danger].must_equal 'You are not authorized to do that'
       end
     end
@@ -124,12 +125,13 @@ describe "PostsController" do
         sign_in user
       end
 
-      it "redirects to forum index and displays error in flash" do
+      it "responds with JS page reload and displays error in flash" do
         xhr :post, :undelete, ids: [post1.id, post2.id]
 
         post1.reload.state.must_equal 'deleted'
         post2.reload.state.must_equal 'deleted'
-        must_redirect_to forums_path
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
         flash[:danger].must_equal 'You are not authorized to do that'
       end
     end
