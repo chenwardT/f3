@@ -18,4 +18,16 @@ class User < ActiveRecord::Base
   def admin?
     groups.include?(Group.find_by(name: 'admin'))
   end
+
+  def profile_fields
+    fields = []
+
+    fields << :country if country
+    fields << :bio if bio
+    fields << :quote if quote
+    fields << :website if website
+    fields << :signature if signature
+
+    fields
+  end
 end

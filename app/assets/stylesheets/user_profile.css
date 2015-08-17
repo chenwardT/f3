@@ -1,0 +1,39 @@
+#profile-content div {
+    /*border: 1px dashed lightblue;*/
+}
+
+#profile-sidebar {
+    /*border: solid 1px;*/
+    background-color: #e5e5e5;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.avatar-container {
+    text-align: center;
+    display: block;
+}
+
+#user-menu {
+    padding-left: 0;
+}
+
+ul#user-menu > li {
+    list-style: none;
+}
+
+.subsection-header {
+
+}
+
+.dt-left {
+    float: left;
+    clear: right;
+    width: 100px;   /* TODO: Separate wider width for non-sidebar DTs */
+}
+
+.bold {
+    font-weight: bold;
+}

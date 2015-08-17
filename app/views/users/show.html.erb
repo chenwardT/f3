@@ -1,8 +1,104 @@
-<div id="user-profile">
-  <h4><%= @user.username %></h4>
-  <ul>
-    <% @user.attributes.each do |name, val| %>
-      <li><%= name.humanize %>: <%= val %></li>
-    <% end %>
-  </ul>
+<%= stylesheet_link_tag :user_profile %>
+<div id="user-profile-container" class="container-fluid">
+  <div id="breadcrumb">
+    <a href="<%= users_path %>">Member List</a> > <%= @user.username %>
+  </div>
+  <div class="row">
+    <div id="profile-sidebar" class="col-md-3">
+      <div class="block">
+        <span class="username"><%= @user.username %></span><br>
+        Registered User
+      </div>
+      <div id="user-info">
+        <span class="avatar-container"><img src="<%= image_path("users/unknown.gif") %>"></span>
+        <ul id="user-menu">
+          <li>
+            <a href="#">Send Private Message</a>
+          </li>
+          <li>
+            <a href="#">Find latest posts</a>
+          </li>
+          <li>
+            <a href="#">Find latest started topics</a>
+          </li>
+        </ul>
+      </div>
+      <div id="user-stats" class="block">
+        <dl class="stats">
+          <dt class="dt-left">Join Date</dt>
+          <dd><%= @user.created_at.to_date %></dd>
+
+          <dt class="dt-left">Current Activity</dt>
+          <dd>Viewing User Profile</dd>
+        </dl>
+      </div>
+      <div id="friends-block" class="block">
+        <span id="friends-count">65</span><span class="bold"> Friends</span>
+      </div>
+    </div>
+    <div id="profile-content" class="col-md-9">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+          <li><a href="#my-activity" data-toggle="tab">My Activity</a></li>
+          <li><a href="#visitor-messages" data-toggle="tab">Visitor Messages</a></li>
+          <li class="active"><a href="#about-me" data-toggle="tab">About Me</a></li>
+          <li><a href="#friends" data-toggle="tab">Friends</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="tab-pane" id="my-activity">
+            No Recent Activity
+          </div> <!-- my-activity -->
+
+          <div class="tab-pane" id="visitor-messages">
+            Messages here
+          </div> <!-- visitor-messages -->
+
+          <div class="tab-pane active" id="about-me">
+            <div id="basic-info-block" class="block">
+              <div id="basic-info-header" class="subsection-header">
+                <h4>Basic Information</h4>
+              </div>
+              <h4>About <%= @user.username %></h4>
+              <dl>
+                <% @user.profile_fields.each do |f| %>
+                  <dt><%= f.capitalize %></dt>
+                  <dd><%= @user[f] %></dd>
+                <% end %>
+              </dl>
+            </div>
+            <div id="contact-block">
+              <div id="contact-header" class="subsection-header">
+                <h4>Contact</h4>
+              </div>
+              <dl>
+                <dt class="dt-left">This Page</dt>
+                <dd><a href="<%= user_url(@user) %>"><%= user_url(@user) %></a></dd>
+              </dl>
+            </div>
+            <div id="stats-block">
+              <div id="stats-header" class="subsection-header">
+                <h4>Statistics</h4>
+              </div>
+              <dl>
+                <dt class="dt-left">Total Posts</dt>
+                <dd><%= @user.posts.count %></dd>
+
+                <dt class="dt-left">Posts Per Day</dt>
+                <dd>0.3</dd>
+
+                <dt class="dt-left">Last Post</dt>
+                <dd><a href="#">Some topic about stuff</a></dd>
+              </dl>
+            </div>
+          </div> <!-- about-me -->
+
+          <div class="tab-pane" id="friends">
+            Your friends list is empty
+          </div> <!-- friends -->
+        </div>
+    </div>
+  </div> <!-- row -->
 </div>
