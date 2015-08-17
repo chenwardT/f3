@@ -24,6 +24,8 @@ Screenshots
 
 [Member List](http://i.imgur.com/wKgiaAF.png)
 
+[User Profile](http://i.imgur.com/WQCGzWi.png)
+
 [Merging Posts](https://i.gyazo.com/ef682f7b3e8a8b7bf8abb18a24b8c961.gif) (gif)
 
 Tests
