@@ -30,17 +30,23 @@ class TopicsController < ApplicationController
     render 'topics/new_topic'
   end
 
+  # TODO: Save topic title and post body in displayed form when error on save
   def create
     @topic = current_user.topics.build(topic_params)
-    @post = @topic.posts.build(post_params)
-    @post.user = current_user
 
-    if @topic.save && @post.save
-      flash[:success] = "New topic created"
-      redirect_to @topic
+    if @topic.save
+      @post = @topic.posts.build(post_params)
+      @post.user = current_user
+
+      if @post.save
+        flash[:success] = "New topic created"
+        redirect_to @topic
+      else
+        @topic.delete
+        render :new_topic
+      end
     else
-      flash[:danger] = "Error creating new topic"
-      render forum_path(params[:forum_id])
+      render :new_topic
     end
   end
 

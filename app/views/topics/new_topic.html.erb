@@ -1,4 +1,24 @@
-<%= render 'partials/breadcrumb', obj: @topic %>
+<% if @topic.errors.any? %>
+  <div class="alert alert-danger">
+    Topic errors:
+    <ul>
+      <% @topic.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<% if @post && @post.errors.any? %>
+  <div class="alert alert-danger">
+    Post errors:
+    <ul>
+      <% @post.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<%= render 'partials/breadcrumb_with_static_last', obj: @topic %>
 <div id="new-topic">
   <h4>Post New Topic</h4>
   <small>Forum: <%= link_to @topic.forum, forum_path(@topic.forum) %></small>

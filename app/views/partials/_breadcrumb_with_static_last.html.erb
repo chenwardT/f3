@@ -1,0 +1,11 @@
+<div id="breadcrumb">
+  <a href="<%= forums_path %>">Forum</a>
+  <% breadcrumbs_with_static_last(obj, "Post New Topic").each_with_index do |bc, idx| %>
+    >
+    <% if idx == breadcrumbs_with_static_last(obj, "").size - 1 %>
+      <%= bc %>
+    <% else %>
+      <a href="<%= forum_path(bc) %>"><%= bc %></a>
+    <% end %>
+  <% end %>
+</div>
