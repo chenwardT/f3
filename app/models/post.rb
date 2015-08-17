@@ -62,26 +62,13 @@ class Post < ActiveRecord::Base
     source_topics = source_posts.map{|p| p.topic}.uniq
 
     if create_topic
-      forum = Forum.find(destination_forum_id)
-      new_topic = nil
-      ActiveRecord::Base.transaction do
-        new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
-        Post.where(id: post_ids).update_all(topic_id: new_topic.id)
-        source_topics.each {|t| t.delete if t.posts.count == 0}
-      end
+      new_topic = self.move_to_new_topic(source_posts, source_topics, destination_forum_id,
+                                         new_topic_author, new_topic_title)
     else
       dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
       path = URI.parse(dest_topic_url).path
       reverse_lookup = Rails.application.routes.recognize_path(path)
-
-      if reverse_lookup[:controller] == 'topics'
-        destination_topic = nil
-        ActiveRecord::Base.transaction do
-          destination_topic = Topic.find(reverse_lookup[:id])
-          Post.where(id: post_ids).update_all(topic_id: destination_topic.id)
-          source_topics.each {|t| t.delete if t.posts.count == 0}
-        end
-      end
+      destination_topic = self.move_to_existing_topic(source_posts, source_topics, reverse_lookup)
     end
 
     new_topic || destination_topic
@@ -96,38 +83,15 @@ class Post < ActiveRecord::Base
   # Returns the destination topic.
   def self.copy(create_topic, new_topic_author, post_ids, destination_forum_id=nil,
       new_topic_title=nil, dest_topic_url=nil)
+    source_posts = Post.where(id: post_ids)
     if create_topic
-      forum = Forum.find(destination_forum_id)
-      new_topic = nil
-
-      ActiveRecord::Base.transaction do
-        new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
-        posts = Post.where(id: post_ids)
-
-        posts.each do |post|
-          post_copy = post.dup
-          post_copy.update_attributes(topic: new_topic, created_at: post.created_at,
-                                      updated_at: post.updated_at)
-        end
-      end
+      new_topic = self.copy_to_new_topic(source_posts, new_topic_author, new_topic_title,
+      destination_forum_id)
     else
       dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
       path = URI.parse(dest_topic_url).path
       reverse_lookup = Rails.application.routes.recognize_path(path)
-      destination_topic = nil
-
-      if reverse_lookup[:controller] == 'topics'
-        ActiveRecord::Base.transaction do
-          destination_topic = Topic.find(reverse_lookup[:id])
-          posts = Post.where(id: post_ids)
-
-          posts.each do |post|
-            post_copy = post.dup
-            post_copy.update_attributes(topic: destination_topic, created_at: post.created_at,
-                                        updated_at: post.updated_at)
-          end
-        end
-      end
+      destination_topic = self.copy_to_existing_topic(source_posts, reverse_lookup)
     end
 
     new_topic || destination_topic
@@ -146,4 +110,71 @@ class Post < ActiveRecord::Base
   def update_topic_last_post_at
     topic.update_column(:last_post_at, created_at)
   end
+
+  private
+
+  def self.move_to_new_topic(source_posts, source_topics, destination_forum_id,
+      new_topic_author, new_topic_title)
+    forum = Forum.find(destination_forum_id)
+    new_topic = nil
+
+    ActiveRecord::Base.transaction do
+      new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
+      source_posts.update_all(topic_id: new_topic.id)
+      source_topics.each {|t| t.delete if t.posts.count == 0}
+    end
+
+    new_topic
+  end
+
+  # TODO: Handle bad URL (e.g. does not point to a topic)
+  def self.move_to_existing_topic(source_posts, source_topics, reverse_lookup)
+    if reverse_lookup[:controller] == 'topics'
+      destination_topic = nil
+
+      ActiveRecord::Base.transaction do
+        destination_topic = Topic.find(reverse_lookup[:id])
+        source_posts.update_all(topic_id: destination_topic.id)
+        source_topics.each {|t| t.delete if t.posts.count == 0}
+      end
+
+      return destination_topic
+    end
+  end
+
+  def self.copy_to_new_topic(source_posts, new_topic_author, new_topic_title, destination_forum_id)
+    forum = Forum.find(destination_forum_id)
+    new_topic = nil
+
+    ActiveRecord::Base.transaction do
+      new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
+
+      source_posts.each do |post|
+        post_copy = post.dup
+        post_copy.update_attributes(topic: new_topic, created_at: post.created_at,
+                                    updated_at: post.updated_at)
+      end
+    end
+
+    new_topic
+  end
+
+  def self.copy_to_existing_topic(source_posts, reverse_lookup)
+    destination_topic = nil
+
+    if reverse_lookup[:controller] == 'topics'
+      ActiveRecord::Base.transaction do
+        destination_topic = Topic.find(reverse_lookup[:id])
+
+        source_posts.each do |post|
+          post_copy = post.dup
+          post_copy.update_attributes(topic: destination_topic, created_at: post.created_at,
+                                      updated_at: post.updated_at)
+        end
+      end
+    end
+
+    destination_topic
+  end
+
 end
