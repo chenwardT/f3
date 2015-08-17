@@ -10,7 +10,7 @@
 
 <nav>
   <% if user_signed_in? %>
-    Signed in as <%= current_user %>
+    Signed in as <%= username_as_link(current_user) %> |
     <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>
   <% else %>
     <%= link_to "Sign in", new_user_session_path %>
@@ -18,7 +18,7 @@
   <% end %>
 </nav>
 <hr>
-<div class="container">
+<div class="container-fluid">
   <%= render 'partials/navbar' %>
   <!-- TODO: devise log-in/-out flashes being classed as 'notice' (no style) -->
   <% flash.each do |key, value| %>
@@ -29,7 +29,7 @@
   <%= yield %>
 </div>
 <hr>
-<div class="container">
+<div class="container-fluid">
   <h5>Forum Statistics</h5>
   <p>Topics: <%= Topic.all.count %> Posts: <%= Post.all.count %> Members: <%= User.all.count %></p>
   <p>Newest member: <%= User.newest %></p>
