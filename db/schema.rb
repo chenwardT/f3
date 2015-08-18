@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150814165636) do
+ActiveRecord::Schema.define(version: 20150818224949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,8 +30,20 @@ ActiveRecord::Schema.define(version: 20150814165636) do
 
   create_table "groups", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "description"
+    t.boolean  "create_forum",             default: false, null: false
+    t.boolean  "preapproved_posts",        default: true,  null: false
+    t.boolean  "view_forum",               default: true,  null: false
+    t.boolean  "view_topic",               default: true,  null: false
+    t.boolean  "create_post",              default: true,  null: false
+    t.boolean  "edit_own_post",            default: true,  null: false
+    t.boolean  "soft_delete_own_post",     default: false, null: false
+    t.boolean  "hard_delete_own_post",     default: false, null: false
+    t.boolean  "lock_or_unlock_own_topic", default: false, null: false
+    t.boolean  "copy_or_move_own_topic",   default: false, null: false
+    t.boolean  "moderate_all_forums",      default: false, null: false
   end
 
   create_table "posts", force: :cascade do |t|
