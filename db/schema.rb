@@ -11,10 +11,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818224949) do
+ActiveRecord::Schema.define(version: 20150819144101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "forum_permissions", force: :cascade do |t|
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "inherit",                  default: true,  null: false
+    t.integer  "group_id"
+    t.integer  "forum_id"
+    t.boolean  "view_forum",               default: true,  null: false
+    t.boolean  "view_topic",               default: true,  null: false
+    t.boolean  "preapproved_posts",        default: true,  null: false
+    t.boolean  "create_topic",             default: true,  null: false
+    t.boolean  "create_post",              default: true,  null: false
+    t.boolean  "edit_own_post",            default: true,  null: false
+    t.boolean  "soft_delete_own_post",     default: false, null: false
+    t.boolean  "hard_delete_own_post",     default: false, null: false
+    t.boolean  "lock_or_unlock_own_topic", default: false, null: false
+    t.boolean  "copy_or_move_own_topic",   default: false, null: false
+    t.boolean  "edit_any_post",            default: false, null: false
+    t.boolean  "soft_delete_any_post",     default: false, null: false
+    t.boolean  "hard_delete_any_post",     default: false, null: false
+    t.boolean  "lock_or_unlock_any_topic", default: false, null: false
+    t.boolean  "copy_or_move_any_topic",   default: false, null: false
+    t.boolean  "manage_any_content",       default: false, null: false
+  end
 
   create_table "forums", force: :cascade do |t|
     t.string   "title"
@@ -34,16 +58,22 @@ ActiveRecord::Schema.define(version: 20150818224949) do
     t.datetime "updated_at",                               null: false
     t.string   "description"
     t.boolean  "create_forum",             default: false, null: false
-    t.boolean  "preapproved_posts",        default: true,  null: false
     t.boolean  "view_forum",               default: true,  null: false
     t.boolean  "view_topic",               default: true,  null: false
+    t.boolean  "preapproved_posts",        default: true,  null: false
     t.boolean  "create_post",              default: true,  null: false
     t.boolean  "edit_own_post",            default: true,  null: false
     t.boolean  "soft_delete_own_post",     default: false, null: false
     t.boolean  "hard_delete_own_post",     default: false, null: false
+    t.boolean  "create_topic",             default: true,  null: false
     t.boolean  "lock_or_unlock_own_topic", default: false, null: false
     t.boolean  "copy_or_move_own_topic",   default: false, null: false
-    t.boolean  "moderate_all_forums",      default: false, null: false
+    t.boolean  "edit_any_post",            default: false, null: false
+    t.boolean  "soft_delete_any_post",     default: false, null: false
+    t.boolean  "hard_delete_any_post",     default: false, null: false
+    t.boolean  "lock_or_unlock_any_topic", default: false, null: false
+    t.boolean  "copy_or_move_any_topic",   default: false, null: false
+    t.boolean  "moderate_any_forum",       default: false, null: false
   end
 
   create_table "posts", force: :cascade do |t|
