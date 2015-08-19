@@ -1,38 +1,54 @@
 class TopicsController < ApplicationController
-  def index
-    @topics = Topic.all
-  end
-
-  # TODO: Handle missing topics (e.g. following link to deleted topic)
   def show
+    # TODO: Compare rescue with exists? check
     begin
       @topic = Topic.find(params[:id])
+
+      begin
+        authorize @topic
+      rescue Pundit::NotAuthorizedError
+        redirect_to (request.referrer || root_path) and return
+      end
+
       register_view(@topic, current_user)
     rescue ActiveRecord::RecordNotFound
       flash[:danger] = 'Topic not found'
-      return redirect_to root_path
+      redirect_to (request.referrer || root_path) and return
     end
 
+    # TODO: authorize view_unapproved_posts
     begin
-      authorize @topic, :moderate?
+      authorize @topic.forum, :moderate?
       @posts = @topic.ordered_posts.page(params[:page])
+      @forum_list = generate_forum_hierarchy
     rescue Pundit::NotAuthorizedError
       @posts = @topic.visible_posts.page(params[:page])
     end
 
     @post = @topic.posts.build
-    @forum_list = generate_forum_hierarchy
   end
 
   def new
     @topic = current_user.topics.build(forum_id: params[:forum], title: 'Post New Topic')
 
-    render 'topics/new_topic'
+    begin
+      authorize @topic
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
+      redirect_to (request.referrer || root_path) and return
+    end
   end
 
   # TODO: Save topic title and post body in displayed form when error on save
   def create
     @topic = current_user.topics.build(topic_params)
+
+    begin
+      authorize @topic.forum, :create_topic?
+    rescue Pundit::NotAuthorizedError
+      flash[:danger] = 'You are not authorized to do that'
+      redirect_to (request.referrer || root_path) and return
+    end
 
     if @topic.save
       @post = @topic.posts.build(post_params)
@@ -43,10 +59,10 @@ class TopicsController < ApplicationController
         redirect_to @topic
       else
         @topic.delete
-        render :new_topic
+        render :new
       end
     else
-      render :new_topic
+      render :new
     end
   end
 
