@@ -295,7 +295,10 @@
   });
 
   function CreateForumOptions(){
+    // TODO: Cleanup
+    <% if @forum_list %>
     var forums = <%= raw(@forum_list) %>;
+    <% end %>
     var options = "";
 
     for (var i = 0; i < forums.length; i++){
