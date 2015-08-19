@@ -30,4 +30,21 @@ class User < ActiveRecord::Base
 
     fields
   end
+
+  # Performs a pessimistic authorization check for this user given an +action+ and an
+  # optionally specified +resource+.
+  #
+  # If a +resource+ is given, then the resource's group-specific permissions are checked against
+  # the user's groups.
+  # If a +resource+ is not given, then the user's groups are checked for permissions.
+  def able_to?(action, resource=nil)
+    if resource.nil?
+      groups.each do |grp|
+        return true if grp[action.to_sym]
+      end
+
+      return false
+    end
+    raise NotImplementedError
+  end
 end
