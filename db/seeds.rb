@@ -1,21 +1,125 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
 
-admin = Group.create(name: 'admin')
-mod = Group.create(name: 'moderator')
+admin = Group.create(name: 'admin',
+                     description: 'Administrators',
+                     create_forum: true,
+                     view_topic: true,
+                     view_forum: true,
+                     preapproved_posts: true,
+                     create_post: true,
+                     edit_own_post: true,
+                     soft_delete_own_post: true,
+                     hard_delete_own_post: true,
+                     create_topic: true,
+                     lock_or_unlock_own_topic: true,
+                     copy_or_move_own_topic: true,
+                     edit_any_post: true,
+                     soft_delete_any_post: true,
+                     hard_delete_any_post: true,
+                     lock_or_unlock_any_topic: true,
+                     copy_or_move_any_topic: true,
+                     moderate_any_forum: true)
+
+mod = Group.create(name: 'moderator',
+                   description: 'Moderators',
+                   create_forum: true,
+                   view_topic: true,
+                   view_forum: true,
+                   preapproved_posts: true,
+                   create_post: true,
+                   edit_own_post: true,
+                   soft_delete_own_post: true,
+                   hard_delete_own_post: true,
+                   create_topic: true,
+                   lock_or_unlock_own_topic: true,
+                   copy_or_move_own_topic: true,
+                   edit_any_post: true,
+                   soft_delete_any_post: true,
+                   hard_delete_any_post: true,
+                   lock_or_unlock_any_topic: true,
+                   copy_or_move_any_topic: true,
+                   moderate_any_forum: true)
+
+registered = Group.create(name: 'registered',
+                          description: 'Registered Users',
+                          create_forum: false,
+                          view_topic: true,
+                          view_forum: true,
+                          preapproved_posts: true,
+                          create_post: true,
+                          edit_own_post: true,
+                          soft_delete_own_post: false,
+                          hard_delete_own_post: false,
+                          create_topic: true,
+                          lock_or_unlock_own_topic: false,
+                          copy_or_move_own_topic: false,
+                          edit_any_post: false,
+                          soft_delete_any_post: false,
+                          hard_delete_any_post: false,
+                          lock_or_unlock_any_topic: false,
+                          copy_or_move_any_topic: false,
+                          moderate_any_forum: false)
+
+read_only = Group.create(name: 'read_only',
+                         description: 'Read Only Users',
+                         create_forum: false,
+                         view_topic: true,
+                         view_forum: true,
+                         preapproved_posts: true,
+                         create_post: false,
+                         edit_own_post: false,
+                         soft_delete_own_post: false,
+                         hard_delete_own_post: false,
+                         create_topic: false,
+                         lock_or_unlock_own_topic: false,
+                         copy_or_move_own_topic: false,
+                         edit_any_post: false,
+                         soft_delete_any_post: false,
+                         hard_delete_any_post: false,
+                         lock_or_unlock_any_topic: false,
+                         copy_or_move_any_topic: false,
+                         moderate_any_forum: false)
+
+no_perms = Group.create(name: 'no_perms',
+                         description: 'No Permission Users',
+                         create_forum: false,
+                         view_topic: false,
+                         view_forum: false,
+                         preapproved_posts: false,
+                         create_post: false,
+                         edit_own_post: false,
+                         soft_delete_own_post: false,
+                         hard_delete_own_post: false,
+                         create_topic: false,
+                         lock_or_unlock_own_topic: false,
+                         copy_or_move_own_topic: false,
+                         edit_any_post: false,
+                         soft_delete_any_post: false,
+                         hard_delete_any_post: false,
+                         lock_or_unlock_any_topic: false,
+                         copy_or_move_any_topic: false,
+                         moderate_any_forum: false)
 
 user = User.new(email: 'chenward.t@gmail.com', username: 'chenwardT', password: 'test1234',
                 password_confirmation: 'test1234')
-
+user.groups << admin
 user.save!
 
-admin.users << user
-# mod.users << user
+user = User.new(email: 'registered@test.com', username: 'registered', password: 'test1234',
+                password_confirmation: 'test1234')
+user.groups << registered
+user.save!
+
+user = User.new(email: 'readonly@test.com', username: 'readonly', password: 'test1234',
+                password_confirmation: 'test1234')
+user.groups << read_only
+user.save!
+
+user = User.new(email: 'noperms@test.com', username: 'noperms', password: 'test1234',
+                password_confirmation: 'test1234')
+user.groups << no_perms
+user.save!
 
 # TODO: Ensure this doesn't duplicate acct info when we set unique constraints.
 40.times do
@@ -26,6 +130,7 @@ admin.users << user
                   country: Faker::Address.country, quote: Faker::Company.catch_phrase,
                   website: Faker::Internet.url, bio: Faker::Lorem.paragraph,
                   signature: Faker::Hacker.say_something_smart)
+  user.groups << registered
   user.save!
 end
 
