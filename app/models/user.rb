@@ -15,10 +15,6 @@ class User < ActiveRecord::Base
     username
   end
 
-  def admin?
-    groups.include?(Group.find_by(name: 'admin'))
-  end
-
   def profile_fields
     fields = []
 
