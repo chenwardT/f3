@@ -7,4 +7,8 @@ class Group < ActiveRecord::Base
   def to_s
     name
   end
+
+  def user_count
+    users.count
+  end
 end
