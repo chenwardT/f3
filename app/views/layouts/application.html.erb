@@ -11,6 +11,9 @@
 <nav>
   <% if user_signed_in? %>
     Signed in as <%= username_as_link(current_user) %> |
+    <% if current_user.able_to?(:admin) %>
+      <%= link_to "Admin", admin_dashboard_path %> |
+    <% end %>
     <%= link_to "Sign out", destroy_user_session_path, :method => :delete %>
   <% else %>
     <%= link_to "Sign in", new_user_session_path %>
