@@ -55,6 +55,8 @@ gem 'pundit'
 gem 'pry-rails'
 gem 'pry-doc'
 
+gem 'activeadmin', '~> 1.0.0pre1'
+
 group :development do
   # Use faker for creating seed data
   gem 'faker'
