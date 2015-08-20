@@ -19,10 +19,10 @@ class TopicsController < ApplicationController
     # TODO: authorize view_unapproved_posts
     begin
       authorize @topic.forum, :moderate?
-      @posts = @topic.ordered_posts.page(params[:page])
+      @posts = @topic.ordered_posts.includes(:user).page(params[:page])
       @forum_list = generate_forum_hierarchy
     rescue Pundit::NotAuthorizedError
-      @posts = @topic.visible_posts.page(params[:page])
+      @posts = @topic.visible_posts.includes(:user).page(params[:page])
     end
 
     @post = @topic.posts.build
