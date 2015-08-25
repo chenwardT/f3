@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def authenticate_admin_user!
-    redirect_to new_user_session_path unless current_user.able_to?(:admin)
+    redirect_to new_user_session_path unless user_signed_in? && current_user.able_to?(:admin)
   end
 
   protected
