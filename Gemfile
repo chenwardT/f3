@@ -56,6 +56,7 @@ gem 'pry-rails'
 gem 'pry-doc'
 
 gem 'activeadmin', '~> 1.0.0pre1'
+gem 'country_select', github: 'stefanpenner/country_select'
 
 group :development do
   # Use faker for creating seed data
