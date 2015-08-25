@@ -69,6 +69,34 @@ ActiveAdmin.register User do
 
     f.actions
   end
+
+  controller do
+    def update
+      @user = User.find(params[:id])
+
+      begin
+        ActiveRecord::Base.transaction do
+          @user.update_attributes!(permitted_params[:user])
+
+          if permitted_params[:user][:group_ids]
+            @user.groups = []
+
+            permitted_params[:user][:group_ids].each do |id|
+              @user.groups << Group.find(id) if id != ""
+            end
+          end
+        end
+      rescue ActiveRecord::RecordInvalid
+        # TODO: Cleanup
+        flash[:danger] = @user.errors.full_messages
+        redirect_to edit_admin_user_path(@user) and return
+      end
+
+      flash[:notice] = 'User was successfully updated.'
+      redirect_to admin_user_path(@user)
+    end
+  end
+
   preserve_default_filters!
   remove_filter :topics
   remove_filter :posts
