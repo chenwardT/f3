@@ -45,6 +45,30 @@ ActiveAdmin.register User do
       end
     end
   end
+
+  permit_params :email, :username, :password, :birthday, :time_zone, :country, :quote, :website,
+                :bio, :signature, group_ids: []
+
+  form do |f|
+    f.inputs "Profile" do
+      f.input :email
+      f.input :username
+      f.input :password if f.object.new_record?
+      f.input :birthday
+      f.input :time_zone
+      f.input :country
+      f.input :quote
+      f.input :website
+      f.input :bio
+      f.input :signature
+    end
+
+    f.inputs "User Groups" do
+      f.input :groups, as: :check_boxes
+    end
+
+    f.actions
+  end
   preserve_default_filters!
   remove_filter :topics
   remove_filter :posts
