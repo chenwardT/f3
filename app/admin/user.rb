@@ -28,8 +28,8 @@ ActiveAdmin.register User do
 
     panel 'Group Membership' do
       table_for user.groups do
-        column 'Name' do |group|
-          group.name
+        column 'Group' do |group|
+          group.name + " (id: #{group.id})"
         end
         column 'Description' do |group|
           group.description
