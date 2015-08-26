@@ -5,6 +5,7 @@ class Forum < ActiveRecord::Base
 
   has_many :forums
   has_many :topics
+  has_many :forum_permissions
 
   scope :tree_for, ->(instance) { where("#{table_name}.id IN (#{tree_sql_for(instance)})").
                                   order("#{table_name}.id") }
