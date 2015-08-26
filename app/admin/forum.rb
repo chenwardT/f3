@@ -22,7 +22,7 @@ ActiveAdmin.register Forum do
     end
   end
 
-  permit_params :title, :description, :forum, :locked, :hidden
+  permit_params :title, :description, :forum_id, :locked, :hidden
 
   form do |f|
     f.inputs "Forum" do
