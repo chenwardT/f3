@@ -2,6 +2,10 @@ class ForumPermission < ActiveRecord::Base
   belongs_to :forum
   belongs_to :group
 
+  def to_s
+    "#{forum}: #{group}"
+  end
+
   def effective_permissions
     source = self
 
