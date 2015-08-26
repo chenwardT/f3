@@ -14,6 +14,10 @@ class Forum < ActiveRecord::Base
     title
   end
 
+  def parent
+    forum
+  end
+
   def breadcrumb
     trail = [self.title]
 
