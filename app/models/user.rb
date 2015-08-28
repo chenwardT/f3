@@ -33,15 +33,16 @@ class User < ActiveRecord::Base
   # If a +resource+ is given, then the resource's group-specific permissions are checked against
   # the user's groups.
   # If a +resource+ is not given, then the user's groups are checked for permissions.
-  def able_to?(action, resource=nil)
-    if resource.nil?
-      groups.each do |grp|
-        return true if grp[action.to_sym]
-      end
+  def able_to?(action, forum)
+    applicable_permissions = ForumPermission.where(forum: forum, group: groups)
 
-      return false
+    applicable_permissions.each do |permissions|
+      return true if permissions.effective_permissions[action.to_sym]
     end
-    raise NotImplementedError
+
+    false
+  end
+
   def is_admin?
     groups.each { |group| return true if group.admin }
 
