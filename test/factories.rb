@@ -4,13 +4,17 @@ FactoryGirl.define do
     "user#{n}@example.com"
   end
 
+  sequence :username do |n|
+    "user#{n}"
+  end
+
   factory :user do
-    username "tom"
+    username
     email
     password "test1234"
     password_confirmation "test1234"
     time_zone "America/New_York"
-    website "tom.com"
+    website "someuser.com"
     bio "Hi I'm a user"
     signature "~sig"
     birthday "Thu, 30 Jul 2015".to_date
@@ -51,7 +55,16 @@ FactoryGirl.define do
     count 0
   end
 
+  sequence :group_name do |n|
+    "group#{n}"
+  end
+
   factory :group do
-    name nil
+    name { generate(:group_name) }
+  end
+
+  factory :forum_permission do
+    forum { |f| f.association(:forum) }
+    group { |g| g.association(:group) }
   end
 end
