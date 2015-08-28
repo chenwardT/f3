@@ -27,7 +27,7 @@ ActiveAdmin.register_page "Dashboard" do
         panel "Recent Topics" do
           ul do
             Topic.order(created_at: :desc).limit(5).map do |topic|
-              li link_to(topic.title, admin_topic_path(topic))
+              li link_to(topic.title, topic_path(topic))
             end
           end
         end
