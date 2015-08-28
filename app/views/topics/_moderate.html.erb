@@ -340,7 +340,7 @@
   // Generate a default merged body for the selected posts.
   // TODO: Preserve newlines when storing in DB. Store as HTML?
   function ConcatPostBodies(ids){
-    var bodies;
+    var bodies = "";
 
     for (var id in ids){
       bodies += ($("#post-" + ids[id]).find(".post-body").text().trim() + "\n");
