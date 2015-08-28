@@ -8,6 +8,9 @@ class Forum < ActiveRecord::Base
   has_many :topics
   has_many :forum_permissions
 
+  after_create :create_forum_permissions
+  before_destroy :destroy_forum_permissions
+
   scope :tree_for, ->(instance) { where("#{table_name}.id IN (#{tree_sql_for(instance)})").
                                   order("#{table_name}.id") }
 
@@ -17,7 +20,6 @@ class Forum < ActiveRecord::Base
 
   def breadcrumb
     trail = [self.title]
-
     parent = self.forum
 
     until parent.nil?
@@ -73,5 +75,19 @@ class Forum < ActiveRecord::Base
         )
         SELECT id FROM search_tree ORDER BY path
     SQL
+  end
+
+  private
+
+  def create_forum_permissions
+    ActiveRecord::Base.transaction do
+      Group.all.each do |group|
+        ForumPermission.create(forum: self, group: group)
+      end
+    end
+  end
+
+  def destroy_forum_permissions
+    ForumPermission.where(forum: self).destroy_all
   end
 end
