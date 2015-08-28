@@ -18,6 +18,10 @@ class ActiveSupport::TestCase
   # fixtures :all
   # Add more helper methods to be used by all tests here...
   include FactoryGirl::Syntax::Methods
+  
+  register_spec_type self do |desc|
+    desc < ActiveRecord::Base if desc.is_a? Class
+  end
 end
 
 class ActionController::TestCase
