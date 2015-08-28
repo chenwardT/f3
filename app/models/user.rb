@@ -42,5 +42,9 @@ class User < ActiveRecord::Base
       return false
     end
     raise NotImplementedError
+  def is_admin?
+    groups.each { |group| return true if group.admin }
+
+    false
   end
 end
