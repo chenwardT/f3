@@ -3,8 +3,10 @@ require 'uri'
 # TODO: Set default post state via site config (currently using migration)
 class Post < ActiveRecord::Base
   belongs_to :user
+  alias_attribute :author, :user
   belongs_to :topic
-  belongs_to :moderator, class_name: 'User'
+  delegate :forum, to: :topic
+  belongs_to :moderator, class_name: 'User'   # TODO: OK to store only the last moderator?
 
   # TODO: Consider removing this requirement for user deletion use cases
   validates :user_id, presence: true
