@@ -35,8 +35,8 @@ class Post < ActiveRecord::Base
     where(id: ids).update_all(state: 'unapproved', moderator_id: user)
   end
 
-  # Merges the bodies of 2 or more posts given by +sources+ into a single post, specified by
-  # +destination+. This deletes all +sources+ posts except +destination+. The body of the
+  # Merges the bodies of 2 or more posts given by +sources+ IDs into a single post, specified by
+  # +destination+ ID. This deletes all +sources+ posts except +destination+. The body of the
   # destination will be set to +body+ and the owner will be set to +author+. The user who
   # performed the merge is specified by +user+. An optional +reason+ may be passed to explain
   # the merge.
