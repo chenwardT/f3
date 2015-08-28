@@ -20,19 +20,19 @@ class Post < ActiveRecord::Base
 
   # Note: update_all does not trigger callbacks/validations.
   def self.soft_delete(ids, user, reason=nil)
-    self.where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
+    where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
   end
 
   def self.undelete(ids, user)
-    self.where(id: ids).update_all(state: 'visible', moderator_id: user, mod_reason: nil)
+    where(id: ids).update_all(state: 'visible', moderator_id: user, mod_reason: nil)
   end
 
   def self.approve(ids, user)
-    self.where(id: ids).update_all(state: 'visible', moderator_id: user)
+    where(id: ids).update_all(state: 'visible', moderator_id: user)
   end
 
   def self.unapprove(ids, user)
-    self.where(id: ids).update_all(state: 'unapproved', moderator_id: user)
+    where(id: ids).update_all(state: 'unapproved', moderator_id: user)
   end
 
   # Merges the bodies of 2 or more posts given by +sources+ into a single post, specified by
