@@ -2,6 +2,7 @@ class Forum < ActiveRecord::Base
   include Viewable
 
   belongs_to :forum
+  alias_attribute :parent, :forum   # TODO: Use this instead of "forum" in more places.
 
   has_many :forums
   has_many :topics
@@ -12,10 +13,6 @@ class Forum < ActiveRecord::Base
 
   def to_s
     title
-  end
-
-  def parent
-    forum
   end
 
   def breadcrumb
