@@ -1,6 +1,6 @@
 class TopicPolicy < ApplicationPolicy
-  def view?
-    user && user.able_to?(:view_topic)
+  def show?
+    user && user.able_to?(:view_forum, record.forum)
   end
 
   def new?
@@ -8,6 +8,6 @@ class TopicPolicy < ApplicationPolicy
   end
 
   def create?
-    user && user.able_to?(:create_topic)
+    user && user.able_to?(:create_topic, record.forum)
   end
 end
