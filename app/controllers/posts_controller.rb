@@ -117,7 +117,7 @@ class PostsController < ApplicationController
     posts = Post.where(id: params[:sources])
 
     begin
-      authorize posts
+      authorize posts.first   # TODO: Check perms across multiple posts.
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
@@ -138,7 +138,7 @@ class PostsController < ApplicationController
     posts = Post.where(id: params[:post_ids])
 
     begin
-      authorize posts
+      authorize posts.first # TODO: Check permissions for multiple posts.
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
@@ -154,7 +154,7 @@ class PostsController < ApplicationController
     posts = Post.where(id: params[:post_ids])
 
     begin
-      authorize posts
+      authorize posts.first # TODO: Check params across multiple posts.
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
