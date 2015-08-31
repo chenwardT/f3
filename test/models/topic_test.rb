@@ -1,55 +1,61 @@
 require 'test_helper'
 
-class TopicTest < ActiveSupport::TestCase
-  def setup
-    @user = FactoryGirl.create(:user)
+describe Topic do
+  let(:user) { FactoryGirl.create(:user) }
 
-    @top = FactoryGirl.create(:forum)
-    @top_topic = FactoryGirl.create(:topic, forum: @top, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
+  let(:top) { FactoryGirl.create(:forum) }
+  let(:top_topic) { FactoryGirl.create(:topic, forum: top, user: user) }
 
-    @depth1 = FactoryGirl.create(:forum, forum: @top)
-    @d1_topic = FactoryGirl.create(:topic, forum: @depth1, user: @user)
-    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
+  let(:depth1) { FactoryGirl.create(:forum, forum: top) }
+  let(:d1_topic) { FactoryGirl.create(:topic, forum: depth1, user: user) }
 
-    @depth2a = FactoryGirl.create(:forum, forum: @depth1)
-    @d2a_topic = FactoryGirl.create(:topic, forum: @depth2a, user: @user)
-    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
+  let(:depth2a) { FactoryGirl.create(:forum, forum: depth1) }
+  let(:d2a_topic) { FactoryGirl.create(:topic, forum: depth2a, user: user) }
 
-    @depth2b = FactoryGirl.create(:forum, forum: @depth1)
-    @d2b_topic = FactoryGirl.create(:topic, forum: @depth2b, user: @user)
-    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
+  let(:depth2b) { FactoryGirl.create(:forum, forum: depth1) }
+  let(:d2b_topic) { FactoryGirl.create(:topic, forum: depth2b, user: user) }
+
+  before do
+    [top_topic, d1_topic, d2a_topic, d2b_topic].each do |topic|
+      2.times { FactoryGirl.create(:post, topic: topic, user: user) }
+    end
   end
 
-  test 'to_s returns title' do
-    assert_equal @top_topic.title, @top_topic.to_s
+  it "returns the title" do
+    top_topic.title.must_equal top_topic.to_s
+  end
+  
+  it "returns the number of replies" do
+    top_topic.reply_count.must_equal (top_topic.posts.count - 1)
   end
 
-  test 'reply_count returns number of replies in topic' do
-    assert_equal @top_topic.posts.count - 1, @top_topic.reply_count
+  it "returns the last post created" do
+    top_topic.last_post.must_equal Post.where(topic: top_topic).order(created_at: :desc).first
   end
 
-  test 'last_post returns last post created in topic' do
-    assert_equal Post.where(topic: @top_topic).order(created_at: :desc).first, @top_topic.last_post
-  end
-
-  test 'ordered_posts returns posts in chronological order by creation time' do
+  it "returns posts in chronological order by creation time" do
     sleep(0.1)
-    FactoryGirl.create(:post, user: @user, topic: @top_topic)
-    assert @top_topic.ordered_posts.first.created_at < @top_topic.ordered_posts.last.created_at
+    FactoryGirl.create(:post, topic: top_topic, user: user)
+
+    top_topic.ordered_posts.first.created_at.must_be :<, top_topic.ordered_posts.last.created_at
   end
 
-  test 'num_pages returns the number of pages for a given post' do
-    assert_equal 1, @top_topic.num_pages
+  it "returns the posts that are visible or deleted" do
+    top_topic.visible_posts.count.must_equal 2
 
-    assert_difference('@top_topic.reload.num_pages', 1) do
-      POSTS_PER_PAGE.times do
-        FactoryGirl.create(:post, user: @user, topic: @top_topic)
-      end
+    value do
+      FactoryGirl.create(:post, topic: top_topic, user: user, state: :unapproved)
+      FactoryGirl.create(:post, topic: top_topic, user: user, state: :visible)
+    end.must_change "top_topic.visible_posts.count"
+  end
+
+  it "returns the number of pages it spans" do
+    top_topic.num_pages.must_equal 1
+
+    value do
+      POST_PER_PAGE.times do
+        FactoryGirl.create(:post, user: user, topic: top_topic)
+      end.must_change "top_topic.reload.num_pages"
     end
   end
 end
