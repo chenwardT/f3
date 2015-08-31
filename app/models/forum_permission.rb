@@ -21,4 +21,13 @@ class ForumPermission < ActiveRecord::Base
 
     source
   end
+
+  # TODO: Refine when non-bool permissions added. Prefix permission fields w/string?
+  def self.permission_fields
+    boolean_fields
+  end
+
+  def self.boolean_fields
+    column_types.map { |k, v| k if v.is_a? ActiveRecord::Type::Boolean }.compact
+  end
 end
