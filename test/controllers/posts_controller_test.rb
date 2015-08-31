@@ -1,5 +1,6 @@
 require 'test_helper'
 
+# TODO: Permission specs for delete, etc on any vs own
 describe "PostsController" do
   let(:user) { FactoryGirl.create(:user) }
   let(:forum) { FactoryGirl.create(:forum) }
@@ -161,6 +162,170 @@ describe "PostsController" do
         response.body.must_equal "location.reload();"
         flash[:danger].must_equal 'You are not authorized to do that'
       end
+    end
+  end
+
+  describe "POST :approve" do
+    let(:approved_post) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:unapproved_post) { FactoryGirl.create(:post, topic: topic, user: user, state: :unapproved) }
+
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "approves the posts that are unapproved" do
+        xhr :post, :approve, { ids: [approved_post.id, unapproved_post.id] }
+        unapproved_post.reload.state.must_equal 'visible'
+      end
+    end
+
+    describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:moderate_any_forum, false)
+      end
+
+      it "reloads the page and displays a warning" do
+        xhr :post, :approve, { ids: [approved_post.id, unapproved_post.id] }
+        unapproved_post.reload.state.must_equal 'unapproved'
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
+    end
+  end
+
+  describe "POST :unapprove" do
+    let(:approved_post) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:unapproved_post) { FactoryGirl.create(:post, topic: topic, user: user, state: :unapproved) }
+
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "unapproves the posts that are approved" do
+        xhr :post, :unapprove, { ids: [approved_post.id, unapproved_post.id] }
+        approved_post.reload.state.must_equal 'unapproved'
+      end
+    end
+
+    describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:moderate_any_forum, false)
+      end
+
+      it "reloads the page and displays a warning" do
+        xhr :post, :unapprove, { ids: [approved_post.id, unapproved_post.id] }
+        approved_post.reload.state.must_equal 'visible'
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
+    end
+  end
+
+  describe "POST :hard_delete" do
+    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
+
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "hard deletes the posts" do
+        xhr :post, :hard_delete, ids: [post1.id, post2.id]
+
+        Post.where(id: [post1.id, post2.id]).must_be_empty
+      end
+    end
+
+    describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attributes(hard_delete_own_post: false, hard_delete_any_post: false)
+      end
+
+      it "reloads the page and displays a warning" do
+        xhr :post, :hard_delete, { ids: [post1.id, post2.id] }
+        Post.where(id: [post1.id, post2.id]).wont_be_empty
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
+    end
+  end
+
+  describe "POST :merge" do
+    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:user2) { FactoryGirl.create(:user) }
+    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user2) }
+
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "merges the posts into the selected destination post, setting the author" do
+        expected_body = post1.body + post2.body
+
+        value do
+          xhr :post, :merge, { sources: [post1.id, post2.id], destination: post1.id,
+                               author: post2.author, body: post1.body + post2.body}
+        end.must_change "topic.posts.count", -1
+
+        Post.where(id: post2.id).must_be_empty
+        post1.reload.body.must_equal expected_body
+        post1.author.must_equal post2.author
+      end
+    end
+
+    describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:moderate_any_forum, false)
+      end
+
+      it "reloads the page and displays a warning" do
+        xhr :post, :merge, { sources: [post1.id, post2.id], destination: post1.id,
+                             author: post2.author, body: post1.body + post2.body}
+
+        Post.where(id: [post1.id, post2.id]).count.must_equal 2
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
+    end
+  end
+
+  describe "POST :move" do
+    describe "with permission" do
+
+    end
+
+    describe "without permission" do
+
+    end
+  end
+
+  describe "POST :copy" do
+    describe "with permission" do
+
+    end
+
+    describe "without permission" do
+
     end
   end
 end
