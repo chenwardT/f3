@@ -48,7 +48,7 @@ class PostsController < ApplicationController
     end
 
     begin
-      authorize posts.first
+      authorize posts.first   # TODO: Check permissions on all posts.
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
@@ -75,7 +75,7 @@ class PostsController < ApplicationController
     posts = Post.where(id: params[:ids]).where(state: 'unapproved')
 
     begin
-      authorize posts
+      authorize posts.first
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
@@ -89,7 +89,7 @@ class PostsController < ApplicationController
     posts = Post.where(id: params[:ids]).where(state: 'visible')
 
     begin
-      authorize posts, :approve?
+      authorize posts.first, :approve?
     rescue Pundit::NotAuthorizedError
       reload_and_warn and return
     end
