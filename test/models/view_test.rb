@@ -1,23 +1,21 @@
 require 'test_helper'
 
-class ViewTest < ActiveSupport::TestCase
-  def setup
-    @user = FactoryGirl.create(:user)
+describe View do
+  let(:user) { FactoryGirl.create(:user) }
 
-    @top = FactoryGirl.create(:forum)
-    @top_topic = FactoryGirl.create(:topic, forum: @top, user: @user)
+  let(:top) { FactoryGirl.create(:forum) }
+  let(:top_topic) { FactoryGirl.create(:topic, forum: top, user: user) }
+
+  it "returns when it was last viewed" do
+    view = FactoryGirl.create(:view, user: user, viewable: top_topic, viewable_type: top_topic.class)
+
+    view.viewed_at.must_equal view.updated_at
   end
 
-  test 'viewed_at returns updated_at' do
-    view = FactoryGirl.create(:view, user: @user, viewable: @top_topic, viewable_type: @top_topic.class)
+  it "sets view times during creation" do
+    view = FactoryGirl.create(:view, user: user, viewable: top_topic, viewable_type: top_topic.class)
 
-    assert_equal view.viewed_at, view.updated_at
-  end
-
-  test 'view times are set during creation' do
-    view = FactoryGirl.create(:view, user: @user, viewable: @top_topic, viewable_type: @top_topic.class)
-
-    assert_not_nil view.current_viewed_at
-    assert_not_nil view.past_viewed_at
+    view.current_viewed_at.wont_be_nil
+    view.past_viewed_at.wont_be_nil
   end
 end
