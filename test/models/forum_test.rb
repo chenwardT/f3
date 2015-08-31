@@ -1,89 +1,103 @@
 require 'test_helper'
 
-class ForumTest < ActiveSupport::TestCase
-  def setup
-    @user = FactoryGirl.create(:user)
+describe Forum do
+  let(:user) { FactoryGirl.create(:user) }
 
-    @top = FactoryGirl.create(:forum)
-    @top_topic = FactoryGirl.create(:topic, forum: @top, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
+  let(:top) { FactoryGirl.create(:forum) }
+  let(:top_topic) { FactoryGirl.create(:topic, forum: top, user: user) }
 
-    @depth1 = FactoryGirl.create(:forum, forum: @top)
-    @d1_topic = FactoryGirl.create(:topic, forum: @depth1, user: @user)
-    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d1_topic, user: @user)
+  let(:depth1) { FactoryGirl.create(:forum, forum: top) }
+  let(:d1_topic) { FactoryGirl.create(:topic, forum: depth1, user: user) }
 
-    @depth2a = FactoryGirl.create(:forum, forum: @depth1)
-    @d2a_topic = FactoryGirl.create(:topic, forum: @depth2a, user: @user)
-    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d2a_topic, user: @user)
+  let(:depth2a) { FactoryGirl.create(:forum, forum: depth1) }
+  let(:d2a_topic) { FactoryGirl.create(:topic, forum: depth2a, user: user) }
 
-    @depth2b = FactoryGirl.create(:forum, forum: @depth1)
-    @d2b_topic = FactoryGirl.create(:topic, forum: @depth2b, user: @user)
-    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
-    FactoryGirl.create(:post, topic: @d2b_topic, user: @user)
+  let(:depth2b) { FactoryGirl.create(:forum, forum: depth1) }
+  let(:d2b_topic) { FactoryGirl.create(:topic, forum: depth2b, user: user) }
+
+  before do
+    [top_topic, d1_topic, d2a_topic, d2b_topic].each do |topic|
+      2.times { FactoryGirl.create(:post, topic: topic, user: user) }
+    end
   end
 
-  test 'forum hierarchy' do
-    assert_includes @top.forums, @depth1
-    assert_includes @depth1.forums, @depth2a
-    assert_includes @depth1.forums, @depth2a
-    assert_equal [@depth2a, @depth2b], @depth1.forums
+  it "is created with the correct hierarchy" do
+    top.forums.must_include depth1
+    depth1.forums.must_include depth2a
+    depth1.forums.must_include depth2b
+    depth1.forums.must_equal [depth2a, depth2b]
   end
 
-  test 'to_s returns title' do
-    assert_equal @top.title, @top.to_s
+  it "returns the title" do
+    top.to_s.must_equal top.title
   end
 
-  test 'topic_count returns count of nested topics' do
-    assert_equal @top.topics.count, @top.topic_count
+  it "returns a count of the nested topics" do
+    top.topic_count.must_equal top.topics.count
   end
 
-  test 'self_and_descendents returns the forum and all children of any depth' do
-    assert_equal Forum.count, @top.self_and_descendents.count
-    assert_equal 3, @depth1.self_and_descendents.count
-    assert_equal 1, @depth2b.self_and_descendents.count
+  it "returns itself and all children of any depth" do
+    top.self_and_descendents.count.must_equal Forum.count
+    depth1.self_and_descendents.count.must_equal 3
+    depth2b.self_and_descendents.count.must_equal 1
   end
 
-  test 'self_and_desc_topic_count returns num of topics in forum and all children' do
-    assert_equal Topic.count, @top.self_and_desc_topic_count
-    assert_equal 3, @depth1.self_and_desc_topic_count
-    assert_equal 1, @depth2b.self_and_desc_topic_count
+  it "returns a count of topics in itself and all children of any depth" do
+    top.self_and_desc_topic_count.must_equal Topic.count
+    depth1.self_and_desc_topic_count.must_equal 3
+    depth2b.self_and_desc_topic_count.must_equal 1
   end
 
-  test 'post_count returns num of posts in the forum' do
-    assert_equal 2, @top.post_count
+  it "returns a count of the posts in itself" do
+    top.post_count.must_equal 2
   end
 
-  test 'self_and_desc_post_count returns num of posts in forum and children' do
-    assert_equal Post.count, @top.self_and_desc_post_count
-    assert_equal 6, @depth1.self_and_desc_post_count
-    assert_equal 2, @depth2b.self_and_desc_post_count
+  it "returns a count of posts in itself and all children of any depth" do
+    top.self_and_desc_post_count.must_equal Post.count
+    depth1.self_and_desc_post_count.must_equal 6
+    depth2b.self_and_desc_post_count.must_equal 2
   end
 
-  test 'last_topic returns the last topic that was posted to in in the forum and children' do
+  it "returns the last topic posted to itself and all children of any depth" do
     sleep(0.1)
-    topic = FactoryGirl.create(:topic, forum: @depth1, user: @user)
-    FactoryGirl.create(:post, topic: topic, user: @user)
+    topic = FactoryGirl.create(:topic, forum: depth1, user: user)
+    FactoryGirl.create(:post, topic: topic, user: user)
 
-    topic = Topic.where(forum: @top.self_and_descendents).order(created_at: :desc).first
-    assert_equal topic, @top.last_topic
+    newest_topic = Topic.where(forum: top.self_and_descendents).order(created_at: :desc).first
+    top.last_topic.must_equal newest_topic
   end
 
-  test 'last_post_in_last_topic returns the last post in the last topic created in the forum' do
+  it "returns the last post in the last topic created in itself" do
     sleep(0.1)
-    topic = FactoryGirl.create(:topic, forum: @depth1, user: @user)
-    FactoryGirl.create(:post, topic: topic, user: @user)
+    topic = FactoryGirl.create(:topic, forum: depth1, user: user)
+    FactoryGirl.create(:post, topic: topic, user: user)
 
-    post = @top.last_topic.posts.order(created_at: :desc).first
-    assert_equal post, @top.last_post_in_last_topic
+    newest_post = top.last_topic.posts.order(created_at: :desc).first
+    top.last_post_in_last_topic.must_equal newest_post
   end
 
-  # test 'tree_sql_for returns SQL to get forum and all children' do
-  # end
+  describe "handling of associated permission sets" do
+    before do
+      3.times { FactoryGirl.create(:group) }
+    end
 
-  test 'tree_for scope returns forum and all children' do
-    assert_equal Forum.count, Forum.tree_for(@top).count
+    it "creates a set of permissions for each group on creation of itself" do
+      new_forum = FactoryGirl.create(:forum)
+      new_forum.forum_permissions.count.must_equal 3
+    end
+
+    it "destroys all associated forum permissions on destruction of itself" do
+      ForumPermission.where(forum: depth2a).count.must_equal 3
+
+      # TODO: Cleanup when cascading deletion implemented.
+      depth2a.topics.each do |topic|
+        topic.posts.delete_all
+        topic.delete
+      end
+
+      depth2a.destroy
+
+      ForumPermission.where(forum: depth2a).count.must_equal 0
+    end
   end
 end
