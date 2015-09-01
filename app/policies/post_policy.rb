@@ -1,5 +1,4 @@
 class PostPolicy < ApplicationPolicy
-
   def create?
     user && user.able_to?(:create_post, record.forum)
   end
@@ -34,11 +33,12 @@ class PostPolicy < ApplicationPolicy
     user && user.able_to?(:moderate_any_forum, record.forum)
   end
 
-  def move?
-    user && user.able_to?(:moderate_any_forum, record.forum)
+  def copy?
+    user && ( user.able_to?(:moderate_any_forum, record.forum) ||
+              user.able_to?(:copy_or_move_any_post, record.forum) )
   end
 
-  def copy?
-    user && user.able_to?(:moderate_any_forum, record.forum)
+  def move?
+    copy?
   end
 end
