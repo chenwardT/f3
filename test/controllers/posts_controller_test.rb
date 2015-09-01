@@ -310,22 +310,108 @@ describe "PostsController" do
   end
 
   describe "POST :move" do
-    describe "with permission" do
+    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
 
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "moves the posts to a new topic with a specified title and forum" do
+        old_topic_for_post1 = post1.topic
+        xhr :post, :move, { post_ids: [post1.id, post2.id], create_topic: 'true',
+                            destination_forum_id: forum.id, new_topic_title: 'moved here' }
+
+        old_topic_for_post1.posts.must_be_empty
+        post1.reload.topic.wont_equal old_topic_for_post1
+        post1.topic.must_equal post2.reload.topic
+        post1.topic.title.must_equal 'moved here'
+        post1.topic.forum.must_equal forum
+      end
+
+      it "moves the posts to an existing topic given by an url" do
+        existing_topic = FactoryGirl.create(:topic)
+        old_topic_for_post1 = post1.topic
+        xhr :post, :move, { post_ids: [post1.id, post2.id], create_topic: "false",
+                            url: topic_url(existing_topic) }
+
+        old_topic_for_post1.posts.must_be_empty
+        post1.reload.topic.wont_equal old_topic_for_post1
+        post1.topic.must_equal post2.reload.topic
+        topic_url(post1.topic).must_equal topic_url(existing_topic)
+      end
     end
 
     describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:moderate_any_forum, false)
+      end
 
+      it "reloads the page and displays a warning" do
+        value do
+          xhr :post, :move, { post_ids: [post1.id, post2.id], create_topic: 'true',
+                              destination_forum_id: forum.id, new_topic_title: 'moved here' }
+        end.wont_change "post1.topic.id"
+
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
     end
   end
 
   describe "POST :copy" do
-    describe "with permission" do
+    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
 
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "copies the posts to a new topic with a specified title and forum" do
+        old_topic_for_post1 = post1.topic
+        xhr :post, :copy, { post_ids: [post1.id, post2.id], create_topic: 'true',
+                            destination_forum_id: forum.id, new_topic_title: 'copied here' }
+
+        Topic.find_by(title: 'copied here').posts.count.must_equal 2
+        old_topic_for_post1.posts.wont_be_empty
+      end
+
+      it "copies the posts to an existing topic given by an url" do
+        existing_topic = FactoryGirl.create(:topic)
+        old_topic_for_post1 = post1.topic
+
+        value do
+          xhr :post, :copy, { post_ids: [post1.id, post2.id], create_topic: "false",
+                              url: topic_url(existing_topic) }
+        end.must_change "existing_topic.posts.count", 2
+
+        old_topic_for_post1.posts.wont_be_empty
+      end
     end
 
     describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:moderate_any_forum, false)
+      end
 
+      it "reloads the page and displays a warning" do
+        xhr :post, :copy, { post_ids: [post1.id, post2.id], create_topic: 'true',
+                            destination_forum_id: forum.id, new_topic_title: 'copied here' }
+
+        Topic.find_by(title: 'copied here').must_be_nil
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal 'You are not authorized to do that'
+      end
     end
   end
 end
