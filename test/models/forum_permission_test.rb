@@ -9,15 +9,25 @@ describe ForumPermission do
   let(:fp_2) { ForumPermission.find_by(forum: forum_2, group: group) }
   let(:fp_3) { ForumPermission.find_by(forum: forum_3, group: group) }
 
-  it "must display the forum and group" do
+  it "displays the forum and group" do
     fp_1.to_s.must_equal 'root forum: some group'
   end
 
-  it "must get the effective permissions" do
-    fp_3.effective_permissions.must_equal group
+  describe "permission inheritance" do
+    it "uses its own permissions when it isn't set to inherit" do
+      fp_3.update_attribute(:inherit, false)
 
-    fp_1.update_attribute(:inherit, false)
+      fp_3.effective_permissions.must_equal fp_3
+    end
 
-    fp_3.effective_permissions.must_equal fp_1
+    it "uses the permissions of the closest parent forum that isn't set to inherit" do
+      fp_1.update_attribute(:inherit, false)
+
+      fp_3.effective_permissions.must_equal fp_1
+    end
+
+    it "uses the group's permissions when inheriting through the root forum" do
+      fp_3.effective_permissions.must_equal group
+    end
   end
 end
