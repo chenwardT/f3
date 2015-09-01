@@ -46,6 +46,7 @@ ActiveAdmin.register ForumPermission do
         row :edit_any_post
         row :soft_delete_any_post
         row :hard_delete_any_post
+        row :copy_or_move_any_post
         row :lock_or_unlock_any_topic
         row :copy_or_move_any_topic
         row :manage_any_content
@@ -56,7 +57,7 @@ ActiveAdmin.register ForumPermission do
   permit_params :inherit, :forum_id, :group_id, :view_forum, :view_topic, :preapproved_posts,
                 :create_topic, :create_post, :edit_own_post, :soft_delete_own_post,
                 :hard_delete_own_post, :lock_or_unlock_own_topic, :copy_or_move_own_topic,
-                :edit_any_post, :soft_delete_any_post, :hard_delete_any_post,
+                :edit_any_post, :soft_delete_any_post, :copy_or_move_any_post, :hard_delete_any_post,
                 :lock_or_unlock_any_topic, :copy_or_move_any_topic, :manage_any_content
 
   form do |f|
@@ -81,6 +82,7 @@ ActiveAdmin.register ForumPermission do
       f.input :edit_any_post
       f.input :soft_delete_any_post
       f.input :hard_delete_any_post
+      f.input :copy_or_move_any_post
       f.input :lock_or_unlock_any_topic
       f.input :copy_or_move_any_topic
       f.input :manage_any_content

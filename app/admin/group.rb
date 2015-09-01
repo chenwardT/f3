@@ -25,6 +25,7 @@ ActiveAdmin.register Group do
         row :edit_any_post
         row :soft_delete_any_post
         row :hard_delete_any_post
+        row :copy_or_move_any_post
         row :lock_or_unlock_any_topic
         row :copy_or_move_any_topic
         row :moderate_any_forum
@@ -79,6 +80,7 @@ ActiveAdmin.register Group do
       f.input :edit_any_post
       f.input :soft_delete_any_post
       f.input :hard_delete_any_post
+      f.input :copy_or_move_any_post
       f.input :lock_or_unlock_any_topic
       f.input :copy_or_move_any_topic
       f.input :moderate_any_forum
@@ -117,6 +119,6 @@ ActiveAdmin.register Group do
   permit_params :name, :description, :create_forum, :view_forum, :view_topic, :preapproved_posts,
                 :create_post, :edit_own_post, :soft_delete_own_post, :hard_delete_own_post,
                 :create_topic, :lock_or_unlock_own_topic, :copy_or_move_own_topic, :edit_any_post,
-                :soft_delete_any_post, :hard_delete_any_post, :lock_or_unlock_any_topic,
-                :copy_or_move_any_topic, :moderate_any_forum, :admin
+                :soft_delete_any_post, :hard_delete_any_post, :copy_or_move_any_post,
+                :lock_or_unlock_any_topic, :copy_or_move_any_topic, :moderate_any_forum, :admin
 end
