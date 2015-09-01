@@ -348,7 +348,7 @@ describe "PostsController" do
       before do
         user.groups << full_perms
         sign_in user
-        full_perms.update_attribute(:moderate_any_forum, false)
+        full_perms.update_attributes(moderate_any_forum: false, copy_or_move_any_post: false)
       end
 
       it "reloads the page and displays a warning" do
@@ -400,7 +400,7 @@ describe "PostsController" do
       before do
         user.groups << full_perms
         sign_in user
-        full_perms.update_attribute(:moderate_any_forum, false)
+        full_perms.update_attributes(moderate_any_forum: false, copy_or_move_any_post: false)
       end
 
       it "reloads the page and displays a warning" do
