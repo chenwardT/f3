@@ -16,6 +16,10 @@ class Group < ActiveRecord::Base
     users.count
   end
 
+  def permissions_for(forum)
+    forum_permissions.find_by(forum: forum)
+  end
+
   # TODO: Refine when non-bool permissions added. Prefix permission fields w/string?
   def self.permission_fields
     boolean_fields
