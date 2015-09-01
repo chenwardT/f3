@@ -32,6 +32,12 @@ describe Forum do
     top.to_s.must_equal top.title
   end
 
+  it "returns the permission set for a given forum" do
+    group = FactoryGirl.create(:group)
+
+    top.permissions_for(group).must_equal ForumPermission.find_by(group: group, forum: top)
+  end
+
   it "returns a count of the nested topics" do
     top.topic_count.must_equal top.topics.count
   end
