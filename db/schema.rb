@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820152140) do
+ActiveRecord::Schema.define(version: 20150901151119) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20150820152140) do
     t.boolean  "lock_or_unlock_any_topic", default: false, null: false
     t.boolean  "copy_or_move_any_topic",   default: false, null: false
     t.boolean  "manage_any_content",       default: false, null: false
+    t.boolean  "copy_or_move_any_post",    default: false, null: false
   end
 
   create_table "forums", force: :cascade do |t|
@@ -90,6 +91,7 @@ ActiveRecord::Schema.define(version: 20150820152140) do
     t.boolean  "copy_or_move_any_topic",   default: false, null: false
     t.boolean  "moderate_any_forum",       default: false, null: false
     t.boolean  "admin",                    default: false, null: false
+    t.boolean  "copy_or_move_any_post",    default: false, null: false
   end
 
   create_table "posts", force: :cascade do |t|
