@@ -30,6 +30,10 @@ class Forum < ActiveRecord::Base
     trail.reverse.join(" > ")
   end
 
+  def permissions_for(group)
+    forum_permissions.find_by(group: group)
+  end
+
   # TODO: Rename
   def topic_count
     topics.count
