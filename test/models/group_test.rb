@@ -18,7 +18,13 @@ describe Group do
     group.user_count.must_equal 3
   end
 
-  describe "handling associated forum permission sets" do
+  it "returns the permission set for a given forum" do
+    forum = FactoryGirl.create(:forum)
+
+    group.permissions_for(forum).must_equal ForumPermission.find_by(group: group, forum: forum)
+  end
+
+  describe "handles associated forum permission sets" do
     let(:forum) { FactoryGirl.create(:forum) }
 
     it "creates a set of forum permissions on creation of itself" do
