@@ -14,108 +14,30 @@ F3 is under active development; details contained in the following sections are 
 Screenshots
 ===========
 
-[Forum Index](http://i.imgur.com/5SNXbEg.png)
+[Forum Index](http://i.imgur.com/beCt7Su.png)
 
-[Individual Forum](http://i.imgur.com/CUBIoKL.png)
+[Forum Show](http://i.imgur.com/Jd4OVUz.png)
 
-[Individual Topic](http://i.imgur.com/LHEAK7L.png)
+[Topic View](http://i.imgur.com/ByvcnNc.png)
 
-[Post New Topic](http://i.imgur.com/Ghdk0P9.png)
+[User Profile View](http://i.imgur.com/WBs2RZ0.png)
 
-[Member List](http://i.imgur.com/wKgiaAF.png)
+[Merging Posts](http://i.imgur.com/xBZmVxV.png)
 
-[User Profile](http://i.imgur.com/WQCGzWi.png)
+**Admin Site**
 
-[Merging Posts](https://i.gyazo.com/ef682f7b3e8a8b7bf8abb18a24b8c961.gif) (gif)
+[View Forum Permissions](http://i.imgur.com/EyDrYKu.png)
+
+[Edit Group](http://i.imgur.com/kHLFsto.png)
 
 Tests
 =====
 
-Ensure database user that interacts with the test database has superuser priveleges, as these
-are required to (temporarily) disable referential integrity during the creation of fixtures.
+Specs are written with mintest-rails and require factory_girl.
+
+To run tests:
 
 `bundle exec rake test`
-
-Design
-======
-
-Data Models
------------
-
-[Rails Model Relationship Diagram](http://i.imgur.com/psisxZL.png)
-
-* User
-    - has many Posts
-    - belongs to many Groups
-    - using Devise
-    - attributes
-        - username
-        - email
-        - password
-        - birthday
-        - timezone
-        - photo
-        - country
-        - quote
-        - external URLs (social networks, etc)
-        - bio
-        - signature (and/or flair, etc)
-        - site options
-    - computed attrs
-        - recent posts
-        - post count
-        - avg posts
-        - per day
-        - per week
-
-* Group
-    - has many Users
-    - permissions?
-
-* Forum
-    - may belong to a Forum
-    - has many Topics
-    - attributes
-        - title
-        - description
-        - locked
-        - hidden
-    - computed attrs
-        - no. of views
-            - per-user
-            - total
-
-* Topic
-    - belongs to a Forum
-    - has many Posts
-    - what happens when deleted? options:
-        - entire thread is deleted
-        - exported/moved to hidden archives
-    - attributes
-    - title
-    - slug
-    - locked
-    - hidden
-    - pinned
-    - computed attrs
-        - no. of views
-        - no. of replies
-        - last post
-        - user
-        - timestamp
-
-* Post
-    - belongs to a User
-    - belongs to a Topic
-    - what happens when deleted? options:
-        - author + body is blanked out/replaced with “deleted” text
-    - attributes
-        - body
-        - slug?
-        - timestamps
-        - created
-        - modified
-
 
 Features
 ========
@@ -148,11 +70,13 @@ Features
     - Emoji
 
 * Users
-    - Permissions
-    - Listing
-    - Reputation
+    - Reputation system
     - User levels (post count, etc)
     - Flavor titles
+    
+* Usergroups
+    - Global permissions
+    - Forum-specific permissions w/support for inheritance
 
 * Auditing
     - History of user actions
@@ -178,7 +102,7 @@ Implementation
 Infinite Forum Nesting
 ----------------------
 
-Going with an adjacency list for forum hierarchy
+Forums are structures via adjacency lists:
 
 * Easy to add leaf nodes
 * Relocation is simple
