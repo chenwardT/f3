@@ -14,6 +14,7 @@ describe ForumsController do
 
   before do
     3.times { FactoryGirl.create(:forum) }
+    FactoryGirl.create(:group, name: 'guest')
   end
 
   describe "GET :index" do
@@ -64,6 +65,9 @@ describe ForumsController do
 
     describe "without permission" do
       before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attribute(:view_forum, false)
         get :show, {id: forum.id}
       end
 
