@@ -60,7 +60,7 @@ describe TopicsController do
       end
 
       it "redirects and displays a warning" do
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
         must_redirect_to root_path
       end
     end
@@ -90,7 +90,7 @@ describe TopicsController do
       end
 
       it "redirects and displays an error" do
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
         must_redirect_to root_path
       end
     end
@@ -127,7 +127,7 @@ describe TopicsController do
                           post: {body: 'a quality poast'} }
         end.wont_change "Topic.count"
 
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
         must_redirect_to root_path
       end
     end

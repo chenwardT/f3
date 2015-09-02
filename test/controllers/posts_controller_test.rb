@@ -113,7 +113,7 @@ describe "PostsController" do
 
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -160,7 +160,7 @@ describe "PostsController" do
         post2.reload.state.must_equal 'deleted'
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -193,7 +193,7 @@ describe "PostsController" do
         unapproved_post.reload.state.must_equal 'unapproved'
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -226,7 +226,7 @@ describe "PostsController" do
         approved_post.reload.state.must_equal 'visible'
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -260,7 +260,7 @@ describe "PostsController" do
         Post.where(id: [post1.id, post2.id]).wont_be_empty
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -304,7 +304,7 @@ describe "PostsController" do
         Post.where(id: [post1.id, post2.id]).count.must_equal 2
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -359,7 +359,7 @@ describe "PostsController" do
 
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
@@ -410,7 +410,7 @@ describe "PostsController" do
         Topic.find_by(title: 'copied here').must_be_nil
         response.content_type.must_equal Mime::JS
         response.body.must_equal "location.reload();"
-        flash[:danger].must_equal 'You are not authorized to do that'
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end

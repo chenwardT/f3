@@ -10,6 +10,7 @@ class ForumsController < ApplicationController
     begin
       authorize @forum
     rescue Pundit::NotAuthorizedError
+      flash[:danger] = NOT_AUTHORIZED_MSG
       redirect_to (request.referrer || root_path)
     end
 

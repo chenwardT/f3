@@ -19,7 +19,7 @@ class PostsController < ApplicationController
     begin
       authorize @post
     rescue Pundit::NotAuthorizedError
-      flash[:danger] = "You are not authorized to do that"
+      flash[:danger] = NOT_AUTHORIZED_MSG
       redirect_to (request.referrer || root_path) and return
     end
 
