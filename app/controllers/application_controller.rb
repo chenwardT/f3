@@ -39,6 +39,22 @@ class ApplicationController < ActionController::Base
     guest_user if with_retry
   end
 
+  def reload_and_warn
+    flash[:danger] = NOT_AUTHORIZED_MSG
+    reload_location
+  end
+
+  def reload_and_notify(notice)
+    flash[:info] = notice
+    reload_location
+  end
+
+  def reload_location
+    respond_to do |format|
+      format.js {render inline: "location.reload();"}
+    end
+  end
+
   protected
 
   def configure_permitted_parameters

@@ -183,20 +183,4 @@ class PostsController < ApplicationController
   def redirect_unless_xhr
     redirect_to forums_path unless request.xhr?
   end
-
-  def reload_and_warn
-    flash[:danger] = 'You are not authorized to do that'
-    reload_location
-  end
-
-  def reload_and_notify(notice)
-    flash[:info] = notice
-    reload_location
-  end
-
-  def reload_location
-    respond_to do |format|
-      format.js {render inline: "location.reload();"}
-    end
-  end
 end
