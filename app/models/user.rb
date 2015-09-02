@@ -43,4 +43,8 @@ class User < ActiveRecord::Base
 
     false
   end
+
+  def is_guest?
+    @guest_status ||= groups.find_by_title('guest').exists?
+  end
 end

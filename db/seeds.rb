@@ -1,6 +1,26 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
+Group.create(name: 'guest',
+             description: 'Not Logged In',
+             create_forum: false,
+             view_topic: true,
+             view_forum: true,
+             preapproved_posts: false,
+             create_post: false,
+             edit_own_post: false,
+             soft_delete_own_post: false,
+             hard_delete_own_post: false,
+             create_topic: false,
+             lock_or_unlock_own_topic: false,
+             copy_or_move_own_topic: false,
+             edit_any_post: false,
+             soft_delete_any_post: false,
+             hard_delete_any_post: false,
+             lock_or_unlock_any_topic: false,
+             copy_or_move_any_topic: false,
+             moderate_any_forum: false)
+
 admin = Group.create(name: 'admin',
                      description: 'Administrators',
                      create_forum: true,
