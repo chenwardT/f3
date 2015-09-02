@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 
   has_many :topics
   has_many :posts
-  has_many :user_groups
+  has_many :user_groups, dependent: :destroy
   has_many :groups, through: :user_groups
 
   def to_s
