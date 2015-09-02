@@ -66,7 +66,7 @@ describe "PostsController" do
       it "does not allow the post to be created" do
         value { post :create, post: post_params }.wont_change 'topic.posts.count'
         must_redirect_to root_path
-        flash[:danger].must_equal "You are not authorized to do that"
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
       end
     end
   end
