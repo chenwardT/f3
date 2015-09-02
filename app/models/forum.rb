@@ -4,12 +4,11 @@ class Forum < ActiveRecord::Base
   belongs_to :forum
   alias_attribute :parent, :forum   # TODO: Use this instead of "forum" in more places.
 
-  has_many :forums
-  has_many :topics
-  has_many :forum_permissions
+  has_many :forums, dependent: :destroy
+  has_many :topics, dependent: :destroy
+  has_many :forum_permissions, dependent: :destroy
 
   after_create :create_forum_permissions
-  before_destroy :destroy_forum_permissions
 
   scope :tree_for, ->(instance) { where("#{table_name}.id IN (#{tree_sql_for(instance)})").
                                   order("#{table_name}.id") }
@@ -89,9 +88,5 @@ class Forum < ActiveRecord::Base
         ForumPermission.create(forum: self, group: group)
       end
     end
-  end
-
-  def destroy_forum_permissions
-    ForumPermission.where(forum: self).destroy_all
   end
 end
