@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def pundit_user
+    current_or_guest_user
+  end
+
   # Find guest_user object associated with the current session, creating one as needed.
   def guest_user(with_retry=true)
     @cached_guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
