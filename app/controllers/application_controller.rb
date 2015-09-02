@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_up) << :username
   end
 
+  private
+
   def create_guest_user
     user = User.create(email: "guest_#{Time.now.to_i}#{rand(100)}@example.com", username: "guest")
     user.groups << Group.guest
