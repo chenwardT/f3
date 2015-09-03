@@ -34,11 +34,7 @@ describe Group do
     end
 
     it "destroys associated forum permissions on destruction of itself" do
-      value do
-        # TODO: Cleanup when cascading deletion implemented.
-        group.users.each { |user| user.groups.delete(group) }
-        group.destroy
-      end.must_change "ForumPermission.where(forum: forum).count", -1
+      value { group.destroy }.must_change "ForumPermission.where(forum: forum).count", -1
     end
   end
 end
