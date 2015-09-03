@@ -41,4 +41,8 @@ class PostPolicy < ApplicationPolicy
   def move?
     copy?
   end
+
+  def preapproved_posts?
+    user && user.able_to?(:preapproved_posts, record.forum)
+  end
 end
