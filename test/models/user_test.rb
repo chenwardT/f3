@@ -41,4 +41,15 @@ describe User do
 
     user.is_admin?.must_equal true
   end
+
+  it "returns whether it's a guest" do
+    FactoryGirl.create(:group, name: 'guest')
+
+    user.is_guest?.must_equal false
+
+    user.groups.delete_all
+    user.groups << Group.guest
+
+    user.is_guest?.must_equal true
+  end
 end

@@ -44,7 +44,8 @@ class User < ActiveRecord::Base
     false
   end
 
+  # This is cached, so users must only join the guest group on user creation, and never leave it.
   def is_guest?
-    @guest_status ||= groups.find_by_title('guest').exists?
+    @guest_status ||= groups.exists?(name: 'guest')
   end
 end
