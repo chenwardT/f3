@@ -37,4 +37,8 @@ class Topic < ActiveRecord::Base
   def num_pages
     (posts.count / POSTS_PER_PAGE.to_f).ceil.to_i
   end
+
+  def num_unapproved_posts
+    posts.where(state: 'unapproved').count
+  end
 end
