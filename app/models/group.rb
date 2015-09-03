@@ -1,12 +1,11 @@
 class Group < ActiveRecord::Base
   validates :name, :presence => true
 
-  has_many :user_groups
+  has_many :user_groups, dependent: :destroy
   has_many :users, through: :user_groups
-  has_many :forum_permissions
+  has_many :forum_permissions, dependent: :destroy
 
   after_create :create_forum_permissions
-  before_destroy :destroy_forum_permissions
 
   def to_s
     name
@@ -41,9 +40,5 @@ class Group < ActiveRecord::Base
         ForumPermission.create(forum: forum, group: self)
       end
     end
-  end
-
-  def destroy_forum_permissions
-    ForumPermission.where(group: self).destroy_all
   end
 end
