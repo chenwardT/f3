@@ -92,18 +92,10 @@ describe Forum do
       new_forum.forum_permissions.count.must_equal 3
     end
 
-    it "destroys all associated forum permissions on destruction of itself" do
-      ForumPermission.where(forum: depth2a).count.must_equal 3
-
-      # TODO: Cleanup when cascading deletion implemented.
-      depth2a.topics.each do |topic|
-        topic.posts.delete_all
-        topic.delete
-      end
-
-      depth2a.destroy
-
-      ForumPermission.where(forum: depth2a).count.must_equal 0
+    it "destroys all associated forum permissions, forums, and topics on destruction of itself" do
+      value { depth2b.destroy }.must_change "ForumPermission.where(forum: depth2b).count", -3
+      value { depth2a.destroy }.must_change "Topic.where(forum: depth2a).count", -1
+      value { top.destroy }.must_change "Forum.where(parent: top).count", -1
     end
   end
 end
