@@ -5,7 +5,7 @@ class Topic < ActiveRecord::Base
   belongs_to :user
   alias_attribute :author, :user
 
-  has_many :posts
+  has_many :posts, dependent: :destroy
 
   validates :user, presence: true
 
