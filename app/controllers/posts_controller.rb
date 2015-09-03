@@ -23,8 +23,10 @@ class PostsController < ApplicationController
       redirect_to (request.referrer || root_path) and return
     end
 
+    set_approval_state
+
     if @post.save
-      flash[:success] = "Post successfully created"
+      set_flash_from_state
     else
       error_msg = "Error posting reply: "
       @post.errors.full_messages.each { |msg| error_msg += msg }
@@ -40,12 +42,7 @@ class PostsController < ApplicationController
     # Note: We don't filter on state here, since unapproved posts should also be deleted
     # and, if then undeleted, should be considered "approved" and thus visible.
     posts = Post.where(id: params[:ids])
-
-    if params.key? :reason
-      reason = params[:reason]
-    else
-      reason = nil
-    end
+    params.key? :reason ? reason = params[:reason] : reason = nil
 
     begin
       authorize posts.first   # TODO: Check permissions on all posts.
@@ -182,5 +179,21 @@ class PostsController < ApplicationController
 
   def redirect_unless_xhr
     redirect_to forums_path unless request.xhr?
+  end
+
+  def set_approval_state
+    begin
+      authorize @post, :preapproved_posts?
+    rescue Pundit::NotAuthorizedError
+      @post.state = :unapproved
+    end
+  end
+
+  def set_flash_from_state
+    if @post.unapproved?
+      flash[:success] = "Your post will not be visible by other until approved by a moderator"
+    else
+      flash[:success] = "Post successfully created"
+    end
   end
 end
