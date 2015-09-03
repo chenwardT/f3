@@ -8,4 +8,4 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 
 # TODO: Consider moving user_profile into users.css.scss
-Rails.application.config.assets.precompile += %w( user_profile.css )
+Rails.application.config.assets.precompile += %w( user_profile.css posts.css )

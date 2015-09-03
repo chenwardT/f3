@@ -1,0 +1,11 @@
+.post {
+    margin-top: 10px;
+}
+
+.post-body-unapproved {
+    background-color: #e2f0ce;
+}
+
+.post-body-deleted {
+    background-color: #e8d0cf;
+}
