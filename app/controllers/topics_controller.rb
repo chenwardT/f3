@@ -23,7 +23,7 @@ class TopicsController < ApplicationController
       @posts = @topic.ordered_posts.includes(:user).page(params[:page])
       @forum_list = generate_forum_hierarchy
     rescue Pundit::NotAuthorizedError
-      @posts = @topic.visible_posts.includes(:user).page(params[:page])
+      @posts = @topic.visible_posts_for_user(current_or_guest_user).includes(:user).page(params[:page])
     end
 
     @post = @topic.posts.build

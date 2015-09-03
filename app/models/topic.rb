@@ -26,7 +26,12 @@ class Topic < ActiveRecord::Base
   end
 
   def visible_posts
-    ordered_posts.where(state: ['visible', 'deleted'])
+    ordered_posts.where(state: 'visible')
+  end
+
+  def visible_posts_for_user(user)
+    ordered_posts.where("state = ? OR (user_id = ? AND state IN ('deleted', 'unapproved'))",
+                        :visible, user.id)
   end
 
   def num_pages
