@@ -58,4 +58,8 @@ describe Topic do
       end.must_change "top_topic.reload.num_pages"
     end
   end
+
+  it "destroys associated posts on destruction of itself" do
+    value { top_topic.destroy }.must_change "Post.where(topic: top_topic).count", -2
+  end
 end
