@@ -1,3 +1,5 @@
+<!-- TODO: Ensure no actions can be taken w/o post selection. -->
+
 <div id="mod-topic-<%=topic.id%>">
   <div id="post-moderation" class="btn-group">
 
@@ -10,8 +12,7 @@
         <li><a id="move-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#moveModal"><small>Move Posts</small></a></li>
         <li><a id="merge-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#mergeModal"><small>Merge Posts</small></a></li>
         <li><a id="copy-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#copyModal"><small>Copy Posts</small></a></li>
-        <li><a id="hard-delete-selected-posts" tabindex="-1" href="#"><small>Hard Delete Posts</small></a></li>
-        <li><a id="soft-delete-selected-posts" tabindex="-1" href="#"><small>Soft Delete Posts</small></a></li>
+        <li><a id="delete-selected-posts" tabindex="-1" href="#" data-toggle="modal" data-target="#delete-modal"><small>Delete Posts</small></a></li>
         <li><a id="undelete-selected-posts" tabindex="-1" href="#"><small>Undelete Posts</small></a></li>
         <li><a id="approve-selected-posts" tabindex="-1" href="#"><small>Approve Posts</small></a></li>
         <li><a id="unapprove-selected-posts" tabindex="-1" href="#"><small>Unapprove Posts</small></a></li>
@@ -106,6 +107,36 @@
       </div>
     </div>
 
+    <div class="modal fade" id="delete-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title" id="delete-modal-label">Delete Posts</h4>
+          </div>
+          <div id="delete-body" class="modal-body">
+            <b>Deleting <span id="delete-count">X</span> post(s)</b>
+            <p>You must have the required permissions for this action in all forums from which
+              you have selected topics or posts.</p>
+            <form>
+              Delete Options:
+              <p><input type="radio" id="delete-type-soft" name="delete-type" checked="checked"><label for="delete-type-soft">'Soft' delete - Leave "Deleted" message</label></p>
+              <p><input type="radio" id="delete-type-hard" name="delete-type"><label for="delete-type-hard">Permanently remove</label></p>
+              <p>Soft delete will allow the content to be restored later, whereas permanently removing
+              the content will irrevocably delete it from the database.</p>
+              <p>Deleting the first post of a topic will result in the deletion the topic.</p>
+              <p><label for="delete-reason">Reason for deletion (optional):</label></p>
+              <p><textarea id="delete-reason" rows="3" cols="60"></textarea></p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="submit-delete" class="btn btn-default">Delete Posts</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div> <!-- post-moderation -->
 </div> <!-- mod-topic -->
 
@@ -140,26 +171,6 @@
     $("#select-deleted-posts").click(function(){
       $(".post-deleted").find(":checkbox").each(function(){
         this.checked = true;
-      });
-    });
-
-    $("#hard-delete-selected-posts").click(function(){
-      var selected = GetSelectedPosts();
-
-      $.ajax({
-        type: "POST",
-        url: "<%= hard_delete_post_path %>",
-        data: {"ids": selected}
-      });
-    });
-
-    $("#soft-delete-selected-posts").click(function(){
-      var selected = GetSelectedPosts();
-
-      $.ajax({
-        type: "POST",
-        url: "<%= soft_delete_post_path %>",
-        data: {"ids": selected}
       });
     });
 
@@ -205,6 +216,29 @@
       url: "<%= merge_post_path %>",
       data: {"sources": selected, "destination": mergeDestination, "author": mergeAuthor,
              "body": mergePostBody},
+      success: function(){
+        location.reload();
+      }
+    });
+  });
+
+  $("#submit-delete").click(function(){
+    var deleteTypeSoft = $("#delete-type-soft").prop("checked");
+    var deleteReason = $("#delete-reason").val();
+    var selected = GetSelectedPosts();
+    var deleteUrl;
+
+    if (deleteTypeSoft) {
+      deleteUrl = "<%= soft_delete_post_path %>";
+    }
+    else{
+      deleteUrl = "<%= hard_delete_post_path %>";
+    }
+
+    $.ajax({
+      type: "POST",
+      url: deleteUrl,
+      data: {"ids": selected, "reason": deleteReason},
       success: function(){
         location.reload();
       }
