@@ -53,6 +53,7 @@ class PostsController < ApplicationController
       error_msg = "Error editing post: "
       @post.errors.full_messages.each { |msg| error_msg += msg }
       flash[:danger] = error_msg
+      reload_location and return
     end
 
     # TODO: Redirect to @post page, and @post anchor
