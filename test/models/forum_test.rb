@@ -1,23 +1,23 @@
 require 'test_helper'
 
 describe Forum do
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { create(:user) }
 
-  let(:top) { FactoryGirl.create(:forum) }
-  let(:top_topic) { FactoryGirl.create(:topic, forum: top, user: user) }
+  let(:top) { create(:forum) }
+  let(:top_topic) { create(:topic, forum: top, user: user) }
 
-  let(:depth1) { FactoryGirl.create(:forum, forum: top) }
-  let(:d1_topic) { FactoryGirl.create(:topic, forum: depth1, user: user) }
+  let(:depth1) { create(:forum, forum: top) }
+  let(:d1_topic) { create(:topic, forum: depth1, user: user) }
 
-  let(:depth2a) { FactoryGirl.create(:forum, forum: depth1) }
-  let(:d2a_topic) { FactoryGirl.create(:topic, forum: depth2a, user: user) }
+  let(:depth2a) { create(:forum, forum: depth1) }
+  let(:d2a_topic) { create(:topic, forum: depth2a, user: user) }
 
-  let(:depth2b) { FactoryGirl.create(:forum, forum: depth1) }
-  let(:d2b_topic) { FactoryGirl.create(:topic, forum: depth2b, user: user) }
+  let(:depth2b) { create(:forum, forum: depth1) }
+  let(:d2b_topic) { create(:topic, forum: depth2b, user: user) }
 
   before do
     [top_topic, d1_topic, d2a_topic, d2b_topic].each do |topic|
-      2.times { FactoryGirl.create(:post, topic: topic, user: user) }
+      2.times { create(:post, topic: topic, user: user) }
     end
   end
 
@@ -33,7 +33,7 @@ describe Forum do
   end
 
   it "returns the permission set for a given forum" do
-    group = FactoryGirl.create(:group)
+    group = create(:group)
 
     top.permissions_for(group).must_equal ForumPermission.find_by(group: group, forum: top)
   end
@@ -66,8 +66,8 @@ describe Forum do
 
   it "returns the last topic posted to itself and all children of any depth" do
     sleep(0.1)
-    topic = FactoryGirl.create(:topic, forum: depth1, user: user)
-    FactoryGirl.create(:post, topic: topic, user: user)
+    topic = create(:topic, forum: depth1, user: user)
+    create(:post, topic: topic, user: user)
 
     newest_topic = Topic.where(forum: top.self_and_descendents).order(created_at: :desc).first
     top.last_topic.must_equal newest_topic
@@ -75,8 +75,8 @@ describe Forum do
 
   it "returns the last post in the last topic created in itself" do
     sleep(0.1)
-    topic = FactoryGirl.create(:topic, forum: depth1, user: user)
-    FactoryGirl.create(:post, topic: topic, user: user)
+    topic = create(:topic, forum: depth1, user: user)
+    create(:post, topic: topic, user: user)
 
     newest_post = top.last_topic.posts.order(created_at: :desc).first
     top.last_post_in_last_topic.must_equal newest_post
@@ -84,11 +84,11 @@ describe Forum do
 
   describe "handling of associated permission sets" do
     before do
-      3.times { FactoryGirl.create(:group) }
+      3.times { create(:group) }
     end
 
     it "creates a set of permissions for each group on creation of itself" do
-      new_forum = FactoryGirl.create(:forum)
+      new_forum = create(:forum)
       new_forum.forum_permissions.count.must_equal 3
     end
 

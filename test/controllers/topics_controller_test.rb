@@ -1,18 +1,18 @@
 require 'test_helper'
 
 describe TopicsController do
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { create(:user) }
 
-  let(:forum) { FactoryGirl.create(:forum) }
-  let(:topic) { FactoryGirl.create(:topic, forum: forum, user: user) }
-  let(:post1) { FactoryGirl.create(:post1, topic: topic, user: user) }
+  let(:forum) { create(:forum) }
+  let(:topic) { create(:topic, forum: forum, user: user) }
+  let(:post1) { create(:post1, topic: topic, user: user) }
 
   let(:full_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
   end
 
   let (:no_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
   end
 
   describe "GET :show" do

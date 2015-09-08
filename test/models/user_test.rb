@@ -1,10 +1,10 @@
 require 'test_helper'
 
 describe User do
-  let(:user) { FactoryGirl.create(:user) }
-  let(:group) { FactoryGirl.create(:group) }
-  let(:forum_1) { FactoryGirl.create(:forum) }
-  let(:forum_2) { FactoryGirl.create(:forum, forum: forum_1) }
+  let(:user) { create(:user) }
+  let(:group) { create(:group) }
+  let(:forum_1) { create(:forum) }
+  let(:forum_2) { create(:forum, forum: forum_1) }
 
   before do
     user.groups << group
@@ -15,7 +15,7 @@ describe User do
   end
 
   it "can be scoped by creation date, ascending" do
-    new_user = FactoryGirl.create(:user)
+    new_user = create(:user)
     User.newest.must_equal new_user.username
   end
 
@@ -43,7 +43,7 @@ describe User do
   end
 
   it "returns whether it's a guest" do
-    FactoryGirl.create(:group, name: 'guest')
+    create(:group, name: 'guest')
 
     user.is_guest?.must_equal false
 

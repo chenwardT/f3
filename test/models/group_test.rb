@@ -1,11 +1,11 @@
 require 'test_helper'
 
 describe Group do
-  let(:group) { FactoryGirl.create(:group, name: 'some name') }
+  let(:group) { create(:group, name: 'some name') }
 
   before do
     3.times do
-      user = FactoryGirl.create(:user)
+      user = create(:user)
       user.groups << group
     end
   end
@@ -19,17 +19,17 @@ describe Group do
   end
 
   it "returns the permission set for a given forum" do
-    forum = FactoryGirl.create(:forum)
+    forum = create(:forum)
 
     group.permissions_for(forum).must_equal ForumPermission.find_by(group: group, forum: forum)
   end
 
   describe "handles associated forum permission sets" do
-    let(:forum) { FactoryGirl.create(:forum) }
+    let(:forum) { create(:forum) }
 
     it "creates a set of forum permissions on creation of itself" do
       value do
-        3.times { FactoryGirl.create(:group) }
+        3.times { create(:group) }
       end.must_change "ForumPermission.where(forum: forum).count", 3
     end
 

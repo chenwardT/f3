@@ -2,19 +2,19 @@ require 'test_helper'
 
 describe ForumsController do
   let(:forum) { Forum.first }
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { create(:user) }
 
   let(:full_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
   end
 
   let (:no_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
   end
 
   before do
-    3.times { FactoryGirl.create(:forum) }
-    FactoryGirl.create(:group, name: 'guest')
+    3.times { create(:forum) }
+    create(:group, name: 'guest')
   end
 
   describe "GET :index" do
@@ -44,8 +44,8 @@ describe ForumsController do
 
   describe "GET :show" do
     describe "with permission" do
-      let(:forum) { FactoryGirl.create(:forum) }
-      let(:user) { FactoryGirl.create(:user) }
+      let(:forum) { create(:forum) }
+      let(:user) { create(:user) }
 
       before do
         user.groups << full_perms

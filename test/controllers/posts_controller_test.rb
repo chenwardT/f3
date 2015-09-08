@@ -2,9 +2,9 @@ require 'test_helper'
 
 # TODO: Permission specs for delete, etc on any vs own
 describe "PostsController" do
-  let(:user) { FactoryGirl.create(:user) }
-  let(:forum) { FactoryGirl.create(:forum) }
-  let(:topic) { FactoryGirl.create(:topic, forum: forum, user: user)}
+  let(:user) { create(:user) }
+  let(:forum) { create(:forum) }
+  let(:topic) { create(:topic, forum: forum, user: user)}
 
   let(:post_params) { FactoryGirl.attributes_for(:post, user: user, topic_id: topic.id) }
 
@@ -13,11 +13,11 @@ describe "PostsController" do
   end
 
   let(:full_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, true] }.to_h)
   end
 
   let (:no_perms) do
-    FactoryGirl.create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
+    create(:group, Group.permission_fields.map { |field| [field, false] }.to_h)
   end
 
   describe "POST :create" do
@@ -40,7 +40,7 @@ describe "PostsController" do
 
       describe "when topic has a full page of posts" do
         before do
-          POSTS_PER_PAGE.times { FactoryGirl.create(:post, topic: topic, user: user) }
+          POSTS_PER_PAGE.times { create(:post, topic: topic, user: user) }
         end
 
         it "redirects to last page of topic on post creation" do
@@ -49,7 +49,7 @@ describe "PostsController" do
         end
 
         it "redirects to last page of topic on failure to create post" do
-          FactoryGirl.create(:post, topic: topic, user: user)
+          create(:post, topic: topic, user: user)
           post :create, post: post_params_too_short
           must_redirect_to topic_path(topic, page: 2)
         end
@@ -72,7 +72,7 @@ describe "PostsController" do
   end
 
   describe "POST :update" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post1) { create(:post, topic: topic, user: user) }
 
     describe "with permission" do
       before do
@@ -88,7 +88,7 @@ describe "PostsController" do
       end
 
       it "allows editing by any user that can edit any post" do
-        not_the_owner = FactoryGirl.create(:user)
+        not_the_owner = create(:user)
         post1.update_attribute(:user, not_the_owner)
         xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
 
@@ -115,9 +115,9 @@ describe "PostsController" do
 
   describe "POST :soft_delete" do
     describe "with permission" do
-      let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-      let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
-      let(:post3) { FactoryGirl.create(:post, topic: topic, user: user) }
+      let(:post1) { create(:post, topic: topic, user: user) }
+      let(:post2) { create(:post, topic: topic, user: user) }
+      let(:post3) { create(:post, topic: topic, user: user) }
 
       before do
         user.groups << full_perms
@@ -140,9 +140,9 @@ describe "PostsController" do
     end
 
     describe "without permission" do
-      let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-      let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
-      let(:post3) { FactoryGirl.create(:post, topic: topic, user: user) }
+      let(:post1) { create(:post, topic: topic, user: user) }
+      let(:post2) { create(:post, topic: topic, user: user) }
+      let(:post3) { create(:post, topic: topic, user: user) }
 
       before do
         user.groups << full_perms
@@ -161,9 +161,9 @@ describe "PostsController" do
   end
 
   describe "POST :undelete" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user, state: 'deleted') }
-    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user, state: 'deleted') }
-    let(:post3) { FactoryGirl.create(:post, topic: topic, user: user, state: 'unapproved')}
+    let(:post1) { create(:post, topic: topic, user: user, state: 'deleted') }
+    let(:post2) { create(:post, topic: topic, user: user, state: 'deleted') }
+    let(:post3) { create(:post, topic: topic, user: user, state: 'unapproved')}
 
     describe "with permission" do
       before do
@@ -208,8 +208,8 @@ describe "PostsController" do
   end
 
   describe "POST :approve" do
-    let(:approved_post) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:unapproved_post) { FactoryGirl.create(:post, topic: topic, user: user, state: :unapproved) }
+    let(:approved_post) { create(:post, topic: topic, user: user) }
+    let(:unapproved_post) { create(:post, topic: topic, user: user, state: :unapproved) }
 
     describe "with permission" do
       before do
@@ -241,8 +241,8 @@ describe "PostsController" do
   end
 
   describe "POST :unapprove" do
-    let(:approved_post) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:unapproved_post) { FactoryGirl.create(:post, topic: topic, user: user, state: :unapproved) }
+    let(:approved_post) { create(:post, topic: topic, user: user) }
+    let(:unapproved_post) { create(:post, topic: topic, user: user, state: :unapproved) }
 
     describe "with permission" do
       before do
@@ -274,8 +274,8 @@ describe "PostsController" do
   end
 
   describe "POST :hard_delete" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post1) { create(:post, topic: topic, user: user) }
+    let(:post2) { create(:post, topic: topic, user: user) }
 
     describe "with permission" do
       before do
@@ -308,9 +308,9 @@ describe "PostsController" do
   end
 
   describe "POST :merge" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:user2) { FactoryGirl.create(:user) }
-    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user2) }
+    let(:post1) { create(:post, topic: topic, user: user) }
+    let(:user2) { create(:user) }
+    let(:post2) { create(:post, topic: topic, user: user2) }
 
     describe "with permission" do
       before do
@@ -352,8 +352,8 @@ describe "PostsController" do
   end
 
   describe "POST :move" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post1) { create(:post, topic: topic, user: user) }
+    let(:post2) { create(:post, topic: topic, user: user) }
 
     describe "with permission" do
       before do
@@ -374,7 +374,7 @@ describe "PostsController" do
       end
 
       it "moves the posts to an existing topic given by an url" do
-        existing_topic = FactoryGirl.create(:topic)
+        existing_topic = create(:topic)
         old_topic_for_post1 = post1.topic
         xhr :post, :move, { post_ids: [post1.id, post2.id], create_topic: "false",
                             url: topic_url(existing_topic) }
@@ -407,8 +407,8 @@ describe "PostsController" do
   end
 
   describe "POST :copy" do
-    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
-    let(:post2) { FactoryGirl.create(:post, topic: topic, user: user) }
+    let(:post1) { create(:post, topic: topic, user: user) }
+    let(:post2) { create(:post, topic: topic, user: user) }
 
     describe "with permission" do
       before do
@@ -426,7 +426,7 @@ describe "PostsController" do
       end
 
       it "copies the posts to an existing topic given by an url" do
-        existing_topic = FactoryGirl.create(:topic)
+        existing_topic = create(:topic)
         old_topic_for_post1 = post1.topic
 
         value do

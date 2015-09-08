@@ -2,12 +2,12 @@ require 'test_helper'
 
 class ViewableTest < ActiveSupport::TestCase
   def setup
-    @user = FactoryGirl.create(:user)
+    @user = create(:user)
 
-    @top = FactoryGirl.create(:forum)
-    @top_topic = FactoryGirl.create(:topic, forum: @top, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
-    FactoryGirl.create(:post, topic: @top_topic, user: @user)
+    @top = create(:forum)
+    @top_topic = create(:topic, forum: @top, user: @user)
+    create(:post, topic: @top_topic, user: @user)
+    create(:post, topic: @top_topic, user: @user)
   end
 
   test 'view_for a topic returns num of times a user viewed the topic' do
@@ -53,14 +53,14 @@ end
 # and some spec methods not being recognized (must_change, wont_change).
 
 # describe Viewable do
-#   let(:user) { FactoryGirl.create(:user) }
+#   let(:user) { create(:user) }
 #
-#   let(:top) { FactoryGirl.create(:forum) }
-#   let(:top_topic) { FactoryGirl.create(:topic, forum: top, user: user) }
+#   let(:top) { create(:forum) }
+#   let(:top_topic) { create(:topic, forum: top, user: user) }
 #
 #   before do
-#     FactoryGirl.create(:post, topic: top_topic, user: user)
-#     FactoryGirl.create(:post, topic: top_topic, user: user)
+#     create(:post, topic: top_topic, user: user)
+#     create(:post, topic: top_topic, user: user)
 #   end
 #
 #   it "returns the number of times a user viewed itself" do

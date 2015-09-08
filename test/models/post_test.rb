@@ -3,18 +3,18 @@ require 'test_helper'
 describe Post do
   include Rails.application.routes.url_helpers
 
-  let(:user) { FactoryGirl.create(:user) }
-  let(:mod) { FactoryGirl.create(:user) }
-  let(:forum) { FactoryGirl.create(:forum) }
-  let(:topic) { FactoryGirl.create(:topic, forum: forum, user: user) }
-  let(:post_1) { FactoryGirl.create(:post, topic: topic, user: user) }
-  let(:post_2) { FactoryGirl.create(:post, topic: topic, user: user) }
-  let(:post_3) { FactoryGirl.create(:post, topic: topic, user: user) }
+  let(:user) { create(:user) }
+  let(:mod) { create(:user) }
+  let(:forum) { create(:forum) }
+  let(:topic) { create(:topic, forum: forum, user: user) }
+  let(:post_1) { create(:post, topic: topic, user: user) }
+  let(:post_2) { create(:post, topic: topic, user: user) }
+  let(:post_3) { create(:post, topic: topic, user: user) }
 
   it "updates the topic's last_post_at after post creation" do
     old_ts = topic.last_post_at
     sleep(0.1)
-    post = FactoryGirl.create(:post, topic: topic, user: user)
+    post = create(:post, topic: topic, user: user)
     new_ts = topic.reload.last_post_at
 
     old_ts.wont_equal new_ts
@@ -109,7 +109,7 @@ describe Post do
 
   it "can move multiple posts to an existing topic" do
     post_ids = [post_2.id, post_3.id]
-    existing_topic = FactoryGirl.create(:topic, forum: forum)
+    existing_topic = create(:topic, forum: forum)
     dest_topic = nil
 
     value do
@@ -135,7 +135,7 @@ describe Post do
 
   it "can copy multiple posts to an existing topic" do
     post_ids = [post_2.id, post_3.id]
-    existing_topic = FactoryGirl.create(:topic, forum: forum)
+    existing_topic = create(:topic, forum: forum)
     dest_topic = Post.copy(create_topic=false, new_topic_author=nil, post_ids=post_ids,
                            destination_forum_id=nil, new_topic_title=nil,
                            dest_topic_url=topic_url(existing_topic, host: 'test.com'))
@@ -145,7 +145,7 @@ describe Post do
   end
 
   it "can tell if it's been soft deleted" do
-    post = FactoryGirl.create(:post)
+    post = create(:post)
 
     post.deleted?.must_equal false
 
@@ -155,7 +155,7 @@ describe Post do
   end
 
   it "can tell if it's not approved" do
-    post = FactoryGirl.create(:post)
+    post = create(:post)
 
     post.unapproved?.must_equal false
 
