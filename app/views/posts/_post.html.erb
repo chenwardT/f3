@@ -12,4 +12,23 @@
   <div class="post-body post-body-<%= post.state %>">
     <p><%= display_body_with_state(post) %></p>
   </div>
+  <div class="post-editor" hidden="true">
+    <div class="post-editor-textboxes">
+      <textarea class="edit-body-textarea"><%= post.body %></textarea>
+      <%= text_area :post, :mod_reason, placeholder: "Optional: Reason for editing",
+                    class: "edit-reason-textarea" %>
+    </div>
+    <div class="post-editor-buttons">
+      <%= button_tag "Cancel", class: "cancel-edit btn btn-default btn-sm" %>
+      <%= button_tag "Delete", class: "btn btn-default btn-sm" %>
+      <%= button_tag "Preview", class: "btn btn-default btn-sm" %>
+      <%= button_tag "Save", class: "save-post btn btn-primary btn-sm", "data-id" => post.id %>
+    </div>
+  </div>
+  <div class="post-utils">
+    <%= link_to "Edit", "#", class: "edit-post", "data-id" => post.id %>
+    <%= link_to "Quote", "#", class: "quote-post" %>
+    <%= link_to "Flag", "#", class: "flag-post" %>
+    <%= link_to "Like", "#", class: "like-post" %>
+  </div>
 </div>
