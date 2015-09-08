@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_filter :redirect_unless_xhr, except: [:show, :create, :update]
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
-                                     :unapprove, :merge, :move, :copy]
+                                     :unapprove, :merge, :move, :copy, :update]
 
   # TODO: Factor out authorization logic
   # TODO: Re-raise all Pundit Auth exceptions?
@@ -56,7 +56,7 @@ class PostsController < ApplicationController
     end
 
     # TODO: Redirect to @post page, and @post anchor
-    redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
+    reload_and_notify("Post successfully edited.")
   end
 
   # TODO: Currently assumes all posts are in the same forum.
