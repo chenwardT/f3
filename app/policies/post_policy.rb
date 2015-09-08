@@ -3,6 +3,16 @@ class PostPolicy < ApplicationPolicy
     user && user.able_to?(:create_post, record.forum)
   end
 
+  def update?
+    if user
+      if user.able_to?(:edit_any_post, record.forum)
+        true
+      else
+        record.author == user && user.able_to?(:edit_own_post, record.forum)
+      end
+    end
+  end
+
   def soft_delete?
     if user
       if user.able_to?(:soft_delete_any_post, record.forum)
