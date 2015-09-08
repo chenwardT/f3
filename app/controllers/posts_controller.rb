@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_filter :redirect_unless_xhr, except: [:show, :create, :update]
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
-                                     :unapprove, :merge, :move, :copy, :update]
+                                     :unapprove, :merge, :move, :copy]
 
   # TODO: Factor out authorization logic
   # TODO: Re-raise all Pundit Auth exceptions?
@@ -45,7 +45,7 @@ class PostsController < ApplicationController
       reload_and_warn and return
     end
 
-    @post.body = params[:body]
+    @post.body = post_params[:body]
 
     # TODO: Edit reason
 

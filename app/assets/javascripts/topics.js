@@ -22,7 +22,12 @@ $(document).ready(function(){
     $.ajax({
       method: "PUT",
       url: "/posts/" + postId,
-      data: { body: $(this).parent().parent().find(".edit-body-textarea").val() }
+      data: {
+        post: {
+          body: $(this).parent().parent().find(".edit-body-textarea").val(),
+          topic_id: $(this).parent().parent().find(".topic-id").val()
+        }
+      }
     });
 
     console.log("Post save data sent.");
