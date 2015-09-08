@@ -3,8 +3,11 @@ module ForumsHelper
     links = []
 
     forum.forums.each do |subforum|
-      link_html = content_tag(:a, subforum.title, href: forum_path(subforum))
-      links.push(link_html)
+      # TODO: +authorize+ not callable here.
+      if current_or_guest_user.able_to?(:view_forum, subforum)
+        link_html = content_tag(:a, subforum.title, href: forum_path(subforum))
+        links.push(link_html)
+      end
     end
 
     links.join(separator).html_safe

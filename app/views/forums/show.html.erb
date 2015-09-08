@@ -8,6 +8,8 @@
   <h4>Forum: <%= @forum.title %></h4>
   <p><%= @forum.description %></p>
 
+  <!-- TODO: Break up @forum and @forum.forums into separate variables, filled in by
+       checking permissions in the controller. -->
   <% if @forum.forums.any? %>
   <table class="table">
 
@@ -20,21 +22,23 @@
     </thead>
     <tbody>
       <% @forum.forums.each do |subforum| %>
-        <tr>
-          <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
-            <small><%= subforum.description %></small><br>
-            <% if subforum.forums.any? %>
-              <small>Sub-Forums: <%= subforum_links(subforum) %></small>
-            <% end %>
-          </td>
-          <td>
-            <%= subforum.self_and_desc_topic_count %> Topics<br>
-            <%= subforum.self_and_desc_post_count %> Posts
-          </td>
-          <td>
-            <%= display_last_post_with_topic(subforum.last_topic, subforum.last_post_in_last_topic) %>
-          </td>
-        </tr>
+        <% if current_or_guest_user.able_to?(:view_forum, subforum) %>
+          <tr>
+            <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
+              <small><%= subforum.description %></small><br>
+              <% if subforum.forums.any? %>
+                <small>Sub-Forums: <%= subforum_links(subforum) %></small>
+              <% end %>
+            </td>
+            <td>
+              <%= subforum.self_and_desc_topic_count %> Topics<br>
+              <%= subforum.self_and_desc_post_count %> Posts
+            </td>
+            <td>
+              <%= display_last_post_with_topic(subforum.last_topic, subforum.last_post_in_last_topic) %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
