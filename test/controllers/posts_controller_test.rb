@@ -71,6 +71,48 @@ describe "PostsController" do
     end
   end
 
+  describe "POST :update" do
+    let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }
+
+    describe "with permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+      end
+
+      it "allows editing by user if user is the author and can edit their own posts" do
+        full_perms.update_attribute(:edit_any_post, false)
+        xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
+
+        post1.reload.body.must_equal 'new body 10char'
+      end
+
+      it "allows editing by any user that can edit any post" do
+        not_the_owner = FactoryGirl.create(:user)
+        post1.update_attribute(:user, not_the_owner)
+        xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
+
+        post1.reload.body.must_equal 'new body 10char'
+      end
+    end
+
+    describe "without permission" do
+      before do
+        user.groups << full_perms
+        sign_in user
+        full_perms.update_attributes(edit_own_post: false, edit_any_post: false)
+      end
+
+      it "does not allow the post to be edited" do
+        xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
+
+        response.content_type.must_equal Mime::JS
+        response.body.must_equal "location.reload();"
+        flash[:danger].must_equal NOT_AUTHORIZED_MSG
+      end
+    end
+  end
+
   describe "POST :soft_delete" do
     describe "with permission" do
       let(:post1) { FactoryGirl.create(:post, topic: topic, user: user) }

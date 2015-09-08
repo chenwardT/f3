@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_filter :redirect_unless_xhr, except: [:show, :create]
+  before_filter :redirect_unless_xhr, except: [:show, :create, :update]
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
                                      :unapprove, :merge, :move, :copy]
 
@@ -33,6 +33,29 @@ class PostsController < ApplicationController
       flash[:danger] = error_msg
     end
 
+    redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
+  end
+
+  def update
+    @post = Post.find(params[:id])
+
+    begin
+      authorize @post
+    rescue Pundit::NotAuthorizedError
+      reload_and_warn and return
+    end
+
+    @post.body = params[:body]
+
+    # TODO: Edit reason
+
+    unless @post.save
+      error_msg = "Error editing post: "
+      @post.errors.full_messages.each { |msg| error_msg += msg }
+      flash[:danger] = error_msg
+    end
+
+    # TODO: Redirect to @post page, and @post anchor
     redirect_to controller: 'topics', action: 'show', id: @topic.id, page: last_page_of_topic
   end
 
