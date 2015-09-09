@@ -23,6 +23,7 @@
 .edit-body-textarea {
     resize: none;
     width: 100%;
+    height: 8em;
 }
 
 .edit-reason-textarea {
