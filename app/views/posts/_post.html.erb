@@ -15,11 +15,13 @@
   <div class="post-editor" hidden="true">
     <div class="post-editor-textboxes">
       <textarea class="edit-body-textarea"><%= post.body %></textarea>
+      <%= hidden_field :topic, :id, class: "topic-id", id: nil %>
+      <textarea class="edit-body-textarea" id="edit-<%= post.id %>"><%= post.body %></textarea>
       <%= text_area :post, :mod_reason, placeholder: "Optional: Reason for editing",
                     class: "edit-reason-textarea" %>
     </div>
     <div class="post-editor-buttons">
-      <%= button_tag "Cancel", class: "cancel-edit btn btn-default btn-sm" %>
+      <%= button_tag "Cancel", class: "cancel-edit btn btn-default btn-sm", "data-id" => post.id %>
       <%= button_tag "Delete", class: "btn btn-default btn-sm" %>
       <%= button_tag "Preview", class: "btn btn-default btn-sm" %>
       <%= button_tag "Save", class: "save-post btn btn-primary btn-sm", "data-id" => post.id %>
