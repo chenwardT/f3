@@ -10,11 +10,10 @@
     <% end %>
   </div>
   <div class="post-body post-body-<%= post.state %>">
-    <p><%= display_body_with_state(post) %></p>
+    <p><%= markdown_to_html(display_body_with_state(post)) %></p>
   </div>
   <div class="post-editor" hidden="true">
     <div class="post-editor-textboxes">
-      <textarea class="edit-body-textarea"><%= post.body %></textarea>
       <%= hidden_field :topic, :id, class: "topic-id", id: nil %>
       <textarea class="edit-body-textarea" id="edit-<%= post.id %>"><%= post.body %></textarea>
       <%= text_area :post, :mod_reason, placeholder: "Optional: Reason for editing",

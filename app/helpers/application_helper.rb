@@ -1,3 +1,6 @@
+require 'redcarpet'
+require 'sanitize'
+
 module ApplicationHelper
 
   # obj can be a Topic or Forum instance that is the last breadcrumb
@@ -27,5 +30,14 @@ module ApplicationHelper
     end
 
     breadcrumb.reverse
+  end
+
+  def markdown_to_html(text)
+    renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+    sanitize(renderer.render(text)).html_safe
+  end
+
+  def sanitize(text)
+    Sanitize.fragment(text, Sanitize::Config::BASIC)
   end
 end

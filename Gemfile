@@ -52,6 +52,12 @@ gem 'kaminari'
 # Use pundit for authorization
 gem 'pundit'
 
+# Use redcarpet for markdown formatting
+gem 'redcarpet'
+
+# Use sanitize for HTML sanitization
+gem 'sanitize', '~> 4.0.0'
+
 gem 'pry-rails'
 gem 'pry-doc'
 
