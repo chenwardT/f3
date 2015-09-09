@@ -1,18 +1,25 @@
 "use strict";
 
+var postBody;
+
 $(document).ready(function(){
 
   $(".edit-post").click(function(){
+    var postId = $(this).data("id");
+
     if (EditorIsOpen()){
       alert("You have a pending edit unsaved. Please save or cancel it before proceeding.")
     }else {
       OpenPostEditor.call(this);
     }
+
+    postBody = $("#edit-" + postId).val();
   });
 
   $(".cancel-edit").click(function(){
     if (confirm("All changes made will be lost. Would you like to continue?")) {
       ClosePostEditor.call(this);
+      $("#edit-" + $(this).data("id")).val(postBody);
     }
   });
 
@@ -29,8 +36,6 @@ $(document).ready(function(){
         }
       }
     });
-
-    console.log("Post save data sent.");
   });
 });
 
