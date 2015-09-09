@@ -82,7 +82,7 @@ describe "PostsController" do
 
       it "allows editing by user if user is the author and can edit their own posts" do
         full_perms.update_attribute(:edit_any_post, false)
-        xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
+        xhr :post, :update, id: post1.id, post: { body: 'new body 10char', topic_id: post1.topic.id }
 
         post1.reload.body.must_equal 'new body 10char'
       end
@@ -90,7 +90,7 @@ describe "PostsController" do
       it "allows editing by any user that can edit any post" do
         not_the_owner = create(:user)
         post1.update_attribute(:user, not_the_owner)
-        xhr :post, :update, id: post1.id, body: 'new body 10char', post: { topic_id: post1.topic.id }
+        xhr :post, :update, id: post1.id, post: { body: 'new body 10char', topic_id: post1.topic.id }
 
         post1.reload.body.must_equal 'new body 10char'
       end
