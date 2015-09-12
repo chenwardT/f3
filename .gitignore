@@ -14,6 +14,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
-config/database.yml
-config/secrets.yml
 app/assets/images/
+
+# Ignore application configuration
+/config/application.yml
