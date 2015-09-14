@@ -39,28 +39,10 @@ admin = Group.create(name: 'admin',
                      hard_delete_any_post: true,
                      lock_or_unlock_any_topic: true,
                      copy_or_move_any_topic: true,
-                     moderate_any_forum: true)
+                     moderate_any_forum: true,
+                     admin: true)
 
-mod = Group.create(name: 'moderator',
-                   description: 'Moderators',
-                   create_forum: true,
-                   view_topic: true,
-                   view_forum: true,
-                   preapproved_posts: true,
-                   create_post: true,
-                   edit_own_post: true,
-                   soft_delete_own_post: true,
-                   hard_delete_own_post: true,
-                   create_topic: true,
-                   lock_or_unlock_own_topic: true,
-                   copy_or_move_own_topic: true,
-                   edit_any_post: true,
-                   soft_delete_any_post: true,
-                   hard_delete_any_post: true,
-                   lock_or_unlock_any_topic: true,
-                   copy_or_move_any_topic: true,
-                   moderate_any_forum: true)
-
+# Defaults for Group table
 registered = Group.create(name: 'registered',
                           description: 'Registered Users',
                           create_forum: false,
@@ -142,7 +124,7 @@ user.groups << no_perms
 user.save!
 
 # TODO: Ensure this doesn't duplicate acct info when we set unique constraints.
-40.times do
+20.times do
   name = Faker::Name.name
   user = User.new(email: Faker::Internet.email(name), username: Faker::Internet.user_name(name),
                   password: 'test1234', password_confirmation: 'test1234',
@@ -162,17 +144,17 @@ end
 
 # Nested forums
 Forum.all.each do |forum|
-  4.times do
+  2.times do
     subforum = forum.forums.create!(title: Faker::Commerce.department,
                                     description: Faker::Company.catch_phrase)
     # Topics
-    5.times do
+    3.times do
       author = User.all.sample
       topic = subforum.topics.create!(user: author, title: Faker::Lorem.sentence)
       topic.posts.create!(user: author, body: Faker::Lorem.paragraph)
 
       # Replies
-      5.times do
+      3.times do
         topic.posts.create!(user: User.all.sample, body: Faker::Lorem.paragraph)
       end
     end
@@ -181,13 +163,13 @@ Forum.all.each do |forum|
       innermost_forum = subforum.forums.create!(title: Faker::Commerce.product_name,
                                                 description: Faker::Lorem.sentence)
       # Topics
-      4.times do
+      2.times do
         author = User.all.sample
         topic = innermost_forum.topics.create!(user: author, title: Faker::Lorem.sentence)
         topic.posts.create!(user: author, body: Faker::Lorem.paragraph)
         
         # Replies
-        3.times do
+        2.times do
           topic.posts.create!(user: User.all.sample, body: Faker::Lorem.paragraph)
         end
       end
