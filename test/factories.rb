@@ -20,6 +20,7 @@ FactoryGirl.define do
     birthday "Thu, 30 Jul 2015".to_date
     country "United States"
     quote "frog blast the vent core"
+    confirmed_at Time.now
   end
 
   sequence :forum_title do |n|
