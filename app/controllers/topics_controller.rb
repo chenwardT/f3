@@ -1,4 +1,6 @@
 class TopicsController < ApplicationController
+  after_action :verify_authorized
+
   def show
     # TODO: Compare rescue with exists? check
     begin

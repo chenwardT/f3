@@ -3,6 +3,8 @@ class PostsController < ApplicationController
   before_filter :get_topic, except: [:hard_delete, :soft_delete, :undelete, :approve,
                                      :unapprove, :merge, :move, :copy]
 
+  after_action :verify_authorized
+
   # TODO: Factor out authorization logic
   # TODO: Re-raise all Pundit Auth exceptions?
 

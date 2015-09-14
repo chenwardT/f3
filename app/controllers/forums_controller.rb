@@ -1,4 +1,6 @@
 class ForumsController < ApplicationController
+  after_action :verify_authorized, except: :index
+
   # TODO: Filter forums by viewable by current_user
   def index
     @top_level_forums = policy_scope(Forum.where(forum_id: nil).order(created_at: :asc))
