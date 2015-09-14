@@ -150,7 +150,7 @@ describe "PostsController" do
         full_perms.update_attributes(soft_delete_own_post: false, soft_delete_any_post: false)
       end
 
-      it "redirects to forum index and displays error in flash" do
+      it "reloads the page and displays error in flash" do
         xhr :post, :soft_delete, ids: [post1.id, post2.id]
 
         response.content_type.must_equal Mime::JS
