@@ -99,11 +99,30 @@ Features
 Implementation
 ==============
 
+Authentication
+--------------
+
+User authentication is performed by [Devise](https://github.com/plataformatec/devise), with support for guest users (not logged in).
+
+Group Permissions
+-----------------
+
+User authorization is achieved with [Pundit](https://github.com/elabs/pundit).
+
+A pessimistic group-based permission system is in place that allows specifying permissions at the group and forum levels with support for inheritance.
+Any forum may inherit permissions from its parent. If a forum has no parent (i.e. it is a root forum) it may inherit from the group-wide permission set.
+
+Administration
+--------------
+
+An administration panel is made available using [Active Admin](https://github.com/activeadmin/activeadmin).
+It allows for CRUD operations on objects that are not well suited for editing via the inline moderation tools, such as editing permissions, creating groups, etc.
+
 Infinite Forum Nesting
 ----------------------
 
 Forums are structures via adjacency lists:
 
 * Easy to add leaf nodes
-* Relocation is simple
+* Relocation is simple - just change the forum's forum_id to point to a new parent forum
 * pgsql supports WITH RECURSIVE for efficient querying
