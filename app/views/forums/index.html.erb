@@ -2,7 +2,6 @@
   <h4>Forum</h4>
   <% @top_level_forums.each do |forum| %>
     <table class="table">
-
       <thead>
         <tr>
           <th class="col-sm-7 col-md-7"><a href="<%= forum_path(forum) %>"><%= forum.title %></a><br>
@@ -12,24 +11,22 @@
         </tr>
       </thead>
       <tbody>
-        <% forum.forums.each do |subforum| %>
-          <% if current_or_guest_user.able_to?(:view_forum, subforum) %>
-            <tr>
-              <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
-              <small><%= subforum.description %></small><br>
-              <% if !subforum_links(subforum).empty? %>
-                <small>Sub-Forums: <%= subforum_links(subforum) %></small>
-              <% end %>
-              </td>
-              <td>
-                <%= subforum.self_and_desc_topic_count %> Topics<br>
-                <%= subforum.self_and_desc_post_count %> Posts
-              </td>
-              <td>
-                <%= display_last_post_with_topic(subforum.last_topic, subforum.last_post_in_last_topic) %>
-              </td>
-            </tr>
-          <% end %>
+        <% policy_scope(forum.forums).each do |subforum| %>
+          <tr>
+            <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
+            <small><%= subforum.description %></small><br>
+            <% unless subforum_links(subforum).empty? %>
+              <small>Sub-Forums: <%= subforum_links(subforum) %></small>
+            <% end %>
+            </td>
+            <td>
+              <%= subforum.self_and_desc_topic_count %> Topics<br>
+              <%= subforum.self_and_desc_post_count %> Posts
+            </td>
+            <td>
+              <%= display_last_post_with_topic(subforum.last_topic, subforum.last_post_in_last_topic) %>
+            </td>
+          </tr>
         <% end %>
       </tbody>
     </table>

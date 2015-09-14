@@ -1,14 +1,7 @@
 class ForumsController < ApplicationController
   # TODO: Filter forums by viewable by current_user
   def index
-    @top_level_forums = Forum.where(forum_id: nil).order(created_at: :asc).map do |forum|
-      begin
-        authorize forum, :show?
-        forum
-      rescue Pundit::NotAuthorizedError
-        nil
-      end
-    end.compact
+    @top_level_forums = policy_scope(Forum.where(forum_id: nil).order(created_at: :asc))
   end
 
   def show

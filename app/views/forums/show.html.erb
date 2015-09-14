@@ -8,21 +8,17 @@
   <h4>Forum: <%= @forum.title %></h4>
   <p><%= @forum.description %></p>
 
-  <!-- TODO: Break up @forum and @forum.forums into separate variables, filled in by
-       checking permissions in the controller. -->
   <% if @forum.forums.any? %>
-  <table class="table">
-
-    <thead>
-    <tr>
-      <th class="col-sm-7 col-md-7">Sub-Forums</th>
-      <th class="col-sm-2 col-md-2">Topics / Posts</th>
-      <th class="col-sm-3 col-md-3">Last Post</th>
-    </tr>
-    </thead>
-    <tbody>
-      <% @forum.forums.each do |subforum| %>
-        <% if current_or_guest_user.able_to?(:view_forum, subforum) %>
+    <table class="table">
+      <thead>
+      <tr>
+        <th class="col-sm-7 col-md-7">Sub-Forums</th>
+        <th class="col-sm-2 col-md-2">Topics / Posts</th>
+        <th class="col-sm-3 col-md-3">Last Post</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% policy_scope(@forum.forums).each do |subforum| %>
           <tr>
             <td><a href="<%= forum_path(subforum) %>"><%= subforum.title %></a><br>
               <small><%= subforum.description %></small><br>
@@ -39,9 +35,8 @@
             </td>
           </tr>
         <% end %>
-      <% end %>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
   <% end %>
 
   <table class="table">

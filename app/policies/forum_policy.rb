@@ -10,4 +10,17 @@ class ForumPolicy < ApplicationPolicy
   def create?
     user && user.able_to?(:create_forum, record.forum)
   end
+
+  class Scope
+    attr_reader :user, :scope
+
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      scope.map { |forum| user.able_to?(:view_forum, forum) ? forum : nil }.compact
+    end
+  end
 end

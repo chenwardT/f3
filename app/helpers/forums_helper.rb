@@ -2,12 +2,9 @@ module ForumsHelper
   def subforum_links(forum, separator=', ')
     links = []
 
-    forum.forums.each do |subforum|
-      # TODO: +authorize+ not callable here.
-      if current_or_guest_user.able_to?(:view_forum, subforum)
-        link_html = content_tag(:a, subforum.title, href: forum_path(subforum))
-        links.push(link_html)
-      end
+    policy_scope(forum.forums).each do |subforum|
+      link_html = content_tag(:a, subforum.title, href: forum_path(subforum))
+      links.push(link_html)
     end
 
     links.join(separator).html_safe
