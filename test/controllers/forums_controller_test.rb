@@ -14,7 +14,6 @@ describe ForumsController do
 
   before do
     3.times { create(:forum) }
-    create(:group, name: 'guest')
   end
 
   describe "GET :index" do

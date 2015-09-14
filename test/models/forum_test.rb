@@ -89,11 +89,13 @@ describe Forum do
 
     it "creates a set of permissions for each group on creation of itself" do
       new_forum = create(:forum)
-      new_forum.forum_permissions.count.must_equal 3
+      # 3 created + 1 guest group from seeds
+      new_forum.forum_permissions.count.must_equal 4
     end
 
     it "destroys all associated forum permissions, forums, and topics on destruction of itself" do
-      value { depth2b.destroy }.must_change "ForumPermission.where(forum: depth2b).count", -3
+      # 3 created + 1 guest group from seeds
+      value { depth2b.destroy }.must_change "ForumPermission.where(forum: depth2b).count", -4
       value { depth2a.destroy }.must_change "Topic.where(forum: depth2a).count", -1
       value { top.destroy }.must_change "Forum.where(parent: top).count", -1
     end

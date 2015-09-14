@@ -43,8 +43,6 @@ describe User do
   end
 
   it "returns whether it's a guest" do
-    create(:group, name: 'guest')
-
     user.is_guest?.must_equal false
 
     user.groups.delete_all
