@@ -6,7 +6,7 @@ A Full Featured Forum created with Ruby on Rails, backed by Postgres.
 Developed with:
 
 * Ruby 2.1.4
-* Rails 4.2.1
+* Rails 4.2
 * PostgreSQL 9.3
 
 F3 is under active development; details contained in the following sections are likely to change.
@@ -121,7 +121,7 @@ It allows for CRUD operations on objects that are not well suited for editing vi
 Infinite Forum Nesting
 ----------------------
 
-Forums are structures via adjacency lists:
+Forums are structured via adjacency lists:
 
 * Easy to add leaf nodes
 * Relocation is simple - just change the forum's forum_id to point to a new parent forum
