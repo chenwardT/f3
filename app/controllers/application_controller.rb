@@ -59,6 +59,10 @@ class ApplicationController < ActionController::Base
     current_or_guest_user
   end
 
+  def info_for_paper_trail
+    { ip: request.remote_ip, user_agent: request.user_agent }
+  end
+
   protected
 
   def configure_permitted_parameters
