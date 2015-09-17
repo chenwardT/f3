@@ -55,6 +55,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def user_for_paper_trail
+    current_or_guest_user
+  end
+
   protected
 
   def configure_permitted_parameters
