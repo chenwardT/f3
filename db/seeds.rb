@@ -159,6 +159,8 @@ case Rails.env
       user.save!
     end
 
+    User.all.each { |u| u.update_attribute(:confirmed_at, Time.now) }
+
     # Top level forums
     3.times do
       Forum.create!(title: Faker::Company.name + " " + Faker::Company.suffix,
