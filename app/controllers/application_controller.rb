@@ -39,8 +39,12 @@ class ApplicationController < ActionController::Base
     guest_user if with_retry
   end
 
-  def reload_and_warn
-    flash[:danger] = NOT_AUTHORIZED_MSG
+  def reload_and_warn_not_auth
+    reload_and_warn NOT_AUTHORIZED_MSG
+  end
+
+  def reload_and_warn(notice)
+    flash[:danger] = notice
     reload_location
   end
 
