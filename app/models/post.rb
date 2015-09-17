@@ -2,6 +2,8 @@ require 'uri'
 
 # TODO: Set default post state via site config (currently using migration)
 class Post < ActiveRecord::Base
+  include PaperTrailable
+
   belongs_to :user
   alias_attribute :author, :user
   belongs_to :topic
