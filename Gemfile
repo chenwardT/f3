@@ -61,10 +61,17 @@ gem 'sanitize', '~> 4.0.0'
 gem 'pry-rails'
 gem 'pry-doc'
 
+# Use ActiveAdmin for the admin panel
 gem 'activeadmin', '~> 1.0.0pre1'
+
+# used by ActiveAdmin
 gem 'country_select', github: 'stefanpenner/country_select'
 
+# Use figaro for app configuration
 gem 'figaro'
+
+# Use paper_trail for logging actions
+gem 'paper_trail', '~> 4.0.0'
 
 group :development do
   # Use faker for creating seed data
