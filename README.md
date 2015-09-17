@@ -7,7 +7,7 @@ Developed with:
 
 * Ruby 2.1.4
 * Rails 4.2
-* PostgreSQL 9.3
+* PostgreSQL 9.4
 
 F3 is under active development; details contained in the following sections are likely to change.
 
@@ -117,6 +117,12 @@ Administration
 
 An administration panel is made available using [Active Admin](https://github.com/activeadmin/activeadmin).
 It allows for CRUD operations on objects that are not well suited for editing via the inline moderation tools, such as editing permissions, creating groups, etc.
+
+Auditing
+--------
+
+Actions performed on database-backed objects are logged via [PaperTrail](https://github.com/airblade/paper_trail).
+The acting user, IP and user-agent are all logged. The object and changes performed on it are serialized as JSON (JSONB column type in postgres).
 
 Infinite Forum Nesting
 ----------------------
