@@ -20,21 +20,32 @@ class Post < ActiveRecord::Base
 
   paginates_per POSTS_PER_PAGE
 
-  # Note: update_all does not trigger callbacks/validations.
   def self.soft_delete(ids, user, reason=nil)
-    where(id: ids).update_all(state: 'deleted', moderator_id: user, mod_reason: reason)
+    where(id: ids).each do |post|
+      post.set_event(__method__)
+      post.update_attributes(state: 'deleted', moderator: user, mod_reason: reason)
+    end
   end
 
   def self.undelete(ids, user)
-    where(id: ids).update_all(state: 'visible', moderator_id: user, mod_reason: nil)
+    where(id: ids).each do |post|
+      post.set_event(__method__)
+      post.update_attributes(state: 'visible', moderator: user, mod_reason: nil)
+    end
   end
 
   def self.approve(ids, user)
-    where(id: ids).update_all(state: 'visible', moderator_id: user)
+    where(id: ids).each do |post|
+      post.set_event(__method__)
+      post.update_attributes(state: 'visible', moderator: user)
+    end
   end
 
   def self.unapprove(ids, user)
-    where(id: ids).update_all(state: 'unapproved', moderator_id: user)
+    where(id: ids).each do |post|
+      post.set_event(__method__)
+      post.update_attributes(state: 'unapproved', moderator: user)
+    end
   end
 
   # Merges the bodies of 2 or more posts given by +sources+ IDs into a single post, specified by
@@ -48,8 +59,9 @@ class Post < ActiveRecord::Base
     author_user = User.find(author)
 
     ActiveRecord::Base.transaction do
+      merge_into.set_event(__method__)
       merge_into.update_attributes(body: body, user: author_user, moderator: user, mod_reason: reason)
-      source_posts.delete_all
+      source_posts.destroy_all
     end
   end
 
@@ -72,6 +84,7 @@ class Post < ActiveRecord::Base
       dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
       path = URI.parse(dest_topic_url).path
       reverse_lookup = Rails.application.routes.recognize_path(path)
+
       destination_topic = self.move_to_existing_topic(source_posts, source_topics, reverse_lookup)
     end
 
@@ -88,6 +101,7 @@ class Post < ActiveRecord::Base
   def self.copy(create_topic, new_topic_author, post_ids, destination_forum_id=nil,
       new_topic_title=nil, dest_topic_url=nil)
     source_posts = Post.where(id: post_ids)
+
     if create_topic
       new_topic = self.copy_to_new_topic(source_posts, new_topic_author, new_topic_title,
       destination_forum_id)
@@ -95,6 +109,7 @@ class Post < ActiveRecord::Base
       dest_topic_url = 'http://' + dest_topic_url unless dest_topic_url.match(/^http:\/\//)
       path = URI.parse(dest_topic_url).path
       reverse_lookup = Rails.application.routes.recognize_path(path)
+
       destination_topic = self.copy_to_existing_topic(source_posts, reverse_lookup)
     end
 
@@ -124,8 +139,13 @@ class Post < ActiveRecord::Base
 
     ActiveRecord::Base.transaction do
       new_topic = forum.topics.create(user: new_topic_author, title: new_topic_title)
-      source_posts.update_all(topic_id: new_topic.id)
-      source_topics.each {|t| t.delete if t.posts.count == 0}
+
+      source_posts.each do |post|
+        post.set_event(__method__)
+        post.update_attributes(topic: new_topic)
+      end
+
+      source_topics.each {|topic| topic.destroy if topic.posts.empty?}
     end
 
     new_topic
@@ -138,14 +158,20 @@ class Post < ActiveRecord::Base
 
       ActiveRecord::Base.transaction do
         destination_topic = Topic.find(reverse_lookup[:id])
-        source_posts.update_all(topic_id: destination_topic.id)
-        source_topics.each {|t| t.delete if t.posts.count == 0}
+
+        source_posts.each do |post|
+          post.set_event(__method__)
+          post.update_attributes(topic: destination_topic)
+        end
+
+        source_topics.each {|topic| topic.destroy if topic.posts.empty?}
       end
 
       return destination_topic
     end
   end
 
+  # Note: Created posts possess the same created_at and updated_at values as their originals.
   def self.copy_to_new_topic(source_posts, new_topic_author, new_topic_title, destination_forum_id)
     forum = Forum.find(destination_forum_id)
     new_topic = nil
@@ -155,6 +181,7 @@ class Post < ActiveRecord::Base
 
       source_posts.each do |post|
         post_copy = post.dup
+        post_copy.set_event(__method__)
         post_copy.update_attributes(topic: new_topic, created_at: post.created_at,
                                     updated_at: post.updated_at)
       end
@@ -163,6 +190,7 @@ class Post < ActiveRecord::Base
     new_topic
   end
 
+  # Note: Created posts possess the same created_at and updated_at values as their originals.
   def self.copy_to_existing_topic(source_posts, reverse_lookup)
     destination_topic = nil
 
@@ -172,6 +200,7 @@ class Post < ActiveRecord::Base
 
         source_posts.each do |post|
           post_copy = post.dup
+          post_copy.set_event(__method__)
           post_copy.update_attributes(topic: destination_topic, created_at: post.created_at,
                                       updated_at: post.updated_at)
         end
