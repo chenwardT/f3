@@ -40,11 +40,12 @@ class PostsController < ApplicationController
 
   def update
     @post = Post.find(params[:id])
+    reload_and_warn_no_posts and return if @post.nil?
 
     begin
       authorize @post
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     @post.body = post_params[:body]
@@ -67,13 +68,14 @@ class PostsController < ApplicationController
   def soft_delete
     # Note: We don't filter on state here, since unapproved posts should also be deleted
     # and, if then undeleted, should be considered "approved" and thus visible.
-    posts = Post.where(id: params[:ids])
+    posts = Post.where(id: params[:ids]).where(state: ['visible', 'unapproved'])
+    reload_and_warn_no_posts and return if posts.empty?
     params.key? :reason ? reason = params[:reason] : reason = nil
 
     begin
       authorize posts.first   # TODO: Check permissions on all posts.
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     Post.soft_delete(params[:ids], current_user, reason)
@@ -82,11 +84,12 @@ class PostsController < ApplicationController
 
   def undelete
     posts = Post.where(id: params[:ids]).where(state: 'deleted')
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first, :soft_delete?
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     count = posts.count
@@ -96,11 +99,12 @@ class PostsController < ApplicationController
 
   def approve
     posts = Post.where(id: params[:ids]).where(state: 'unapproved')
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     count = posts.count
@@ -110,11 +114,12 @@ class PostsController < ApplicationController
 
   def unapprove
     posts = Post.where(id: params[:ids]).where(state: 'visible')
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first, :approve?
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     count = posts.count
@@ -124,11 +129,12 @@ class PostsController < ApplicationController
 
   def hard_delete
     posts = Post.where(id: params[:ids])
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     count = posts.count
@@ -138,11 +144,12 @@ class PostsController < ApplicationController
 
   def merge
     posts = Post.where(id: params[:sources])
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first   # TODO: Check perms across multiple posts.
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     count = posts.count
@@ -159,11 +166,12 @@ class PostsController < ApplicationController
   # TODO: Redirect or link to destination topic
   def move
     posts = Post.where(id: params[:post_ids])
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first # TODO: Check permissions for multiple posts.
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     create_topic_parsed = params[:create_topic] == 'true' ? true : false
@@ -175,11 +183,12 @@ class PostsController < ApplicationController
   # TODO: Redirect or link to destination topic
   def copy
     posts = Post.where(id: params[:post_ids])
+    reload_and_warn_no_posts and return if posts.empty?
 
     begin
       authorize posts.first # TODO: Check params across multiple posts.
     rescue Pundit::NotAuthorizedError
-      reload_and_warn and return
+      reload_and_warn_not_auth and return
     end
 
     create_topic_parsed = params[:create_topic] == 'true' ? true : false
@@ -221,5 +230,10 @@ class PostsController < ApplicationController
     else
       flash[:success] = "Post successfully created"
     end
+  end
+
+  def reload_and_warn_no_posts
+    skip_authorization
+    reload_and_warn "No applicable post(s) found."
   end
 end
