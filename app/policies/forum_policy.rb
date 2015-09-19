@@ -20,7 +20,7 @@ class ForumPolicy < ApplicationPolicy
     end
 
     def resolve
-      scope.map { |forum| user.able_to?(:view_forum, forum) ? forum : nil }.compact
+      scope.select { |forum| user.able_to?(:view_forum, forum) }
     end
   end
 end
