@@ -84,6 +84,10 @@ group :development do
   gem 'binding_of_caller'
 end
 
+group :staging do
+  gem 'faker' # TODO: Remove once forum setup is implemented.
+end
+
 group :test do
   # Required for Travis CI tests
   gem 'rake'

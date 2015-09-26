@@ -1,0 +1,3 @@
+#! /bin/bash
+TRUSTED_IP=192.168.1.4 rails s -b 0.0.0.0 -e production
+

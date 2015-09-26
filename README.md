@@ -38,6 +38,16 @@ your settings):
 `F3_EMAIL` and `F3_EMAIL_PASS` are the login credentials for the mailer; signup confirmation emails, etc
 will be sent from this address.
 
+Once your Postgres server is able to be connected to:
+
+    bundle exec rake db:create
+    bundle exec rake db:migrate
+    bundle exec rake db:seed
+    
+A script for (re)setting the dev database is provided in `bin/reset_dev_db`.
+
+Do note that seed file contains "demo" data in addition to data that must be preloaded for F3 to operate,
+such as a default _guest_ group that non-logged in users will be added to.
 
 Screenshots
 ===========

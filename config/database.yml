@@ -26,3 +26,7 @@ test:
 production:
   <<: *default
   database: rails-forum_prod
+
+staging:
+  <<: *default
+  database: rails-forum_staging

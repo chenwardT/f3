@@ -23,7 +23,7 @@ case Rails.env
                  copy_or_move_any_topic: false,
                  moderate_any_forum: false)
 
-  when 'development'
+  when 'development', 'staging'
     Group.create(name: 'guest',
                  description: 'Not Logged In',
                  create_forum: false,
@@ -107,24 +107,24 @@ case Rails.env
                              moderate_any_forum: false)
 
     no_perms = Group.create(name: 'no_perms',
-                             description: 'No Permission Users',
-                             create_forum: false,
-                             view_topic: false,
-                             view_forum: false,
-                             preapproved_posts: false,
-                             create_post: false,
-                             edit_own_post: false,
-                             soft_delete_own_post: false,
-                             hard_delete_own_post: false,
-                             create_topic: false,
-                             lock_or_unlock_own_topic: false,
-                             copy_or_move_own_topic: false,
-                             edit_any_post: false,
-                             soft_delete_any_post: false,
-                             hard_delete_any_post: false,
-                             lock_or_unlock_any_topic: false,
-                             copy_or_move_any_topic: false,
-                             moderate_any_forum: false)
+                            description: 'No Permission Users',
+                            create_forum: false,
+                            view_topic: false,
+                            view_forum: false,
+                            preapproved_posts: false,
+                            create_post: false,
+                            edit_own_post: false,
+                            soft_delete_own_post: false,
+                            hard_delete_own_post: false,
+                            create_topic: false,
+                            lock_or_unlock_own_topic: false,
+                            copy_or_move_own_topic: false,
+                            edit_any_post: false,
+                            soft_delete_any_post: false,
+                            hard_delete_any_post: false,
+                            lock_or_unlock_any_topic: false,
+                            copy_or_move_any_topic: false,
+                            moderate_any_forum: false)
 
     user = User.new(email: 'chenward.t@gmail.com', username: 'chenwardT', password: 'test1234',
                     password_confirmation: 'test1234')
